@@ -1,0 +1,71 @@
+# ==========================================================
+# AI PROVIDER CONFIGURATION FOR KILO CODE
+# ==========================================================
+# Konfigurasi untuk provider model AI/LLM
+# ==========================================================
+
+# ==========================================================
+# PROVIDER CONFIGURATION
+# ==========================================================
+providers:
+  ollama:
+    enabled: true
+    type: "local"
+    baseURL: "http://localhost:11434"
+    model: "qwen3.5:4b"
+
+    # Connection settings
+    # Untuk Ollama lokal:
+    # - baseURL: http://localhost:11434
+    # - model: qwen3.5:4b
+
+    # Parameter model
+    parameters:
+      temperature: 0.7
+      top_p: 0.9
+      max_tokens: 4096
+      top_k: 40
+
+  # Other providers can be added here
+  # example:
+  # - name: "anthropic"
+  #   enabled: false
+  #   baseURL: "https://api.anthropic.com"
+  #   key: "your-api-key"
+
+# ==========================================================
+# MODEL OPTIONS
+# ==========================================================
+model:
+  # Available models from Ollama
+  # Untuk Qwen 3.5 4B (recommended untuk local):
+  - name: "qwen3.5:4b"
+    enabled: true
+    size: "4B"
+    recommended: true
+
+  - name: "qwen3.5:9b"
+    enabled: true
+    size: "9B"
+    recommended: true
+
+  # Untuk models lain di Ollama:
+  # - name: "gemma4:latest"
+  #   enabled: true
+  #   size: "7B"
+  #   recommended: false
+
+# ==========================================================
+# VERIFICATION
+# ==========================================================
+# Pastikan Ollama sedang running:
+# 1. Cek Ollama: ollama list
+# 2. Pastikan qwen3.5:4b ada dalam list
+# 3. Cek koneksi: curl http://localhost:11434/api/tags
+
+# ==========================================================
+# SETUP PANDUAN
+# ==========================================================
+# Jika model belum terunduh, jalankan:
+# - ollama pull qwen3.5:4b (4GB model)
+# - ollama pull qwen3.5:9b (7-10GB model)

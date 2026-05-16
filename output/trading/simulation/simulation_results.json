@@ -1,0 +1,80 @@
+﻿{
+    "max_drawdown":  0,
+    "total_trades":  329,
+    "win_rate":  0.377,
+    "largest_loss":  -261.12,
+    "final_capital":  13735.94,
+    "worst_coin":  "DOGE",
+    "total_pnl":  3735.94,
+    "simulation_period":  "2026-02-06 to 2026-05-07",
+    "avg_loss":  167.52,
+    "total_pnl_percent":  37.36,
+    "best_coin":  "ETH",
+    "largest_win":  528.31,
+    "avg_win":  307.07,
+    "winning_trades":  124,
+    "initial_capital":  10000,
+    "trades_by_coin":  {
+                           "DOGE":  {
+                                        "wins":  9,
+                                        "pnl":  -2591.60,
+                                        "trades":  42,
+                                        "losses":  33
+                                    },
+                           "ADA":  {
+                                       "wins":  1,
+                                       "pnl":  296.34,
+                                       "trades":  1,
+                                       "losses":  0
+                                   },
+                           "MATIC":  {
+                                         "wins":  19,
+                                         "pnl":  -626.28,
+                                         "trades":  60,
+                                         "losses":  41
+                                     },
+                           "BNB":  {
+                                       "wins":  12,
+                                       "pnl":  3121.53,
+                                       "trades":  15,
+                                       "losses":  3
+                                   },
+                           "XRP":  {
+                                       "wins":  11,
+                                       "pnl":  1589.91,
+                                       "trades":  25,
+                                       "losses":  14
+                                   },
+                           "SOL":  {
+                                       "wins":  2,
+                                       "pnl":  780.42,
+                                       "trades":  2,
+                                       "losses":  0
+                                   },
+                           "DOT":  {
+                                       "wins":  19,
+                                       "pnl":  -2226.00,
+                                       "trades":  67,
+                                       "losses":  48
+                                   },
+                           "BTC":  {
+                                       "wins":  17,
+                                       "pnl":  -2311.67,
+                                       "trades":  54,
+                                       "losses":  37
+                                   },
+                           "ETH":  {
+                                       "wins":  24,
+                                       "pnl":  3620.15,
+                                       "trades":  45,
+                                       "losses":  21
+                                   },
+                           "LTC":  {
+                                       "wins":  10,
+                                       "pnl":  2083.14,
+                                       "trades":  18,
+                                       "losses":  8
+                                   }
+                       },
+    "losing_trades":  205
+}

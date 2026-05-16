@@ -1,0 +1,336 @@
+# Trading Agent User Configuration & Notification System
+# =================================================
+# Centralized configuration for all user settings,
+# broker accounts, and agent parameters.
+# 
+# This file should be the ONLY configuration file
+# that users need to edit.
+# =================================================
+
+# =============================================================================
+# SECTION 0: AI & MODEL CONFIGURATION
+# =============================================================================
+# Konfigurasi untuk model AI/LLM (AI provider harus diaktifkan sebelum menggunakan)
+# =============================================================================
+ai:
+  enabled: true
+  provider: "ollama"
+  model: "qwen3.5:4b"
+  baseURL: "http://localhost:11434"
+
+  # Model parameters
+  parameters:
+    temperature: 0.7
+    max_tokens: 4096
+
+# =============================================================================
+# AI PROVIDER SETTINGS
+# =============================================================================
+provider_settings:
+  ollama:
+    # Ollama connection configuration
+    url: "http://localhost:11434"
+    # Model name - pastikan model sudah terunduh
+    model: "qwen3.5:4b"
+
+    # Ollama-specific settings
+    features:
+      - system_prompt
+      - tool_use
+
+# =============================================================================
+# SECTION 1: USER PROFILE
+# =============================================================================
+user:
+
+# =============================================================================
+# SECTION 0: AI & MODEL CONFIGURATION
+# =============================================================================
+# Konfigurasi untuk model AI/LLM (AI provider harus diaktifkan sebelum menggunakan)
+ai:
+  enabled: true
+  provider: "ollama"
+  model: "qwen3.5:4b"
+  baseURL: "http://localhost:11434"
+
+  # Model parameters (sesuaikan dengan preferensi Anda)
+  temperature: 0.7
+  max_tokens: 4096
+
+  # Ollama settings
+  ollama:
+    # Ollama instance configuration
+    url: "http://localhost:11434"
+    # Model name (pastikan model sudah diunduh: ollama pull qwen3.5:4b)
+    model: "qwen3.5:4b"
+    # Enable/disable specific features
+    features:
+      system_prompt: true
+      tool_use: true
+  # User identifier (for reference)
+  name: "Your Name"
+  email: "your@email.com"
+  
+  # Notification preferences
+  notifications:
+    # Send email notifications
+    email_enabled: true
+    
+    # Notification types (true = enabled, false = disabled)
+    notify:
+      trade_executed: true      # When a trade is placed
+      trade_closed: true       # When a position is closed
+      risk_warning: true     # Risk limit warnings
+      daily_summary: true     # Daily P&L summary
+      signal_alert: true      # Interesting signals detected
+      error_alert: true      # Platform/system errors
+      weekly_report: true    # Weekly performance report
+
+# =============================================================================
+# SECTION 2: BROKER ACCOUNTS
+# =============================================================================
+brokers:
+  # --- BYBIT (Crypto) ---
+  bybit:
+    enabled: true
+    mode: "demo"             # "demo" or "live"
+    api_key: ""             # Your Bybit API key (live)
+    api_secret: ""           # Your Bybit API secret (live)
+    demo_account: ""         # Demo account email
+    demo_password: ""        # Demo account password
+    
+  # --- BINANCE (Crypto) ---
+  binance:
+    enabled: false
+    mode: "demo"
+    api_key: ""
+    api_secret: ""
+    
+  # --- OANDA (Forex) ---
+  oanda:
+    enabled: false
+    mode: "demo"
+    api_key: ""              # OANDA API key
+    account_id: ""           # OANDA account ID
+    demo_token: ""           # Demo account token
+    
+  # --- POLYMARKET (Prediction Markets) ---
+  polymarket:
+    enabled: false
+    api_key: ""              # Polymarket API key (if needed)
+
+# =============================================================================
+# SECTION 3: TRADING CONFIGURATION
+# =============================================================================
+trading:
+  # --- DEFAULT MARKET (Primary trading market) ---
+  default_market: "crypto"   # Options: crypto, forex, stock, polymarket
+  
+  # --- TRADING MODE ---
+  mode: "demo"             # "demo" = paper trading, "live" = real money
+  
+  # --- ACTIVE TRADING PAIRS ---
+  # Markets to actively trade
+  pairs:
+    crypto:
+      - "BTC/USDT"
+      - "ETH/USDT"
+      - "SOL/USDT"
+    forex:
+      - "EUR/USD"
+      - "GBP/USD"
+      - "USD/JPY"
+      
+  # --- WATCHLIST ---
+  # Markets to monitor but not trade
+  watchlist:
+    - "BNB/USDT"
+    - "XRP/USDT"
+    - "DOGE/USDT"
+
+# =============================================================================
+# SECTION 4: RISK MANAGEMENT
+# =============================================================================
+risk:
+  # --- RISK PROFILE ---
+  # Quick preset: conservative, moderate, aggressive
+  profile: "moderate"       
+  # conservative: 1% risk, 3% drawdown, low leverage
+  # moderate: 2% risk, 5% drawdown, medium leverage
+  # aggressive: 3% risk, 8% drawdown, high leverage
+
+  # --- POSITION SIZING ---
+  max_risk_per_trade: 0.02   # 2% of equity per trade (override profile)
+  max_daily_drawdown: 0.05  # 5% - stop if exceeded (override profile)
+  max_positions: 5          # Maximum concurrent positions
+
+  # --- ENTRY RULES ---
+  min_reward_risk_ratio: 2.0  # TP must be 2x SL distance
+  max_leverage: 10            # Maximum leverage multiplier
+  min_confidence: 0.65         # Minimum signal confidence (0-1)
+
+  # --- STOP LOSS / TAKE PROFIT ---
+  # ATR-based (dynamic) or percentage (fixed)
+  stop_loss_type: "atr"      # "atr" or "percentage"
+  stop_loss_atr_multiplier: 2.0
+  default_stop_loss_pct: 1.5  # 1.5% if ATR not available
+  
+  take_profit_type: "atr"
+  take_profit_atr_multiplier: 4.0
+  default_take_profit_pct: 3.0
+
+  # --- VOLATILITY FILTERS ---
+  max_atr_percentile: 85      # Don't trade if ATR > 85th percentile
+  min_volume_ratio: 1.2        # Volume must be > 1.2x average
+
+# =============================================================================
+# SECTION 5: SIGNAL VERIFICATION
+# =============================================================================
+signals:
+  # --- MULTI-SIGNAL VERIFICATION ---
+  # Verify signals from multiple sources before executing
+  verification_enabled: true
+  
+  # Minimum sources that must agree
+  min_source_agreement: 2
+  
+  # Signal sources to use
+  sources:
+    technical_analysis: true   # Our technical indicators
+    coingecko_trends: true   # CoinGecko market data
+    pattern_detection: true  # Chart pattern recognition
+    
+  # --- SIGNAL PARAMETERS ---
+  rsi_oversold: 30           # RSI below = buy signal
+  rsi_overbought: 70         # RSI above = sell signal
+  min_volume_spike: 1.5      # Minimum volume multiplier
+
+# =============================================================================
+# SECTION 6: NOTIFICATION SETTINGS
+# =============================================================================
+notifications:
+  # --- EMAIL CONFIGURATION ---
+  email:
+    # SMTP settings OR email API
+    provider: "smtp"          # Options: smtp, sendgrid, mailgun
+    
+    # SMTP (if using provider: smtp)
+    smtp:
+      host: "smtp.gmail.com"
+      port: 587
+      secure: false           # true for TLS
+      username: ""          # Your email
+      password: ""           # App password
+    
+    # SendGrid (if using provider: sendgrid)
+    sendgrid:
+      api_key: ""
+    
+    # Mailgun (if using provider: mailgun)
+    mailgun:
+      api_key: ""
+      domain: ""
+
+  # --- NOTIFICATION TIMING ---
+  timing:
+    # Send daily summary at specified time (24h format)
+    daily_summary_time: "18:00"
+    
+    # Send weekly report on specified day
+    weekly_report_day: "sunday"
+    weekly_report_time: "10:00"
+    
+    # Immediate notifications (no batching)
+    immediate:
+      - trade_executed
+      - risk_warning
+      - error_alert
+
+# =============================================================================
+# SECTION 7: EMAIL TEMPLATES
+# =============================================================================
+email_templates:
+  # Subject line templates
+  subjects:
+    trade_executed: "🔔 Trade Executed: {symbol} {side}"
+    trade_closed: "✅ Position Closed: {symbol} | P&L: {pnl}"
+    risk_warning: "⚠️ Risk Alert: {reason}"
+    daily_summary: "📊 Daily Summary: {date} | P&L: {pnl}"
+    error_alert: "❌ Error: {error_type}"
+
+  # --- EMAIL CONTENT TEMPLATES (HTML) ---
+  html:
+    # You can customize HTML templates here
+    default: |
+      <html>
+      <body style="font-family: Arial, sans-serif;">
+        <h2>{title}</h2>
+        <p>{message}</p>
+        <hr>
+        <p style="color: #666; font-size: 12px;">
+          Trading Agent Notification<br>
+          Generated at {timestamp}
+        </p>
+      </body>
+      </html>
+
+# =============================================================================
+# SECTION 8: MARKET DATA SOURCES
+# =============================================================================
+market_data:
+  # Priority order for market data
+  priority:
+    - source: "coingecko"
+      enabled: true
+      priority: 1
+    - source: "oanda"
+      enabled: false
+      priority: 2
+    - source: "binance"
+      enabled: false
+      priority: 3
+
+# =============================================================================
+# SECTION 9: AGENT PARAMETERS
+# =============================================================================
+agent:
+  # Trading loop interval (seconds)
+  loop_interval: 60
+  
+  # Data refresh interval (seconds)
+  data_refresh_interval: 30
+  
+  # Enable/disable features
+  features:
+    auto_trade: false           # Require manual approval first
+    trailing_stop: false       # Trailing stop loss
+    partial_exit: false       # Partial position exit
+    news_sentiment: false      # News-based signals
+
+# =============================================================================
+# SECTION 10: SAFETY FEATURES
+# =============================================================================
+safety:
+  # --- EMERGENCY CONTROLS ---
+  # Emergency stop button (can be triggered manually)
+  emergency_stop_enabled: true
+  
+  # Maximum trades per day
+  max_trades_per_day: 10
+  
+  # Circuit breaker (pause after consecutive losses)
+  circuit_breaker_losses: 3
+  circuit_breaker_pause_minutes: 60
+  
+  # --- BACKUP AND RECOVERY ---
+  # Save state every N seconds
+  state_save_interval: 30
+  
+  # Maximum state history (for recovery)
+  max_state_history: 100
+
+# =============================================================================
+# VERSION HISTORY
+# =============================================================================
+# v1.0.0 - 2026-05-07 - Initial configuration
+# =============================================================================

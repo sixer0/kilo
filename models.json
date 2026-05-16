@@ -1,0 +1,16 @@
+{
+  "providers": [
+    {
+      "name": "ollama",
+      "type": "local",
+      "baseURL": "http://localhost:11434",
+      "model": "qwen3.5:4b",
+      "enabled": true
+    }
+  ],
+  "modelSettings": {
+    "temperature": 0.7,
+    "top_p": 0.9,
+    "max_tokens": 4096
+  }
+}

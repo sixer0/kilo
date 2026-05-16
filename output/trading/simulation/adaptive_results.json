@@ -1,0 +1,86 @@
+﻿{
+    "total_pnl_percent":  -1.83,
+    "simulation_period":  "2026-02-06 to 2026-05-07",
+    "win_rate_percent":  33.3,
+    "max_drawdown":  0.04,
+    "total_pnl":  -183.23,
+    "best_coin":  "BTC",
+    "trades_by_coin":  {
+                           "DOT":  {
+                                       "wins":  0,
+                                       "pnl":  -200,
+                                       "trades":  1,
+                                       "losses":  1
+                                   },
+                           "BTC":  {
+                                       "wins":  1,
+                                       "pnl":  16.77,
+                                       "trades":  2,
+                                       "losses":  1
+                                   }
+                       },
+    "final_capital":  9816.77,
+    "winning_trades":  1,
+    "avg_loss":  198,
+    "initial_capital":  10000,
+    "largest_win":  212.77,
+    "strategy":  "Adaptive - Best Config: RSI40/65+V1.0",
+    "worst_coin":  "DOT",
+    "avg_win":  212.77,
+    "total_trades":  3,
+    "losing_trades":  2,
+    "win_rate":  0.333,
+    "config_tested":  [
+                          {
+                              "winRate":  0,
+                              "signals":  1,
+                              "name":  "RSI35/65+V1.0"
+                          },
+                          {
+                              "winRate":  0,
+                              "signals":  0,
+                              "name":  "RSI35/65+V1.2"
+                          },
+                          {
+                              "winRate":  49,
+                              "signals":  51,
+                              "name":  "RSI40/60+V1.0"
+                          },
+                          {
+                              "winRate":  50,
+                              "signals":  40,
+                              "name":  "RSI40/60+V1.2"
+                          },
+                          {
+                              "winRate":  42.1,
+                              "signals":  57,
+                              "name":  "RSI40/60+V0.8"
+                          },
+                          {
+                              "winRate":  42.3,
+                              "signals":  142,
+                              "name":  "RSI45/55+V1.0"
+                          },
+                          {
+                              "winRate":  0,
+                              "signals":  0,
+                              "name":  "RSI30/70+V0.8"
+                          },
+                          {
+                              "winRate":  0,
+                              "signals":  0,
+                              "name":  "RSI35/70+V1.0"
+                          },
+                          {
+                              "winRate":  59.2,
+                              "signals":  49,
+                              "name":  "RSI35/60+V1.0"
+                          },
+                          {
+                              "winRate":  66.7,
+                              "signals":  3,
+                              "name":  "RSI40/65+V1.0"
+                          }
+                      ],
+    "largest_loss":  -200
+}

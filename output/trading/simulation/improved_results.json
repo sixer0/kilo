@@ -1,0 +1,24 @@
+﻿{
+    "total_pnl_percent":  0,
+    "simulation_period":  "2026-02-06 to 2026-05-07",
+    "win_rate_percent":  0,
+    "max_drawdown":  0,
+    "worst_coin":  "N/A",
+    "total_pnl":  0,
+    "best_coin":  "N/A",
+    "trades_by_coin":  {
+
+                       },
+    "final_capital":  10000,
+    "winning_trades":  0,
+    "avg_loss":  0,
+    "initial_capital":  10000,
+    "largest_win":  0,
+    "strategy":  "High-Probability Selective",
+    "signals_generated":  0,
+    "avg_win":  0,
+    "total_trades":  0,
+    "losing_trades":  0,
+    "win_rate":  0,
+    "largest_loss":  0
+}

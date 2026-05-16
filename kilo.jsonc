@@ -1,0 +1,516 @@
+{
+  "$schema": "https://app.kilo.ai/config.json",
+
+  // ══════════════════════════════════════════════════════════════════════════════
+  // MODEL CONFIGURATION
+  // ══════════════════════════════════════════════════════════════════════════════
+  "model": "anthropic/claude-sonnet-4-20250514",
+  "small_model": "kilo/kilo-auto/free",
+
+  // ══════════════════════════════════════════════════════════════════════════════
+  // PERMISSIONS
+  // ══════════════════════════════════════════════════════════════════════════════
+  "permission": {
+    "read": "allow",
+    "glob": "allow",
+    "grep": "allow",
+    "list": "allow",
+    "external_directory": "allow",
+    "edit": "allow",
+    "bash": "allow",
+    "skill": "allow",
+    "task": "allow",
+    "websearch": "allow",
+    "webfetch": "allow",
+    "codesearch": "allow",
+    "todowrite": "allow",
+    "puppeteer_navigate": "allow",
+    "puppeteer_screenshot": "allow",
+    "puppeteer_click": "allow",
+    "puppeteer_fill": "allow",
+    "puppeteer_select": "allow",
+    "puppeteer_hover": "allow",
+    "puppeteer_evaluate": "allow"
+  },
+
+  // ══════════════════════════════════════════════════════════════════════════════
+  // SYSTEM SETTINGS
+  // ══════════════════════════════════════════════════════════════════════════════
+  "compaction": {
+    "auto": true,
+    "prune": true
+  },
+  "default_agent": "master-controller",
+
+  // ══════════════════════════════════════════════════════════════════════════════
+  // INSTRUCTIONS - Global rules loaded for ALL agents and subagents
+  // ══════════════════════════════════════════════════════════════════════════════
+  "instructions": ["AGENTS.md", "SOUL.md", "MEMORY.md"],
+
+  // ══════════════════════════════════════════════════════════════════════════════
+  // AGENTS - PROMPT LENGKAP DI ~/.config/kilo/agent/<name>.md
+  // ══════════════════════════════════════════════════════════════════════════════
+  "agent": {
+
+    // ════════════════════════════════════════════════════════════════════════════
+    // PRIMARY AGENTS - Orchestration & High-level Control
+    // ════════════════════════════════════════════════════════════════════════════
+    "master-controller": {
+      "model": "kilo/minimax/minimax-m2.1",
+      "hidden": false,
+      "description": "Master control agent for development workflow - highly obedient to rules",
+      "mode": "primary",
+      "color": "#10B981",
+      "steps": 75,
+      "name": "master-controller"
+    },
+    "master-controller-free": {
+      "model": "kilo/openrouter/free",
+      "hidden": false,
+      "description": "Master control agent for development workflow (fallback)",
+      "mode": "primary",
+      "color": "#10B981",
+      "steps": 75,
+      "name": "master-controller-free"
+    },
+
+    // ════════════════════════════════════════════════════════════════════════════
+    // CORE DEVELOPMENT AGENTS - Analysis, Coding, Testing
+    // ════════════════════════════════════════════════════════════════════════════
+    "data-analyst": {
+      "model": "kilo/minimax/minimax-m2.7",
+      "hidden": true,
+      "description": "Data synthesis and analysis agent",
+      "mode": "subagent",
+      "name": "data-analyst"
+    },
+    "data-analyst-free": {
+      "model": "kilo/kilo-auto/free",
+      "hidden": true,
+      "description": "Fallback: Data analysis when primary rate-limited",
+      "mode": "subagent",
+      "name": "data-analyst-free"
+    },
+
+    "coder-execution": {
+      "model": "kilo/minimax/minimax-m2.7",
+      "hidden": true,
+      "description": "Code implementation agent with standards",
+      "mode": "subagent",
+      "name": "coder-execution"
+    },
+    "coder-execution-free": {
+      "model": "kilo/kilo-auto/free",
+      "hidden": true,
+      "description": "Fallback: Code implementation when primary rate-limited",
+      "mode": "subagent",
+      "name": "coder-execution-free"
+    },
+
+    "verifier": {
+      "model": "kilo/openai/gpt-5.4-nano",
+      "hidden": true,
+      "description": "Verification and testing agent",
+      "mode": "subagent",
+      "name": "verifier"
+    },
+    "verifier-free": {
+      "model": "kilo/kilo-auto/free",
+      "hidden": true,
+      "description": "Fallback: Verification when primary rate-limited",
+      "mode": "subagent",
+      "name": "verifier-free"
+    },
+
+    "security-review": {
+      "model": "kilo/openai/gpt-5.4-nano",
+      "hidden": true,
+      "description": "Security vulnerability scanner",
+      "mode": "subagent",
+      "name": "security-review"
+    },
+    "security-review-free": {
+      "model": "kilo/kilo-auto/free",
+      "hidden": true,
+      "description": "Fallback: Security scan when primary rate-limited",
+      "mode": "subagent",
+      "name": "security-review-free"
+    },
+
+    "test-expert": {
+      "model": "kilo/minimax/minimax-m2.1",
+      "hidden": true,
+      "description": "Test generation and testing strategy expert",
+      "mode": "subagent",
+      "name": "test-expert"
+    },
+    "test-expert-free": {
+      "model": "kilo/kilo-auto/free",
+      "hidden": true,
+      "description": "Fallback: Test generation when primary rate-limited",
+      "mode": "subagent",
+      "name": "test-expert-free"
+    },
+
+    // ════════════════════════════════════════════════════════════════════════════
+    // INFRASTRUCTURE AGENTS - Git, Docker, Database
+    // ════════════════════════════════════════════════════════════════════════════
+    "git-specialist": {
+      "model": "kilo/openai/gpt-5.4-nano",
+      "hidden": true,
+      "description": "Git operations, commit management, branch workflows",
+      "mode": "subagent",
+      "color": "#F97316",
+      "name": "git-specialist"
+    },
+    "git-specialist-free": {
+      "model": "kilo/kilo-auto/free",
+      "hidden": true,
+      "description": "Fallback: Git operations when primary rate-limited",
+      "mode": "subagent",
+      "color": "#F97316",
+      "name": "git-specialist-free"
+    },
+
+    "docker-specialist": {
+      "model": "kilo/openai/gpt-5.4-nano",
+      "hidden": true,
+      "description": "Docker operations, container management, compose workflows",
+      "mode": "subagent",
+      "color": "#2496ED",
+      "name": "docker-specialist"
+    },
+    "docker-specialist-free": {
+      "model": "kilo/kilo-auto/free",
+      "hidden": true,
+      "description": "Fallback: Docker operations when primary rate-limited",
+      "mode": "subagent",
+      "color": "#2496ED",
+      "name": "docker-specialist-free"
+    },
+
+    "database-specialist": {
+      "model": "kilo/openai/gpt-5.4-nano",
+      "hidden": true,
+      "description": "Database inspection, schema analysis, query optimization",
+      "mode": "subagent",
+      "color": "#336791",
+      "name": "database-specialist"
+    },
+    "database-specialist-free": {
+      "model": "kilo/kilo-auto/free",
+      "hidden": true,
+      "description": "Fallback: Database operations when primary rate-limited",
+      "mode": "subagent",
+      "color": "#336791",
+      "name": "database-specialist-free"
+    },
+
+    // ════════════════════════════════════════════════════════════════════════════
+    // PM AGENTS - Project Management, Business Analysis, Requirements
+    // ════════════════════════════════════════════════════════════════════════════
+    "pm-controller": {
+      "model": "kilo/openai/gpt-5.4-nano",
+      "hidden": false,
+      "description": "PM workflow orchestrator - coordinates planning, analysis, and document creation",
+      "mode": "primary",
+      "color": "#EC4899",
+      "name": "pm-controller",
+      "steps": 50
+    },
+    "pm-controller-free": {
+      "model": "kilo/kilo-auto/free",
+      "hidden": false,
+      "description": "Fallback: PM workflow orchestrator when primary rate-limited",
+      "mode": "primary",
+      "color": "#EC4899",
+      "name": "pm-controller-free",
+      "steps": 50
+    },
+
+    "pm-translator": {
+      "model": "kilo/kilo-auto/free",
+      "hidden": true,
+      "description": "Translate PM/BA requests into structured tasks",
+      "mode": "subagent",
+      "color": "#EC4899",
+      "name": "pm-translator"
+    },
+
+    "pm-analyst": {
+      "model": "kilo/minimax/minimax-m2.7",
+      "hidden": true,
+      "description": "Analyze requirements, documents, and data for PM/BA tasks",
+      "mode": "subagent",
+      "color": "#EC4899",
+      "name": "pm-analyst"
+    },
+    "pm-analyst-free": {
+      "model": "kilo/kilo-auto/free",
+      "hidden": true,
+      "description": "Fallback: PM/BA analysis when primary rate-limited",
+      "mode": "subagent",
+      "color": "#EC4899",
+      "name": "pm-analyst-free"
+    },
+
+    "pm-explorer": {
+      "model": "kilo/kilo-auto/free",
+      "hidden": true,
+      "description": "Explore project and document structure for PM/BA tasks",
+      "mode": "subagent",
+      "color": "#EC4899",
+      "name": "pm-explorer"
+    },
+
+    "pm-collector": {
+      "model": "kilo/kilo-auto/free",
+      "hidden": true,
+      "description": "Collect documents, data, and context for PM/BA tasks",
+      "mode": "subagent",
+      "color": "#EC4899",
+      "name": "pm-collector"
+    },
+
+    "pm-planner": {
+      "model": "kilo/openai/gpt-5.4-nano",
+      "hidden": true,
+      "description": "Create project plans, timelines, and roadmaps for PM tasks",
+      "mode": "subagent",
+      "color": "#EC4899",
+      "name": "pm-planner"
+    },
+    "pm-planner-free": {
+      "model": "kilo/kilo-auto/free",
+      "hidden": true,
+      "description": "Fallback: Project planning when primary rate-limited",
+      "mode": "subagent",
+      "color": "#EC4899",
+      "name": "pm-planner-free"
+    },
+
+    "pm-verifier": {
+      "model": "kilo/openai/gpt-5.4-nano",
+      "hidden": true,
+      "description": "Verify documents, check completeness, quality, and feasibility",
+      "mode": "subagent",
+      "color": "#EC4899",
+      "name": "pm-verifier"
+    },
+    "pm-verifier-free": {
+      "model": "kilo/kilo-auto/free",
+      "hidden": true,
+      "description": "Fallback: Document verification when primary rate-limited",
+      "mode": "subagent",
+      "color": "#EC4899",
+      "name": "pm-verifier-free"
+    },
+
+    "pm-writer": {
+      "model": "kilo/openai/gpt-5.4-nano",
+      "hidden": true,
+      "description": "Create documents, reports, and presentations for PM/BA tasks",
+      "mode": "subagent",
+      "color": "#EC4899",
+      "name": "pm-writer"
+    },
+    "pm-writer-free": {
+      "model": "kilo/kilo-auto/free",
+      "hidden": true,
+      "description": "Fallback: PM document creation when primary rate-limited",
+      "mode": "subagent",
+      "color": "#EC4899",
+      "name": "pm-writer-free"
+    },
+
+    // ════════════════════════════════════════════════════════════════════════════
+    // IMAGE AGENTS - Creation, Editing, Analysis
+    // ════════════════════════════════════════════════════════════════════════════
+    "image-specialist": {
+      "model": "kilo/openai/gpt-5.4-nano",
+      "hidden": true,
+      "description": "Image creation, editing, manipulation (canvas-design, image-enhancer skills)",
+      "mode": "subagent",
+      "color": "#8B5CF6",
+      "name": "image-specialist"
+    },
+    "image-specialist-free": {
+      "model": "kilo/kilo-auto/free",
+      "hidden": true,
+      "description": "Fallback: Image operations when primary rate-limited",
+      "mode": "subagent",
+      "color": "#8B5CF6",
+      "name": "image-specialist-free"
+    },
+
+    "image-analyst": {
+      "model": "kilo/kilo-auto/free",
+      "hidden": true,
+      "description": "Analyze and extract information from images",
+      "mode": "subagent",
+      "name": "image-analyst"
+    },
+
+    // ════════════════════════════════════════════════════════════════════════════
+    // DOCUMENT AGENTS - Read, Write, Convert, Review, Analyze
+    // ════════════════════════════════════════════════════════════════════════════
+    "document-controller": {
+      "model": "kilo/openai/gpt-5.4-nano",
+      "hidden": false,
+      "description": "Document workflow orchestrator - coordinates review, creation, analysis",
+      "mode": "primary",
+      "color": "#F59E0B",
+      "name": "document-controller",
+      "steps": 50
+    },
+    "document-controller-free": {
+      "model": "kilo/kilo-auto/free",
+      "hidden": false,
+      "description": "Fallback: Document workflow orchestrator when primary rate-limited",
+      "mode": "primary",
+      "color": "#F59E0B",
+      "name": "document-controller-free",
+      "steps": 50
+    },
+
+    "document-reader": {
+      "model": "kilo/openai/gpt-5.4-nano",
+      "hidden": true,
+      "description": "Read, parse, analyze PDF, DOCX, XLSX, PPTX documents",
+      "mode": "subagent",
+      "color": "#EF4444",
+      "name": "document-reader"
+    },
+    "document-reader-free": {
+      "model": "kilo/kilo-auto/free",
+      "hidden": true,
+      "description": "Fallback: Read documents when primary rate-limited",
+      "mode": "subagent",
+      "color": "#EF4444",
+      "name": "document-reader-free"
+    },
+
+    "document-writer": {
+      "model": "kilo/openai/gpt-5.4-nano",
+      "hidden": true,
+      "description": "Create and edit PDF, DOCX, XLSX, PPTX documents",
+      "mode": "subagent",
+      "color": "#10B981",
+      "name": "document-writer"
+    },
+    "document-writer-free": {
+      "model": "kilo/kilo-auto/free",
+      "hidden": true,
+      "description": "Fallback: Write documents when primary rate-limited",
+      "mode": "subagent",
+      "color": "#10B981",
+      "name": "document-writer-free"
+    },
+
+    "document-converter": {
+      "model": "kilo/openai/gpt-5.4-nano",
+      "hidden": true,
+      "description": "Convert between office document formats",
+      "mode": "subagent",
+      "color": "#F59E0B",
+      "name": "document-converter"
+    },
+    "document-converter-free": {
+      "model": "kilo/kilo-auto/free",
+      "hidden": true,
+      "description": "Fallback: Convert documents when primary rate-limited",
+      "mode": "subagent",
+      "color": "#F59E0B",
+      "name": "document-converter-free"
+    },
+
+    "document-reviewer": {
+      "model": "kilo/openai/gpt-5.4-nano",
+      "hidden": true,
+      "description": "Review and revise office documents - find issues and fix them directly",
+      "mode": "subagent",
+      "color": "#F59E0B",
+      "name": "document-reviewer"
+    },
+    "document-reviewer-free": {
+      "model": "kilo/kilo-auto/free",
+      "hidden": true,
+      "description": "Fallback: Review documents when primary rate-limited",
+      "mode": "subagent",
+      "color": "#F59E0B",
+      "name": "document-reviewer-free"
+    },
+
+    "document-translator": {
+      "model": "kilo/kilo-auto/free",
+      "hidden": true,
+      "description": "Parse and structure document requests into tasks for sub-agents",
+      "mode": "subagent",
+      "color": "#8B5CF6",
+      "name": "document-translator"
+    },
+
+    "document-analyst": {
+      "model": "kilo/openai/gpt-5.4-nano",
+      "hidden": true,
+      "description": "Assess document relevance, quality, and fit for purpose",
+      "mode": "subagent",
+      "color": "#3B82F6",
+      "name": "document-analyst"
+    },
+    "document-analyst-free": {
+      "model": "kilo/kilo-auto/free",
+      "hidden": true,
+      "description": "Fallback: Assess document relevance when primary rate-limited",
+      "mode": "subagent",
+      "color": "#3B82F6",
+      "name": "document-analyst-free"
+    },
+
+    // ════════════════════════════════════════════════════════════════════════════
+    // UTILITY AGENTS - Free tier, no fallback needed
+    // ════════════════════════════════════════════════════════════════════════════
+    "request-translator": {
+      "model": "kilo/openrouter/free",
+      "hidden": true,
+      "description": "Translate user requests into structured tasks",
+      "mode": "subagent",
+      "name": "request-translator"
+    },
+
+    "explore": {
+      "model": "kilo/kilo-auto/free",
+      "hidden": true,
+      "description": "Explore codebase structure",
+      "mode": "subagent",
+      "name": "explore"
+    },
+
+    "data-collector": {
+      "model": "kilo/kilo-auto/free",
+      "hidden": true,
+      "description": "Systematic data gathering agent",
+      "mode": "subagent",
+      "name": "data-collector"
+    },
+
+    // ════════════════════════════════════════════════════════════════════════════
+    // DEFAULT AGENTS - Do NOT Remove
+    // ════════════════════════════════════════════════════════════════════════════
+    "ask": {
+      "model": "kilo/openai/gpt-5.4-nano"
+    },
+    "plan": {
+      "model": "kilo/kilo-auto/free"
+    },
+    "debug": {
+      "model": "kilo/kilo-auto/free"
+    },
+    "orchestrator": {
+      "model": "kilo/openrouter/free"
+    },
+    "code": {
+      "model": "kilo/openrouter/free"
+    }
+  }
+}

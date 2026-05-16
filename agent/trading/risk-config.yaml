@@ -1,0 +1,373 @@
+# =============================================================================
+# TRADING AGENT RISK CONFIGURATION TEMPLATE
+# =============================================================================
+# This file defines risk management parameters for the trading agent system.
+# Copy this file to customize your risk settings, then reference it in your
+# trading agent configuration.
+#
+# Risk Profiles:
+#   - Conservative: Lower risk per trade (0.5-1%), wider stops, higher min confidence
+#   - Moderate: Balanced risk (1-2% per trade), standard parameters
+#   - Aggressive: Higher risk per trade (2-3%), tighter stops, lower min confidence
+# =============================================================================
+
+# =============================================================================
+# SECTION 1: RISK MANAGEMENT CONFIGURATION
+# =============================================================================
+risk_management:
+
+  # ---------------------------------------------------------------------------
+  # Position Sizing
+  # ---------------------------------------------------------------------------
+
+  # Maximum risk per trade as a fraction of total equity
+  # - Conservative: 0.005 to 0.01 (0.5% to 1%)
+  # - Moderate: 0.01 to 0.02 (1% to 2%)
+  # - Aggressive: 0.02 to 0.03 (2% to 3%)
+  # Valid range: 0.001 to 0.05 (0.1% to 5%)
+  max_risk_per_trade: 0.02
+
+  # Maximum daily drawdown before all trading is halted
+  # - Triggers emergency stop: no new positions until drawdown resets
+  # - Conservative: 0.03 (3%)
+  # - Moderate: 0.05 (5%)
+  # - Aggressive: 0.08 (8%)
+  # Valid range: 0.01 to 0.15 (1% to 15%)
+  max_daily_drawdown: 0.05
+
+  # Maximum number of concurrent open positions
+  # - Conservative: 2 to 3 positions
+  # - Moderate: 4 to 5 positions
+  # - Aggressive: 6 to 8 positions (requires more capital allocation)
+  # Valid range: 1 to 20
+  max_positions: 5
+
+  # ---------------------------------------------------------------------------
+  # Entry Rules
+  # ---------------------------------------------------------------------------
+
+  # Minimum reward-to-risk ratio for trade entries
+  # - Ensures potential profit outweighs potential loss
+  # - Conservative: 2.5 to 3.0
+  # - Moderate: 2.0 to 2.5
+  # - Aggressive: 1.5 to 2.0
+  # Valid range: 1.0 to 5.0
+  min_reward_risk_ratio: 2.0
+
+  # Maximum leverage multiplier allowed for positions
+  # - Higher leverage = higher risk
+  # - Conservative: 1 to 3x
+  # - Moderate: 5 to 10x
+  # - Aggressive: 10 to 20x (extreme risk)
+  # Valid range: 1 to 100 (100 = no leverage limit)
+  max_leverage: 10
+
+  # Minimum signal confidence threshold (0 to 1)
+  # - Signals below this threshold are rejected
+  # - Conservative: 0.75 to 0.85
+  # - Moderate: 0.65 to 0.75
+  # - Aggressive: 0.55 to 0.65
+  # Valid range: 0.5 to 0.95
+  min_confidence: 0.65
+
+  # ---------------------------------------------------------------------------
+  # Stop Loss / Take Profit
+  # ---------------------------------------------------------------------------
+
+  # Stop loss distance expressed as ATR multiple
+  # - SL = Entry Price - (ATR * multiplier) for long positions
+  # - Higher values = wider stops = fewer false stop outs
+  # - Conservative: 2.5 to 3.0
+  # - Moderate: 1.5 to 2.5
+  # - Aggressive: 1.0 to 1.5
+  # Valid range: 0.5 to 5.0
+  stop_loss_atr_multiplier: 2.0
+
+  # Take profit distance expressed as ATR multiple
+  # - TP = Entry Price + (ATR * multiplier) for long positions
+  # - Should be at least 2x the stop loss for positive expectancy
+  # - Conservative: 4.0 to 6.0
+  # - Moderate: 3.0 to 4.0
+  # - Aggressive: 2.0 to 3.0
+  # Valid range: 1.0 to 10.0
+  take_profit_atr_multiplier: 4.0
+
+  # Default stop loss percentage (used when ATR is unavailable)
+  # - Percentage of entry price (0.01 = 1%)
+  # - Valid range: 0.005 to 0.05 (0.5% to 5%)
+  default_stop_loss_pct: 0.015
+
+  # Default take profit percentage (used when ATR is unavailable)
+  # - Percentage of entry price (0.01 = 1%)
+  # - Should maintain at least 2:1 reward/risk ratio with stop loss
+  # - Valid range: 0.01 to 0.10 (1% to 10%)
+  default_take_profit_pct: 0.03
+
+  # ---------------------------------------------------------------------------
+  # Volatility Filter
+  # ---------------------------------------------------------------------------
+
+  # Maximum ATR percentile to allow trading (0 to 100)
+  # - Prevents trading during extremely volatile periods
+  # - 85th percentile = only trade when ATR is below 85% of historical values
+  # - Conservative: 70 to 80
+  # - Moderate: 80 to 90
+  # - Aggressive: 90 to 95
+  # Valid range: 50 to 99
+  max_atr_percentile: 85
+
+  # Minimum volume ratio vs average (1.0 = average volume)
+  # - Prevents trading during low liquidity periods
+  # - Must exceed this multiple of the 24-hour average volume
+  # - Conservative: 1.3 to 1.5
+  # - Moderate: 1.1 to 1.3
+  # - Aggressive: 0.9 to 1.1 (allows sub-average volume)
+  # Valid range: 0.8 to 3.0
+  min_volume_ratio: 1.2
+
+# =============================================================================
+# SECTION 2: POSITION SIZING CONFIGURATION
+# =============================================================================
+position_sizing:
+
+  # Position sizing method
+  # - "kelly_fraction": Use Kelly criterion with fraction (recommended)
+  # - "fixed_fraction": Fixed percentage of equity per trade
+  # - "fixed_amount": Fixed dollar amount per trade
+  method: "kelly_fraction"
+
+  # Kelly fraction to use (applies when method = "kelly_fraction")
+  # - Kelly = win_rate / loss_ratio (full Kelly)
+  # - Use fraction of Kelly for risk adjustment
+  # - Conservative: 0.25 to 0.33 (25% to 33% of Kelly)
+  # - Moderate: 0.33 to 0.50 (33% to 50% of Kelly)
+  # - Aggressive: 0.50 to 0.75 (50% to 75% of Kelly)
+  # Valid range: 0.1 to 1.0
+  kelly_fraction: 0.5
+
+  # Fixed fraction of equity (applies when method = "fixed_fraction")
+  # - Each trade risks this fraction of total equity
+  # - Example: 0.1 = 10% of equity per trade
+  # - Conservative: 0.03 to 0.05 (3% to 5%)
+  # - Moderate: 0.05 to 0.10 (5% to 10%)
+  # - Aggressive: 0.10 to 0.20 (10% to 20%)
+  # Valid range: 0.01 to 0.50
+  fixed_fraction: 0.1
+
+  # Fixed dollar amount (applies when method = "fixed_amount")
+  # - Each trade uses this fixed amount of capital
+  # - Adjust based on your account size
+  # - Conservative: $50 to $200
+  # - Moderate: $200 to $500
+  # - Aggressive: $500 to $2000
+  # Valid range: 10 to 100000
+  fixed_amount: 100
+
+# =============================================================================
+# SECTION 3: TRADING HOURS CONFIGURATION
+# =============================================================================
+trading_hours:
+
+  # Enable/disable trading hours restrictions
+  # - true: Use trading hours rules
+  # - false: Trade 24/7 without restrictions
+  enabled: true
+
+  # Time ranges to exclude from trading (UTC format: HH:MM-HH:MM)
+  # - Avoid major news events, low liquidity periods
+  # - Common exclusions:
+  #   - "12:30-13:30": Major economic news releases
+  #   - "14:00-15:00": US session open volatility
+  #   - "21:00-23:00": Low liquidity in Asian session
+  #   - "00:00-02:00": Weekend crypto low liquidity
+  excluded_ranges:
+    - "12:30-13:30"    # Major news events
+    - "21:00-23:00"    # Low liquidity periods
+
+  # Days of the week to allow trading (UTC)
+  # - For crypto: exclude weekends (Sat, Sun)
+  # - For forex: trade most days including weekends
+  # - For US stocks: exclude weekends and major holidays
+  # Valid values: "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"
+  allowed_days:
+    - "Mon"
+    - "Tue"
+    - "Wed"
+    - "Thu"
+    - "Fri"
+
+# =============================================================================
+# SECTION 4: PLATFORM CONFIGURATION
+# =============================================================================
+platform:
+
+  # --- PRIMARY DATA SOURCE (Market Data) ---
+  # Priority: CoinGecko > OANDA > Bybit
+  data_source:
+    primary: "coingecko"
+    fallback: ["oanda", "bybit"]
+    
+  # CoinGecko API - Primary for crypto market data
+  coingecko:
+    api_endpoint: "https://api.coingecko.com/api/v3"
+    enabled: true
+    rate_limit: 10-30 calls/min (free tier)
+    
+  # OANDA API - Primary for forex
+  oanda:
+    api_endpoint: "https://api-fxtrade.oanda.com"
+    streaming_endpoint: "https://stream-fxtrade.oanda.com"
+    enabled: false  # Enable when API access confirmed
+    demo_account: true
+    
+  # --- EXECUTION PLATFORM (Order Execution) ---
+  # Currently unused - waiting for network access
+  
+  # Exchange provider for order execution
+  # - Supported: "bybit", "binance", "oanda" (forex only)
+  provider: "bybit"
+
+  # REST API endpoint for order execution
+  # - Bybit Demo: https://api-demo.bybit.com
+  # - Bybit Live: https://api.bybit.com
+  # - OANDA: https://api-fxtrade.oanda.com (demo)
+  api_endpoint: "https://api-demo.bybit.com"
+
+  # WebSocket endpoint for real-time market data
+  # - Bybit: wss://stream.bybit.com/v5/public/spot
+  # - OANDA: wss://stream-fxtrade.oanda.com
+  websocket_endpoint: "wss://stream.bybit.com/v5/public/spot"
+
+  # Demo mode - use paper trading with simulated fills
+  # - true: Simulated trading, no real capital at risk
+  # - false: Real trading with actual capital
+  demo_mode: true
+
+  # Test mode - connect to testnet/sandbox environment
+  # - true: Testnet with simulated market data
+  # - false: Production environment
+  test_mode: false
+
+# =============================================================================
+# SECTION 5: TRADING PAIRS CONFIGURATION
+# =============================================================================
+pairs:
+
+  # List of enabled trading pairs (format: BASEQUOTE, e.g., BTCUSDT)
+  # - Only these pairs will be considered for trading
+  # - Add/remove pairs based on your strategy
+  enabled:
+    - "BTCUSDT"
+    - "ETHUSDT"
+    - "SOLUSDT"
+
+  # Minimum 24-hour trading volume in USDT
+  # - Filters out illiquid pairs that may have wide spreads
+  # - Conservative: $5,000,000 to $10,000,000
+  # - Moderate: $1,000,000 to $5,000,000
+  # - Aggressive: $100,000 to $1,000,000
+  # Valid range: 10000 to 100000000
+  min_liquidity: 1000000
+
+  # Maximum acceptable bid-ask spread as decimal
+  # - Prevents trading during wide market spreads
+  # - 0.001 = 0.1% spread (good liquidity)
+  # - 0.005 = 0.5% spread (poor liquidity)
+  # - Conservative: 0.001 to 0.002
+  # - Moderate: 0.002 to 0.005
+  # - Aggressive: 0.005 to 0.01
+  # Valid range: 0.0001 to 0.05
+  max_spread: 0.001
+
+# =============================================================================
+# SECTION 6: ALERT CONFIGURATION
+# =============================================================================
+alerts:
+
+  # Daily drawdown warning threshold
+  # - Trigger alert when daily loss reaches this percentage
+  # - Should be lower than max_daily_drawdown to provide early warning
+  # - Conservative: 0.015 (1.5%)
+  # - Moderate: 0.025 to 0.03 (2.5% to 3%)
+  # - Aggressive: 0.04 to 0.05 (4% to 5%)
+  # Valid range: 0.005 to 0.10
+  daily_drawdown_warning: 0.03
+
+  # Position movement warning threshold
+  # - Alert when a position moves adversely by this percentage
+  # - Provides early warning for position management
+  # - Conservative: 0.01 (1%)
+  # - Moderate: 0.015 to 0.02 (1.5% to 2%)
+  # - Aggressive: 0.025 to 0.03 (2.5% to 3%)
+  # Valid range: 0.005 to 0.10
+  position_move_warning: 0.02
+
+  # Consecutive loss limit before scrutiny
+  # - After this many consecutive losses, require extra validation
+  # - Conservative: 2 to 3
+  # - Moderate: 3 to 4
+  # - Aggressive: 5 to 6
+  # Valid range: 1 to 20
+  consecutive_loss_limit: 3
+
+  # Execution latency alert threshold (milliseconds)
+  # - Alert when order execution takes longer than this
+  # - High latency can cause slippage and missed entries
+  # - Conservative: 500ms
+  # - Moderate: 1000ms
+  # - Aggressive: 2000ms to 5000ms
+  # Valid range: 100 to 10000
+  execution_latency_alert: 1000
+
+# =============================================================================
+# RISK PROFILE PRESETS
+# =============================================================================
+# Uncomment and modify one of these presets for quick configuration
+
+# conservative_profile:
+#   max_risk_per_trade: 0.01
+#   max_daily_drawdown: 0.03
+#   max_positions: 3
+#   min_reward_risk_ratio: 2.5
+#   max_leverage: 3
+#   min_confidence: 0.75
+#   stop_loss_atr_multiplier: 2.5
+#   take_profit_atr_multiplier: 5.0
+#   max_atr_percentile: 75
+#   min_volume_ratio: 1.4
+
+# moderate_profile:
+#   max_risk_per_trade: 0.02
+#   max_daily_drawdown: 0.05
+#   max_positions: 5
+#   min_reward_risk_ratio: 2.0
+#   max_leverage: 10
+#   min_confidence: 0.65
+#   stop_loss_atr_multiplier: 2.0
+#   take_profit_atr_multiplier: 4.0
+#   max_atr_percentile: 85
+#   min_volume_ratio: 1.2
+
+# aggressive_profile:
+#   max_risk_per_trade: 0.03
+#   max_daily_drawdown: 0.08
+#   max_positions: 8
+#   min_reward_risk_ratio: 1.5
+#   max_leverage: 20
+#   min_confidence: 0.55
+#   stop_loss_atr_multiplier: 1.2
+#   take_profit_atr_multiplier: 3.0
+#   max_atr_percentile: 95
+#   min_volume_ratio: 0.9
+
+# =============================================================================
+# VERSION HISTORY
+# =============================================================================
+# Version: 1.0.0
+# Last Updated: 2026-05-07
+# Changelog:
+#   - Initial release with comprehensive risk parameters
+#   - Added Kelly fraction position sizing
+#   - Added volatility filters (ATR percentile, volume ratio)
+#   - Added platform configuration for Bybit demo
+#   - Added alert thresholds for proactive risk monitoring

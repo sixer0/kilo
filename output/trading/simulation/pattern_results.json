@@ -1,0 +1,71 @@
+﻿{
+    "total_pnl_percent":  5.41,
+    "simulation_period":  "2026-02-06 to 2026-05-07",
+    "win_rate_percent":  38.5,
+    "max_drawdown":  0.123,
+    "worst_coin":  "BNB",
+    "total_pnl":  540.68,
+    "best_coin":  "ETH",
+    "trades_by_coin":  {
+                           "DOGE":  {
+                                        "wins":  1,
+                                        "pnl":  -407.37,
+                                        "trades":  5,
+                                        "losses":  4
+                                    },
+                           "MATIC":  {
+                                         "wins":  1,
+                                         "pnl":  -11.360000000000014,
+                                         "trades":  3,
+                                         "losses":  2
+                                     },
+                           "BNB":  {
+                                       "wins":  0,
+                                       "pnl":  -191.63,
+                                       "trades":  1,
+                                       "losses":  1
+                                   },
+                           "XRP":  {
+                                       "wins":  2,
+                                       "pnl":  766.2,
+                                       "trades":  2,
+                                       "losses":  0
+                                   },
+                           "DOT":  {
+                                       "wins":  1,
+                                       "pnl":  -608.57,
+                                       "trades":  6,
+                                       "losses":  5
+                                   },
+                           "BTC":  {
+                                       "wins":  1,
+                                       "pnl":  -96.43,
+                                       "trades":  4,
+                                       "losses":  3
+                                   },
+                           "ETH":  {
+                                       "wins":  4,
+                                       "pnl":  1278.85,
+                                       "trades":  4,
+                                       "losses":  0
+                                   },
+                           "LTC":  {
+                                       "wins":  0,
+                                       "pnl":  -189.02,
+                                       "trades":  1,
+                                       "losses":  1
+                                   }
+                       },
+    "final_capital":  10540.68,
+    "winning_trades":  10,
+    "avg_loss":  187.27,
+    "initial_capital":  10000,
+    "largest_win":  406.23,
+    "strategy":  "Pattern-Based: RSI Oversold/Overbought + Momentum + Volume",
+    "signals_generated":  26,
+    "avg_win":  353.71,
+    "total_trades":  26,
+    "losing_trades":  16,
+    "win_rate":  0.385,
+    "largest_loss":  -211.24
+}
