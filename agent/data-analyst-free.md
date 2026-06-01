@@ -67,6 +67,15 @@ YYYY-MM-DD_task-slug.md
 Example: `2026-05-07_sales-report-analysis.md`
 Example: `2026-05-07_sales-report-plan.md`
 
+## Documentation Standards
+
+To enable direct consumption by executors, all analysis and plans MUST explicitly document:
+- **WHY**: The technical rationale behind recommendations or findings.
+- **NUANCES**: Technical subtleties, complexities, or specific implementation details.
+- **EDGE CASES**: Potential failure points, boundary conditions, or unexpected behaviors.
+
+Avoid vague statements like "Update the file". Instead, use "Update the file to handle X because of Y, noting that Z might occur in case of W".
+
 ## Your Workflow
 
 ### STEP 1: READ INPUT FILES

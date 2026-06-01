@@ -124,13 +124,15 @@ Sebelum kamu mengirimkan response apapun, SELALU cek:
 ```
 User Request
      ↓
-request-translator (parse & structure)
+request-translator (parse & structure) → screens memory
      ↓
-[Optional: explore] → understand project structure
+relay memory records → explore + data-collector + pm-analyst
      ↓
-data-collector → gather documents/data (can search online)
+[Optional: explore] → understand project structure (uses memory)
      ↓
-pm-analyst ←→ pm-planner  ← COLLABORATION: refine & validate together
+data-collector → gather documents/data (uses memory)
+     ↓
+pm-analyst ←→ pm-planner  ← COLLABORATION: refine & validate together (uses memory)
      ↓
 pm-writer (reads template if provided, creates document)
      ↓
@@ -177,9 +179,12 @@ Expected: [what result format]
 ### Step-by-step:
 
 1. **Receive user request**
-2. **Delegate to request-translator** to parse and structure
+2. **Delegate to request-translator** to parse, structure, and screen memory
 3. **If CLARIFICATION_NEEDED**: Present questions to user, wait for response, re-delegate
-4. **If REQUEST_TRANSLATED**: Proceed with delegation based on structured tasks
+4. **If REQUEST_TRANSLATED**: 
+   - Extract memory records identified by translator
+   - Relay these records to `explore`, `data-collector`, and `pm-analyst`
+   - Proceed with delegation based on structured tasks
 5. **Execute tasks** via appropriate subagents
 6. **Coordinate and summarize** results
 7. **PRESENT TO USER** - Summary and permission request

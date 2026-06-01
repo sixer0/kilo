@@ -58,6 +58,17 @@ Analyze the request for:
 - **Constraints**: Any explicit/implicit requirements
 - **Completeness**: Is enough info provided?
 
+### STEP 2.5: MEMORY SCREENING
+Screen recorded memory for potential relevance:
+- **Index**: Read `MEMORY.md` to find relevant project context or previous decisions.
+- **References**: Search `memory/refs/` for deep-dives or technical patterns related to the task.
+- **Archives**: Check `memory/tasks/` for similar past tasks or compaction snapshots.
+- **Goal**: Identify records that could speed up the process or prevent repeating past mistakes.
+
+#### Memory Screening Result:
+- **Relevant Records**: List paths to relevant memory files and a brief reason why.
+- **No Relevant Records**: State if no relevant memory was found.
+
 #### Multi-Document Task Parsing
 
 When user request involves multiple documents:
@@ -193,6 +204,11 @@ REQUEST_TRANSLATED
 ## Task File
 ~/.config/kilo/output/tasks/YYYY-MM-DD_task-slug.md
 
+## Relevant Memory Records
+- [path/to/memory_ref.md]: [brief reason]
+- [path/to/task_archive.md]: [brief reason]
+- (or "None")
+
 ## Structured Tasks
 | Step | Task | Agent | Expected Output |
 |------|------|-------|----------------|
@@ -228,23 +244,36 @@ When the task involves multiple documents, include document references and depen
 
 ## Agent Selection Guide
 
-| Request Type | Use Agent(s) |
-|--------------|--------------|
-| Explore project structure | `explore` → writes to `output/explore/` |
-| Gather code/context | `data-collector` → writes to `output/collector/` |
-| Analyze image content | `image-analyst` |
-| Analyze requirements/plan | `pm-analyst` / `data-analyst` → reads task file + explore/collector outputs |
-| Write/edit code | `coder-execution` |
-| Review/verify code | `verifier` |
-| Security scan | `security-review` |
-| Generate tests | `test-expert` |
-| Create/edit images | `image-specialist` |
-| Read documents | `document-reader` |
-| Create documents | `document-writer` → reads task file + analysis |
-| Convert document formats | `document-converter` |
-| Git operations | `git-specialist` |
-| Docker operations | `docker-specialist` |
-| Database inspection | `database-specialist` |
+| Domain | Request Type | Use Agent(s) | Notes |
+| :--- | :--- | :--- | :--- |
+| **Orchestration** | Global / Cross-Domain | `master-controller` | Primary entry point for Dev tasks |
+| | Project Management | `pm-controller` | Coordinates PM workflow |
+| | Document Workflow | `document-controller` | Coordinates doc lifecycle |
+| | Trading System | `trading-controller` | Coordinates trading operations |
+| **Discovery** | Project Structure | `explore` | Maps directories & entry points |
+| | Context Gathering | `data-collector` | Collects code, docs, & web data |
+| | Image Analysis | `image-analyst` | Extracts info from images |
+| **Analysis** | Technical/Req Analysis | `data-analyst` | Requirements, plans, & technical a-priori |
+| | PM Analysis | `pm-analyst` | Scope, constraints, & PM requirements |
+| | Document Analysis | `document-analyst` | Doc structure & content analysis |
+| | Market/Tech Analysis | `technical-analysis-agent` | Trading technical analysis |
+| **Execution** | Code Implementation | `coder-execution` | Write/edit production code |
+| | Document Creation | `document-writer` | Create PDF/DOCX/XLSX |
+| | Trade Execution | `trade-executor-agent` | Execute market orders |
+| | Git Operations | `git-specialist` | Commits, branches, & merges |
+| | Infra/DB Ops | `docker-specialist`, `database-specialist` | Containers & DB queries |
+| | Content Writing | `pm-writer` | Create PM reports & docs |
+| **Verification** | Code/Logic Review | `verifier` | Syntax, logic, & regression checks |
+| | PM Verification | `pm-verifier` | Validate PM deliverables |
+| | Doc Review | `document-reviewer` | Proofread & quality check docs |
+| | Security Scan | `security-review` | Vulnerability scanning |
+| | Test Generation | `test-expert` | Unit test creation & strategy |
+| | Trade Validation | `signal-verification-agent`, `risk-assessment-agent` | Verify signals & risk limits |
+| **Utilities** | Doc Processing | `document-reader`, `document-converter` | Read & convert office formats |
+| | Asset Creation | `image-specialist` | Image creation & editing |
+| | Trading Data | `market-data-agent`, `market-adapter-agent` | Ingest real-time market data |
+| | Trading Monitor | `portfolio-monitor-agent`, `notification-agent` | Track PnL & send alerts |
+| | System Testing | `demo-tester-agent` | Simulate user flows/UAT |
 
 ## Input Flow for Analyst Agents
 

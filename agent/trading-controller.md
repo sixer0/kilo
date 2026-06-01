@@ -393,9 +393,12 @@ Expected: {success, order_id, execution_price}
 ## Step-by-step Orchestration
 
 1. **Receive user request** (e.g., "Trade BTCUSDT on Bybit")
-2. **Delegate to request-translator** to parse and structure
+2. **Delegate to request-translator** to parse, structure, and screen memory
 3. **If CLARIFICATION_NEEDED**: Present questions to user, wait for response, re-delegate
-4. **If REQUEST_TRANSLATED**: Proceed with delegation based on structured tasks
+4. **If REQUEST_TRANSLATED**: 
+   - Extract memory records identified by translator
+   - Relay these records to appropriate sub-agents (MarketDataAgent, TechnicalAnalysisAgent, etc.)
+   - Proceed with delegation based on structured tasks
 5. **Execute workflow** via appropriate subagents
 6. **Coordinate and summarize** results
 7. **PRESENT TO USER** - Trading Decision Summary and permission request

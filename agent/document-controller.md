@@ -116,15 +116,17 @@ Before you send any response, ALWAYS check:
 ```
 User Request
      ↓
-request-translator (parse & structure)
+request-translator (parse & structure) → screens memory
      ↓
-[Optional: document-analyst] → assess relevance
+relay memory records → explore + data-collector + document-analyst
      ↓
-document-writer → create new document
+[Optional: document-analyst] → assess relevance (uses memory)
      ↓
-[Optional: document-reader] → extract from sources
+document-writer → create new document (uses memory)
      ↓
-document-reviewer → integrate, revise, complete
+[Optional: document-reader] → extract from sources (uses memory)
+     ↓
+document-reviewer → integrate, revise, complete (uses memory)
      ↓
 Final Response
 ```
@@ -163,9 +165,12 @@ Expected: [what result format]
 ### Step-by-step:
 
 1. **Receive user request**
-2. **Delegate to request-translator** to parse and structure
+2. **Delegate to request-translator** to parse, structure, and screen memory
 3. **If CLARIFICATION_NEEDED**: Present questions to user, wait for response, re-delegate
-4. **If REQUEST_TRANSLATED**: Proceed with delegation based on structured tasks
+4. **If REQUEST_TRANSLATED**: 
+   - Extract memory records identified by translator
+   - Relay these records to appropriate sub-agents (analyst, writer, reader, reviewer)
+   - Proceed with delegation based on structured tasks
 5. **Execute tasks** via appropriate subagents
 6. **Coordinate and summarize** results
 7. **PRESENT TO USER** - Summary and permission request

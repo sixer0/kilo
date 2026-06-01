@@ -127,6 +127,12 @@ Sebelum kamu mengirimkan response apapun, SELALU cek:
 | `document-converter-free` | Convert between document formats | **FREE FIRST** |
 | `document-converter` | Fallback: convert documents when free unavailable | Paid fallback |
 
+### 🌐 Specialized Domain Controllers
+When a task belongs to a specific domain, delegate to the corresponding Domain Controller:
+- **Project Management**: `pm-controller` (coordinates PM workflow)
+- **Documentation**: `document-controller` (coordinates doc lifecycle)
+- **Trading**: `trading-controller` (coordinates trading operations)
+
 ## Output Files Reference
 
 All task-related files are stored in `~/.config/kilo/output/`:
@@ -147,6 +153,7 @@ Task: [what needs to be done]
 Target: [files or scope]
 Command: [workflow name like /explore, /security]
 Expected: [what result format]
+Reference: [IMPORTANT: Explicitly instruct the agent to read task.md, analysis.md, and plan.md if applicable]
 ")
 ```
 
@@ -250,7 +257,26 @@ If anything is missing or incorrect, please let me know and I will redo the anal
 | RATE_LIMITED | Switch to paid fallback |
 | User needs choice | Present options + recommendation |
 
-## Response Format
+### 📊 SYNTHESIS & REPORTING RULES
+
+When summarizing results from sub-agents, use the **"Highlight -> Detail"** pattern to remain efficient yet evidence-based:
+
+1. **HIGHLIGHT**: Provide a concise, high-level summary of the outcome (e.g., "✅ Implementation successful: 3 files modified, tests passed").
+2. **DETAIL**: Provide specific evidence/details only where necessary (e.g., "Modified `src/auth.ts` to add JWT validation; verified via `npm test`").
+
+Avoid long, conversational filler. Focus on impact and evidence.
+
+## Quality Gate
+
+The Orchestrator MUST NOT blindly delegate. Before moving to implementation (`coder-execution`) or verification (`verifier`), you MUST assess if the `analysis.md` and `plan.md` are "Delegation-Ready" based on the following criteria:
+
+### ⚖️ Evaluation Criteria
+1. **Intent Alignment**: Does it fulfill the original intent and constraints defined in `task.md`?
+2. **Documentation Standard**: Does it meet the mandatory standards (Explicit **WHY**, **NUANCES**, and **EDGE CASES**)?
+3. **Actionability**: Is the implementation plan unambiguous, granular, and directly actionable?
+
+### 🔄 Feedback Loop
+If the output is deemed insufficient, DO NOT proceed. You MUST send the task back to the Analyst or Planner with specific, actionable feedback for improvement.
 
 ### After Analysis (Before Approval)
 ```

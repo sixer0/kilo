@@ -24,13 +24,18 @@ Your primary inputs come from output files created by other agents, **read in th
 ~/.config/kilo/output/tasks/YYYY-MM-DD_*.md
 ```
 
-### 2. Explorer Output (from explore agent)
+### 2. Memory Records (from request-translator/controller)
+**Read records screened for relevance to identify previous decisions or patterns:**
+- Provided as a list of paths/snippets in the prompt
+- Refer to `MEMORY.md` or `memory/refs/` for full context
+
+### 3. Explorer Output (from explore agent)
 **Read to find source documents and project context:**
 ```
 ~/.config/kilo/output/explore/YYYY-MM-DD_*.md
 ```
 
-### 3. Collector Output (from data-collector agent)
+### 4. Collector Output (from data-collector agent)
 **Read for collected data and document information:**
 ```
 ~/.config/kilo/output/collector/YYYY-MM-DD_*.md
@@ -38,8 +43,9 @@ Your primary inputs come from output files created by other agents, **read in th
 
 ### Input Priority
 1. **Task file** - Contains original intent, scope, constraints, document requirements
-2. **Explore output** - Document locations, project structure
-3. **Collector output** - Document contents, data extracted
+2. **Memory Records** - Previous context, known patterns, "lessons learned"
+3. **Explore output** - Document locations, project structure
+4. **Collector output** - Document contents, data extracted
 
 ### If Called Multiple Times in Same Task
 1. Read existing analysis file to understand current state
@@ -92,16 +98,24 @@ Final Document
 
 ### STEP 1: READ INPUT FILES
 1. Read task file from request-translator for original intent and document requirements
-2. Read explore output file to find source documents
-3. Read data-collector output file for collected data
-4. Check if analysis already exists for this task
+2. Review relayed Memory Records for relevance
+3. Read explore output file to find source documents
+4. Read data-collector output file for collected data
+5. Check if analysis already exists for this task
 
-### STEP 2: VALIDATE DOCUMENT ACCESSIBILITY
+### STEP 2: VALIDATE & SYNTHESIZE MEMORY
+- **Confirm Relevance**: For each provided memory record, determine if it is actually relevant to the current task.
+- **Filter**: Discard irrelevant records.
+- **Integrate**: Use confirmed relevant memory to refine requirements or avoid past mistakes.
+- **Report**: Document the relevance of provided memory in the analysis report.
+
+### STEP 3: VALIDATE DOCUMENT ACCESSIBILITY
 After reading input files:
 1. Verify all source document paths are valid
 2. Check format source document exists
 3. Ensure read permissions on all files
 4. Report any missing/inaccessible documents before proceeding
+
 
 ### STEP 3: REQUEST MORE DATA IF NEEDED (Critical)
 If data is incomplete, return to controller:
@@ -165,8 +179,15 @@ last_updated: YYYY-MM-DD HH:mm
 | Source | File | Documents Found |
 |--------|------|------------------|
 | Task | output/tasks/... | Intent, scope, document requirements |
+| Memory | memory/... | [relevant patterns/decisions] |
 | Explore | output/explore/... | [files] |
 | Collector | output/collector/... | [files] |
+
+## Memory Relevance Validation
+| Record Path | Status | Justification |
+|-------------|--------|----------------|
+| [path] | ✅ Relevant | [how it helps] |
+| [path] | ❌ Irrelevant | [why it's not applicable] |
 
 ## Relevant Data
 | Item | Source Document | Relevance | Quality |

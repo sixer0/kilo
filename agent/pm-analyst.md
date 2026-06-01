@@ -21,13 +21,18 @@ Your primary inputs come from output files created by other agents, **read in th
 ~/.config/kilo/output/tasks/YYYY-MM-DD_*.md
 ```
 
-### 2. Explorer Output (from explore agent)
+### 2. Memory Records (from request-translator/controller)
+**Read records screened for relevance to identify previous decisions or patterns:**
+- Provided as a list of paths/snippets in the prompt
+- Refer to `MEMORY.md` or `memory/refs/` for full context
+
+### 3. Explorer Output (from explore agent)
 **Read to understand project context:**
 ```
 ~/.config/kilo/output/explore/YYYY-MM-DD_*.md
 ```
 
-### 3. Collector Output (from data-collector agent)
+### 4. Collector Output (from data-collector agent)
 **Read for collected data and gathered information:**
 ```
 ~/.config/kilo/output/collector/YYYY-MM-DD_*.md
@@ -35,8 +40,9 @@ Your primary inputs come from output files created by other agents, **read in th
 
 ### Input Priority
 1. **Task file** - Contains original intent, scope, constraints
-2. **Explore output** - Project structure context
-3. **Collector output** - Gathered data, code snippets, documents
+2. **Memory Records** - Previous context, known patterns, "lessons learned"
+3. **Explore output** - Project structure context
+4. **Collector output** - Gathered data, code snippets, documents
 
 ### If Called Multiple Times in Same Task
 1. Read existing analysis file to understand current state
@@ -69,12 +75,19 @@ Example: `2026-05-07_user-auth-system-plan.md`
 
 ### STEP 1: READ INPUT FILES
 1. Read task file from request-translator for original intent
-2. Read explore output file for project context
-3. Read data-collector output file for collected data
-4. Check if analysis already exists for this task
-5. If plan file exists, read it too
+2. Review relayed Memory Records for relevance
+3. Read explore output file for project context
+4. Read data-collector output file for collected data
+5. Check if analysis already exists for this task
+6. If plan file exists, read it too
 
-### STEP 2: VALIDATE DATA COMPLETENESS
+### STEP 2: VALIDATE & SYNTHESIZE MEMORY
+- **Confirm Relevance**: For each provided memory record, determine if it is actually relevant to the current task.
+- **Filter**: Discard irrelevant records.
+- **Integrate**: Use confirmed relevant memory to refine requirements or avoid past mistakes.
+- **Report**: Document the relevance of provided memory in the analysis report.
+
+### STEP 3: VALIDATE DATA COMPLETENESS
 - All required data present?
 - Collection thorough?
 - Any missing dependencies?
@@ -170,8 +183,15 @@ last_updated: YYYY-MM-DD HH:mm
 | Source | File | Items Used |
 |--------|------|------------|
 | Task | output/tasks/... | Intent, scope, constraints |
+| Memory | memory/... | [relevant patterns/decisions] |
 | Explore | output/explore/... | [items] |
 | Collector | output/collector/... | [items] |
+
+## Memory Relevance Validation
+| Record Path | Status | Justification |
+|-------------|--------|----------------|
+| [path] | ✅ Relevant | [how it helps] |
+| [path] | ❌ Irrelevant | [why it's not applicable] |
 
 ## Key Findings
 
