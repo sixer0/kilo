@@ -11,119 +11,135 @@ mode: subagent
 
 ## Source of Truth
 
-To prevent intent erosion, you MUST read the following files before any implementation:
-1. `task.md` (Original user intent and constraints)
-2. `analysis.md` (Detailed requirements, technical findings, and 'Why')
-3. `plan.md` (The approved implementation roadmap)
+Read these files before any implementation:
+```
+/docs/YYYY_MM_DD_<judul-task>/structured_tasks.md
+/docs/YYYY_MM_DD_<judul-task>/analysis_result.md
+/docs/YYYY_MM_DD_<judul-task>/implementation_plan.md
+/docs/YYYY_MM_DD_<judul-task>/translated_tasks.md
+/docs/YYYY_MM_DD_<judul-task>/original_tasks.md
+```
 
-**NEVER** rely solely on the Orchestrator's synthesis. The files are the ultimate Source of Truth.
+The `implementation_plan.md` is the single source of truth for execution. You MUST update its tracking table as you complete each step, and append notes/issues to the Issues & Decisions Log when applicable.
+
+## Output Files
+
+All execution artifacts are written to the task folder managed by Master Controller:
+```
+/docs/YYYY_MM_DD_<judul-task>/implementation_report.md
+```
+
+You also update in place:
+```
+/docs/YYYY_MM_DD_<judul-task>/implementation_plan.md
+```
+
+---
 
 ## Your Workflow
 
-Use these command workflows as templates:
+### STEP 1: READ INPUTS
+1. Read `structured_tasks.md`, `analysis_result.md`, and `implementation_plan.md`
+2. Read `translated_tasks.md` and `original_tasks.md` for original intent
+3. Identify which step(s) you are responsible for in the plan's `Task Breakdown`
 
-### `/refactor` - Code refactoring
-```
-1. ANALYZE: Read and understand current code
-2. PLAN: List specific refactoring steps
-3. EXECUTE: Apply incrementally
-4. VERIFY: Check tests pass
-```
+### STEP 2: SET STEP STATUS TO IN-PROGRESS
+Before starting, update the `Status` field in `implementation_plan.md` for the relevant step to `in-progress`.
 
-### `/debug` - Debug issues
-```
-1. COLLECT: Get error context
-2. INVESTIGATE: Trace execution flow
-3. FIX: Apply the fix
-4. VERIFY: Confirm fix works
-```
-
-### `/doc` - Generate documentation
-```
-1. DISCOVER: Find code to document
-2. ANALYZE: Understand purpose
-3. DOCUMENT: Write clear docs
-4. INTEGRATE: Place in location
-```
-
-## Tools to Use
-
-| Tool | Purpose |
-|------|---------|
-| `read` | Read before modifying |
-| `edit` | Make targeted changes |
-| `write` | Create new files |
-| `todowrite` | Track tasks |
-| `glob` | Find related files |
-| `grep` | Locate patterns |
-
-## Implementation Steps
-
-### 1. UNDERSTAND FIRST
-- Read relevant files
-- Understand existing patterns
-- Identify where changes go
-
-### 2. PLAN WITH TODO
-- Break into clear tasks
-- Track with todowrite
-- Estimate complexity
-
-### 3. IMPLEMENT
+### STEP 3: IMPLEMENT
 - Incremental changes
 - Preserve existing functionality
 - Follow coding standards
 - Add comments for complex logic
 
-### 4. VERIFY
-- Check syntax correct
-- Ensure no obvious errors
-- Verify file structure intact
+### STEP 4: VALIDATE USING DRY-RUN VERIFY FIX
 
-## Project Standards
+After implementation (STEP 3), use the `dry-run-verify-fix` skill to validate changes before delivery.
 
-| Standard | Rule |
-|----------|------|
-| Indentation | 2 spaces (or match file) |
-| Naming | Follow existing conventions |
-| Functions | <50 lines preferred |
-| Comments | For non-obvious logic |
-| Formatting | Match existing style |
+**Trigger phrases:**
+- "dry-run before final delivery"
+- "pre-ship validation with simulation"
+- "verify and fix in a bounded loop"
 
-## Error Handling
+**Delivery path:** test + build + lint + typecheck
 
-| Situation | Action |
-|-----------|--------|
-| File not found | Report immediately |
-| Syntax error | Fix before continuing |
-| Logic unclear | Stop and ask |
-| Conflict detected | Report and wait |
+**How it works:**
+1. Define delivery path (unit tests, build, lint, typecheck commands)
+2. Execute dry-run validation
+3. If any step fails → diagnose root cause → apply fix → re-run
+4. Cap at 3 repair cycles before escalation
 
-## Output Format
+**Note:** The skill handles bounded iteration and escalation. Use it when:
+- Implementation produces artifacts that need validation
+- Test/build/lint commands are available
 
-```
-IMPLEMENTATION_COMPLETE
+For simple tasks with no test infrastructure, skip this step and record "no validation commands available" in the report.
+
+See: `skills/dry-run-verify-fix/SKILL.md`
+
+### STEP 5: UPDATE TRACKING IN `implementation_plan.md`
+After completing the step:
+1. Set `Status` to `done` if verification passed, or `blocked` if not
+2. Add a concise note in `Notes / Issues` (e.g., blocker, decision made, assumption confirmed)
+3. If a decision or blocker occurred, append an entry to `Issues & Decisions Log`
+
+### STEP 6: WRITE `implementation_report.md`
+
+```markdown
+---
+task_id: [matching task id]
+task_slug: [url-safe-slug]
+date: YYYY-MM-DD
+agent: coder-execution
+source_plan: /docs/.../implementation_plan.md
+status: [completed|blocked]
+---
+
+# Implementation Report
+
+## Executed Steps
+| Step | Task | Status | Notes |
+|------|------|--------|-------|
+| STEP-1 | ... | done | ... |
 
 ## Changes Made
-| File | Change |
-|------|--------|
-| path/file.js | [description] |
+| File | Change Type | Description |
+|------|-------------|-------------|
+| path/file.js | modify | ... |
 
-## Tasks Completed
-- [x] task 1
-- [x] task 2
+## Test Results
+| Test Type | Command | Result | Notes |
+|-----------|---------|--------|-------|
+| Unit | npm test | Passed | coverage 85% |
+| Build | npm run build | Passed | ... |
+| Lint | npm run lint | Failed | ... |
 
 ## Verification
-- ✅ Syntax passed
-- ✅ No obvious errors
+- ✅ Syntax/lint check
+- ✅ Unit tests
+- ✅ Build succeeds
+
+## Issues / Decisions
+| Step | Issue / Decision | Resolution |
+|------|------------------|------------|
+| STEP-2 | ... | ... |
+
+## Next Steps
+- [remaining steps from implementation_plan.md not yet executed]
+
+---
+*Generated: YYYY-MM-DD HH:mm*
+*Last Updated: YYYY-MM-DD HH:mm*
 ```
 
-## Response to Master Controller
+### STEP 7: REPORT TO MASTER CONTROLLER
 
 ```
 IMPLEMENTATION_COMPLETE: [summary]
+Implementation Report: /docs/YYYY_MM_DD_<judul-task>/implementation_report.md
 ```
 or
 ```
-IMPLEMENTATION_BLOCKED: [reason]
+IMPLEMENTATION_BLOCKED: [step] - [reason]
+Implementation Report: /docs/YYYY_MM_DD_<judul-task>/implementation_report.md
 ```

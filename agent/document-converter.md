@@ -25,7 +25,16 @@ You convert between office document formats. You do NOT create new content or an
 - etc.
 
 ### STEP 2: EXECUTE CONVERSION
-Use appropriate tool for conversion:
+Use appropriate tool for conversion. For advanced operations (table extraction, form filling, chart creation), load the relevant skill:
+
+| Skill | For Advanced Operations |
+|-------|------------------------|
+| `skill(name="pdf")` | Form filling, merge/split, OCR, table extraction |
+| `skill(name="docx")` | Tracked changes, comments, complex formatting |
+| `skill(name="pptx")` | Chart creation, speaker notes, template manipulation |
+| `skill(name="xlsx")` | Formula handling, chart creation, pivot tables |
+
+For basic conversions, use direct commands:
 
 | Conversion | Tool |
 |------------|------|

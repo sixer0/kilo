@@ -109,12 +109,22 @@ Confidence: [percentage]
 **3. RE-READ FILES AFTER USER EDITS**
 User may edit files after reviewing. ALWAYS re-read before execution.
 
-**4. CONTEXT MANAGEMENT**
-If conversation context exceeds **160,000 tokens**:
-1. **IMMEDIATELY STOP** current workflow
-2. Request **context compaction** using command `compact`
-3. After compaction done, continue original task
-4. **NEVER** continue task when context is full
+**3.1 CONTEXT MANAGEMENT**
+Jika conversation context melebihi **160,000 tokens**, invoke skill `context-engineering` untuk mengelola context agent.
+
+**Trigger phrases:**
+- "context is too long for the token limit"
+- "compact the conversation history"
+- "manage long-running agent context"
+
+Skill ini menyediakan:
+- Context audit (estimasi token, analisis komposisi)
+- Strategi kompaksi (summarize / prune / restructure / fork / memory file)
+- Verifikasi integritas post-kompaksi
+
+**Catatan:** Selalu dokumentasikan progres ke `/docs/YYYY_MM_DD_<judul-task>/` sebelum kompaksi agar task bisa dilanjutkan setelahnya. **JANGAN PERNAH** melanjutkan task trading ketika context sudah penuh tanpa dokumen progres — terutama untuk open positions dan risk state.
+
+Lihat: `skills/context-engineering/SKILL.md`
 
 ---
 
@@ -266,6 +276,17 @@ END WHILE
 ---
 
 ## User Approval Format (Trading Decision Summary)
+
+Untuk semua user-facing approval gate pada trading decisions, gunakan skill `human-in-loop-gate`.
+
+**Trigger phrases:**
+- "pause for user approval"
+- "require user confirmation"
+- "high-impact decision gate"
+
+**Klasifikasi:** Setiap trade execution adalah HIGH-IMPACT gate (financial impact, real money at risk). User harus explicit approve sebelum TradeExecutorAgent dipanggil.
+
+Lihat: `skills/human-in-loop-gate/SKILL.md`
 
 When presenting a trading opportunity to user:
 
@@ -424,6 +445,42 @@ Expected: {success, order_id, execution_price}
 | EXECUTION_FAILED | Log error, notify user, skip trade |
 | DRAWOWN_LIMIT_REACHED | Halt all trading, notify user immediately |
 | WEBSOCKET_DISCONNECTED | Attempt reconnect, fallback to REST API |
+| TEST_FAILED | Follow Verification & Security Finding Protocol |
+
+### Self-Healing Recovery (via skill)
+
+Ketika sub-agent gagal atau mengembalikan error trading, gunakan skill `self-healing-loop` untuk klasifikasi dan recovery.
+
+| Kondisi Controller | Skill Error Class | Strategi Recovery |
+|---------------------|-------------------|-------------------|
+| RATE_LIMITED | TRANSIENT | Retry dengan backoff (max 3) |
+| Sub-agent BLOCKED | LOGIC | Diagnosa → fix → retry sekali |
+| MARKET_DATA_UNAVAILABLE | RESOURCE | Retry 3x dengan backoff, lalu log + skip |
+| WEBSOCKET_DISCONNECTED | TRANSIENT | Reconnect → fallback ke REST API |
+| EXECUTION_FAILED | UNEXPECTED | Stop → log → notify user |
+| Permission denied (API key) | PERMISSION | Interrupt → notify user (NO retry) |
+| DRAWOWN_LIMIT_REACHED | UNEXPECTED | Stop → log → halt all trading |
+| User needs choice | AMBIGUITY gate | Sajikan opsi + rekomendasi (lihat Approval Flow) |
+
+Lihat: `skills/self-healing-loop/SKILL.md`
+
+## Verification, Security Finding, and Test Failure Protocol
+
+Ketika `verifier`, `security-review`, `demo-tester-agent`, atau `test-expert` melaporkan findings, gunakan protocol berikut:
+
+### Step 1: Assess via `security-review-gate`
+Invoke `security-review-gate` skill untuk structured assessment. Skill ini menghasilkan PASS / CAUTION / FAIL.
+
+### Step 2: Gate for User Decision via `human-in-loop-gate`
+Untuk FAIL atau CAUTION findings, gunakan `human-in-loop-gate`:
+- **Fix now** → re-delegate ke relevant agent dengan specific remediation tasks
+- **Proceed anyway** → record explicit decision di `user_decisions.md` dengan risk acknowledgment
+- **Modify scope** → update plan/state dan re-present
+
+### Step 3: Post-Fix Verification
+Setelah fix, re-run affected verification step sebelum melanjutkan.
+
+Lihat: `skills/security-review-gate/SKILL.md`, `skills/human-in-loop-gate/SKILL.md`
 
 ---
 

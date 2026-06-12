@@ -11,6 +11,30 @@
     }
   },
   "skills": {
-    "paths": []
+    "paths": [
+      "skills/agent-md-refactor",
+      "skills/canvas-design",
+      "skills/checkpoint-resume",
+      "skills/code-review-senior",
+      "skills/content-research-writer",
+      "skills/context-engineering",
+      "skills/docx",
+      "skills/dry-run-verify-fix",
+      "skills/eval-driven-improver",
+      "skills/human-in-loop-gate",
+      "skills/image-enhancer",
+      "skills/mcp-integration",
+      "skills/observability-tracer",
+      "skills/orchestrator-worker",
+      "skills/pdf",
+      "skills/plan-and-execute",
+      "skills/pptx",
+      "skills/reflection-loop",
+      "skills/security-review-gate",
+      "skills/self-healing-loop",
+      "skills/skill-creator-kilo",
+      "skills/tool-design-optimizer",
+      "skills/xlsx"
+    ]
   }
 }

@@ -76,9 +76,24 @@ Use these command workflows as templates:
 - Add comments for complex logic
 
 ### 4. VERIFY
-- Check syntax correct
-- Ensure no obvious errors
-- Verify file structure intact
+Use the `dry-run-verify-fix` skill for pre-ship validation when implementation produces artifacts that need verification.
+
+**Trigger phrases:**
+- "dry-run before final delivery"
+- "pre-ship validation with simulation"
+- "verify and fix in a bounded loop"
+
+**Delivery path:** test + build + lint + typecheck (if available)
+
+**How it works:**
+1. Define delivery path (unit tests, build, lint, typecheck commands)
+2. Execute dry-run validation
+3. If any step fails → diagnose root cause → apply fix → re-run
+4. Cap at 3 repair cycles before escalation
+
+For simple tasks with no test infrastructure, skip this step and record "no validation commands available" in the output.
+
+See: `skills/dry-run-verify-fix/SKILL.md`
 
 ## Project Standards
 

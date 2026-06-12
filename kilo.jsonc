@@ -58,7 +58,7 @@
     // PRIMARY AGENTS - Orchestration & High-level Control
     // ════════════════════════════════════════════════════════════════════════════
     "master-controller": {
-      "model": "google/gemma-4-31b-it",
+      "model": "kilo/minimax/minimax-m2.7",
       "hidden": false,
       "description": "Master control agent for development workflow - highly obedient to rules",
       "mode": "primary",
@@ -67,7 +67,7 @@
       "name": "master-controller"
     },
     "master-controller-free": {
-      "model": "google/gemma-4-26b-a4b-it",
+      "model": "google/gemma-4-31b-it",
       "hidden": false,
       "description": "Master control agent for development workflow (fallback)",
       "mode": "primary",
@@ -80,29 +80,44 @@
     // CORE DEVELOPMENT AGENTS - Analysis, Coding, Testing
     // ════════════════════════════════════════════════════════════════════════════
     "data-analyst": {
-      "model": "google/gemma-4-31b-it",
+      "model": "kilo/minimax/minimax-m3",
       "hidden": true,
       "description": "Data synthesis and analysis agent",
       "mode": "subagent",
       "name": "data-analyst"
     },
     "data-analyst-free": {
-      "model": "google/gemma-4-26b-a4b-it",
+      "model": "kilo/stepfun/step-3.7-flash:free",
       "hidden": true,
       "description": "Fallback: Data analysis when primary rate-limited",
       "mode": "subagent",
       "name": "data-analyst-free"
     },
 
-    "coder-execution": {
+    "senior-code-reviewer": {
+      "model": "kilo/stepfun/step-3.7-flash:free",
+      "hidden": true,
+      "description": "Code reviewer agent with standards",
+      "mode": "subagent",
+      "name": "senior-code-reviewer"
+    },
+    "senior-code-reviewer-free": {
       "model": "google/gemma-4-31b-it",
+      "hidden": true,
+      "description": "Fallback: Code reviewer when primary rate-limited",
+      "mode": "subagent",
+      "name": "senior-code-reviewer-free"
+    },
+
+    "coder-execution": {
+      "model": "kilo/deepseek/deepseek-v4-flash:discounted",
       "hidden": true,
       "description": "Code implementation agent with standards",
       "mode": "subagent",
       "name": "coder-execution"
     },
     "coder-execution-free": {
-      "model": "google/gemma-4-26b-a4b-it",
+      "model": "google/gemma-4-31b-it",
       "hidden": true,
       "description": "Fallback: Code implementation when primary rate-limited",
       "mode": "subagent",
@@ -110,14 +125,14 @@
     },
 
     "verifier": {
-      "model": "kilo/kilo-auto/free",
+      "model": "google/gemma-4-31b-it",
       "hidden": true,
       "description": "Verification and testing agent",
       "mode": "subagent",
       "name": "verifier"
     },
     "verifier-free": {
-      "model": "kilo/openrouter/free",
+      "model": "kilo/kilo-auto/free",
       "hidden": true,
       "description": "Fallback: Verification when primary rate-limited",
       "mode": "subagent",
@@ -125,14 +140,14 @@
     },
 
     "security-review": {
-      "model": "kilo/kilo-auto/free",
+      "model": "kilo/stepfun/step-3.7-flash:free",
       "hidden": true,
       "description": "Security vulnerability scanner",
       "mode": "subagent",
       "name": "security-review"
     },
     "security-review-free": {
-      "model": "kilo/openrouter/free",
+      "model": "kilo/kilo-auto/free",
       "hidden": true,
       "description": "Fallback: Security scan when primary rate-limited",
       "mode": "subagent",
@@ -140,14 +155,14 @@
     },
 
     "test-expert": {
-      "model": "google/gemma-4-31b-it",
+      "model": "kilo/stepfun/step-3.7-flash:free",
       "hidden": true,
       "description": "Test generation and testing strategy expert",
       "mode": "subagent",
       "name": "test-expert"
     },
     "test-expert-free": {
-      "model": "google/gemma-4-26b-a4b-it",
+      "model": "google/gemma-4-31b-it",
       "hidden": true,
       "description": "Fallback: Test generation when primary rate-limited",
       "mode": "subagent",
@@ -158,7 +173,7 @@
     // INFRASTRUCTURE AGENTS - Git, Docker, Database
     // ════════════════════════════════════════════════════════════════════════════
     "git-specialist": {
-      "model": "google/gemma-4-31b-it",
+      "model": "kilo/stepfun/step-3.7-flash:free",
       "hidden": true,
       "description": "Git operations, commit management, branch workflows",
       "mode": "subagent",
@@ -166,7 +181,7 @@
       "name": "git-specialist"
     },
     "git-specialist-free": {
-      "model": "google/gemma-4-26b-a4b-it",
+      "model": "kilo/kilo-auto/free",
       "hidden": true,
       "description": "Fallback: Git operations when primary rate-limited",
       "mode": "subagent",
@@ -192,7 +207,7 @@
     },
 
     "database-specialist": {
-      "model": "google/gemma-4-31b-it",
+      "model": "kilo/stepfun/step-3.7-flash:free",
       "hidden": true,
       "description": "Database inspection, schema analysis, query optimization",
       "mode": "subagent",
@@ -473,11 +488,19 @@
     // UTILITY AGENTS - Free tier, no fallback needed
     // ════════════════════════════════════════════════════════════════════════════
     "request-translator": {
-      "model": "kilo/openrouter/free",
+      "model": "google/gemma-4-31b-it",
       "hidden": true,
       "description": "Translate user requests into structured tasks",
       "mode": "subagent",
       "name": "request-translator"
+    },
+
+    "task-architect": {
+      "model": "google/gemma-4-31b-it",
+      "hidden": true,
+      "description": "Chalange translated task, and create detailed task blueprint",
+      "mode": "subagent",
+      "name": "task-architect"
     },
 
     "explore": {
@@ -489,7 +512,7 @@
     },
 
     "data-collector": {
-      "model": "google/gemma-4-26b-a4b-it",
+      "model": "kilo/kilo-auto/free",
       "hidden": true,
       "description": "Systematic data gathering agent",
       "mode": "subagent",
@@ -503,16 +526,16 @@
       "model": "kilo/kilo-auto/free"
     },
     "plan": {
-      "model": "google/gemma-4-31b-it"
+      "model": "kilo/deepseek/deepseek-v4-flash:discounted"
     },
     "debug": {
-      "model": "google/gemma-4-31b-it"
+      "model": "kilo/stepfun/step-3.7-flash:free"
     },
     "orchestrator": {
-      "model": "google/gemma-4-26b-a4b-it"
+      "model": "kilo/minimax/minimax-m2.7"
     },
     "code": {
-      "model": "google/gemma-4-31b-it"
+      "model": "kilo/stepfun/step-3.7-flash:free"
     },
     "trading-controller": {
       "model": "google/gemma-4-31b-it"
