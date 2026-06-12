@@ -68,6 +68,7 @@ After implementation (STEP 3), use the `dry-run-verify-fix` skill to validate ch
 2. Execute dry-run validation
 3. If any step fails → diagnose root cause → apply fix → re-run
 4. Cap at 3 repair cycles before escalation
+5. If issue persists after cap → **document in Persistent Issues section of `implementation_report.md`** with root cause analysis before escalating
 
 **Note:** The skill handles bounded iteration and escalation. Use it when:
 - Implementation produces artifacts that need validation
@@ -82,8 +83,11 @@ After completing the step:
 1. Set `Status` to `done` if verification passed, or `blocked` if not
 2. Add a concise note in `Notes / Issues` (e.g., blocker, decision made, assumption confirmed)
 3. If a decision or blocker occurred, append an entry to `Issues & Decisions Log`
+4. Also update `status_tasks.md` in the task folder to reflect current progress
 
-### STEP 6: WRITE `implementation_report.md`
+### STEP 6: WRITE `implementation_report.md` (MANDATORY)
+
+You MUST write `implementation_report.md` **after every implementation session**, regardless of success or failure. This is not optional.
 
 ```markdown
 ---
@@ -92,7 +96,7 @@ task_slug: [url-safe-slug]
 date: YYYY-MM-DD
 agent: coder-execution
 source_plan: /docs/.../implementation_plan.md
-status: [completed|blocked]
+status: [completed|blocked|partial]
 ---
 
 # Implementation Report
@@ -118,6 +122,13 @@ status: [completed|blocked]
 - ✅ Syntax/lint check
 - ✅ Unit tests
 - ✅ Build succeeds
+
+## Persistent Issues
+| Issue | Attempts | Root Cause | Current Status | Blocking? |
+|-------|----------|------------|----------------|-----------|
+| [description] | [N] | [analysis] | [unresolved / partial / workaround] | [yes/no] |
+
+*Any issue that remains unresolved after the dry-run-verify-fix cap (3 repair cycles) MUST be documented here with root cause analysis and current status.*
 
 ## Issues / Decisions
 | Step | Issue / Decision | Resolution |

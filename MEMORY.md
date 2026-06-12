@@ -1,12 +1,29 @@
 # Global Memory Index
 
-## Session Details (2026-05-18)
-- **Current Time:** 2026-05-18T10:14:35+07:00
-- **Working Directory:** D:\Portfolio\AI-Agent-Preview
-- **Workspace Root:** D:\Portfolio\AI-Agent-Preview
+## Current Project (2026-06-12)
+- **Project:** Comprehensive E-commerce App
+- **Path:** E:\Projects\e-commerse
+- **Stack:** NestJS + Next.js 15 + Prisma + SQLite + Radix UI + Tailwind v4
+- **Phase:** Phase 2 COMPLETE | Phase 3 PENDING
 
 ## Recent Activities
-- **Backend Modularization (2026-05-19)**:
+
+### E-commerce App Development (2026-06-12)
+- **Phase 0 (Foundation):** Monorepo, NestJS backend skeleton, Next.js frontend, Prisma + SQLite, design system primitives, CI/CD — COMPLETE (`f2e17b9`)
+- **Phase 1 (Auth & Users):** JWT RS256 auth, refresh rotation, argon2id, profile/addresses, frontend auth pages — COMPLETE (`6ee29fa`, `85b8364`)
+- **Phase 2 (Catalog & Search):** Products/Categories/Brands CRUD, FTS5 search, Reviews module, Admin catalog management, frontend catalog pages/components — COMPLETE (`7c15c59`)
+- **Phase 2 Code Review Fixes (ALL RESOLVED):**
+  - Admin controllers refactored to service layer (AdminCategoriesService, AdminBrandsService)
+  - Reviews cursor pagination refactored from offset-style to keyset (created cursor-pagination.util.ts)
+  - parseJsonField extracted to common/utils/json.util.ts
+  - FtsSyncService registered in CatalogModule, reindex endpoint added
+  - Reviews moderation uses @Roles('ADMIN') decorator
+  - Validation throws BadRequestException instead of plain objects
+  - Schema reconciled via migration (added metaTitle, metaDescription, isFeatured, sessionId, isPrimary, isVerifiedPurchase, PROCESSING/CANCELLED PaymentStatus)
+  - CategoryTreeEditor refactored (extracted CategoryFormModal, ReorderControls)
+  - FTS error handling now logs warnings
+
+### Previous Sessions...
     - Transformed AI Agent Preview backend into a reusable service for VPS/Kiloclaw.
     - Implemented Provider pattern for Runtime, Storage, and Auth.
     - Added Hybrid Auth (JWT + API Key) and Swagger documentation.

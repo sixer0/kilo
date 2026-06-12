@@ -155,14 +155,14 @@
     },
 
     "test-expert": {
-      "model": "kilo/stepfun/step-3.7-flash:free",
+      "model": "kilo/deepseek/deepseek-v4-flash:discounted",
       "hidden": true,
       "description": "Test generation and testing strategy expert",
       "mode": "subagent",
       "name": "test-expert"
     },
     "test-expert-free": {
-      "model": "google/gemma-4-31b-it",
+      "model": "kilo/kilo-auto/free",
       "hidden": true,
       "description": "Fallback: Test generation when primary rate-limited",
       "mode": "subagent",
@@ -190,7 +190,7 @@
     },
 
     "docker-specialist": {
-      "model": "google/gemma-4-31b-it",
+      "model": "kilo/stepfun/step-3.7-flash:free",
       "hidden": true,
       "description": "Docker operations, container management, compose workflows",
       "mode": "subagent",
@@ -198,7 +198,7 @@
       "name": "docker-specialist"
     },
     "docker-specialist-free": {
-      "model": "google/gemma-4-26b-a4b-it",
+      "model": "kilo/kilo-auto/free",
       "hidden": true,
       "description": "Fallback: Docker operations when primary rate-limited",
       "mode": "subagent",
@@ -215,7 +215,7 @@
       "name": "database-specialist"
     },
     "database-specialist-free": {
-      "model": "google/gemma-4-26b-a4b-it",
+      "model": "kilo/kilo-auto/free",
       "hidden": true,
       "description": "Fallback: Database operations when primary rate-limited",
       "mode": "subagent",
@@ -227,7 +227,7 @@
     // PM AGENTS - Project Management, Business Analysis, Requirements
     // ════════════════════════════════════════════════════════════════════════════
     "pm-controller": {
-      "model": "google/gemma-4-31b-it",
+      "model": "kilo/stepfun/step-3.7-flash:free",
       "hidden": false,
       "description": "PM workflow orchestrator - coordinates planning, analysis, and document creation",
       "mode": "primary",
@@ -236,7 +236,7 @@
       "steps": 50
     },
     "pm-controller-free": {
-      "model": "google/gemma-4-26b-a4b-it",
+      "model": "kilo/kilo-auto/free",
       "hidden": false,
       "description": "Fallback: PM workflow orchestrator when primary rate-limited",
       "mode": "primary",
@@ -255,7 +255,7 @@
     },
 
     "pm-analyst": {
-      "model": "google/gemma-4-31b-it",
+      "model": "kilo/stepfun/step-3.7-flash:free",
       "hidden": true,
       "description": "Analyze requirements, documents, and data for PM/BA tasks",
       "mode": "subagent",
@@ -263,7 +263,7 @@
       "name": "pm-analyst"
     },
     "pm-analyst-free": {
-      "model": "google/gemma-4-26b-a4b-it",
+      "model": "kilo/kilo-auto/free",
       "hidden": true,
       "description": "Fallback: PM/BA analysis when primary rate-limited",
       "mode": "subagent",
@@ -290,7 +290,7 @@
     },
 
     "pm-planner": {
-      "model": "google/gemma-4-31b-it",
+      "model": "kilo/stepfun/step-3.7-flash:free",
       "hidden": true,
       "description": "Create project plans, timelines, and roadmaps for PM tasks",
       "mode": "subagent",
@@ -298,7 +298,7 @@
       "name": "pm-planner"
     },
     "pm-planner-free": {
-      "model": "google/gemma-4-26b-a4b-it",
+      "model": "kilo/kilo-auto/free",
       "hidden": true,
       "description": "Fallback: Project planning when primary rate-limited",
       "mode": "subagent",
@@ -307,7 +307,7 @@
     },
 
     "pm-verifier": {
-      "model": "google/gemma-4-31b-it",
+      "model": "kilo/stepfun/step-3.7-flash:free",
       "hidden": true,
       "description": "Verify documents, check completeness, quality, and feasibility",
       "mode": "subagent",
@@ -315,7 +315,7 @@
       "name": "pm-verifier"
     },
     "pm-verifier-free": {
-      "model": "google/gemma-4-26b-a4b-it",
+      "model": "kilo/kilo-auto/free",
       "hidden": true,
       "description": "Fallback: Document verification when primary rate-limited",
       "mode": "subagent",
@@ -324,7 +324,7 @@
     },
 
     "pm-writer": {
-      "model": "google/gemma-4-31b-it",
+      "model": "kilo/deepseek/deepseek-v4-flash:discounted",
       "hidden": true,
       "description": "Create documents, reports, and presentations for PM/BA tasks",
       "mode": "subagent",
@@ -332,7 +332,7 @@
       "name": "pm-writer"
     },
     "pm-writer-free": {
-      "model": "google/gemma-4-26b-a4b-it",
+      "model": "kilo/kilo-auto/free",
       "hidden": true,
       "description": "Fallback: PM document creation when primary rate-limited",
       "mode": "subagent",
@@ -344,7 +344,7 @@
     // IMAGE AGENTS - Creation, Editing, Analysis
     // ════════════════════════════════════════════════════════════════════════════
     "image-specialist": {
-      "model": "google/gemma-4-31b-it",
+      "model": "kilo/stepfun/step-3.7-flash:free",
       "hidden": true,
       "description": "Image creation, editing, manipulation (canvas-design, image-enhancer skills)",
       "mode": "subagent",
@@ -352,7 +352,7 @@
       "name": "image-specialist"
     },
     "image-specialist-free": {
-      "model": "google/gemma-4-26b-a4b-it",
+      "model": "google/gemma-4-31b-it",
       "hidden": true,
       "description": "Fallback: Image operations when primary rate-limited",
       "mode": "subagent",
@@ -361,7 +361,7 @@
     },
 
     "image-analyst": {
-      "model": "google/gemma-4-26b-a4b-it",
+      "model": "kilo/stepfun/step-3.7-flash:free",
       "hidden": true,
       "description": "Analyze and extract information from images",
       "mode": "subagent",
@@ -372,7 +372,7 @@
     // DOCUMENT AGENTS - Read, Write, Convert, Review, Analyze
     // ════════════════════════════════════════════════════════════════════════════
     "document-controller": {
-      "model": "google/gemma-4-31b-it",
+      "model": "kilo/stepfun/step-3.7-flash:free",
       "hidden": false,
       "description": "Document workflow orchestrator - coordinates review, creation, analysis",
       "mode": "primary",
@@ -381,7 +381,7 @@
       "steps": 50
     },
     "document-controller-free": {
-      "model": "google/gemma-4-26b-a4b-it",
+      "model": "kilo/kilo-auto/free",
       "hidden": false,
       "description": "Fallback: Document workflow orchestrator when primary rate-limited",
       "mode": "primary",
@@ -391,7 +391,7 @@
     },
 
     "document-reader": {
-      "model": "google/gemma-4-31b-it",
+      "model": "kilo/stepfun/step-3.7-flash:free",
       "hidden": true,
       "description": "Read, parse, analyze PDF, DOCX, XLSX, PPTX documents",
       "mode": "subagent",
@@ -399,7 +399,7 @@
       "name": "document-reader"
     },
     "document-reader-free": {
-      "model": "google/gemma-4-26b-a4b-it",
+      "model": "google/gemma-4-31b-it",
       "hidden": true,
       "description": "Fallback: Read documents when primary rate-limited",
       "mode": "subagent",
@@ -408,7 +408,7 @@
     },
 
     "document-writer": {
-      "model": "google/gemma-4-31b-it",
+      "model": "kilo/deepseek/deepseek-v4-flash:discounted",
       "hidden": true,
       "description": "Create and edit PDF, DOCX, XLSX, PPTX documents",
       "mode": "subagent",
@@ -416,7 +416,7 @@
       "name": "document-writer"
     },
     "document-writer-free": {
-      "model": "google/gemma-4-26b-a4b-it",
+      "model": "kilo/kilo-auto/free",
       "hidden": true,
       "description": "Fallback: Write documents when primary rate-limited",
       "mode": "subagent",
@@ -425,7 +425,7 @@
     },
 
     "document-converter": {
-      "model": "google/gemma-4-31b-it",
+      "model": "kilo/stepfun/step-3.7-flash:free",
       "hidden": true,
       "description": "Convert between office document formats",
       "mode": "subagent",
@@ -433,7 +433,7 @@
       "name": "document-converter"
     },
     "document-converter-free": {
-      "model": "google/gemma-4-26b-a4b-it",
+      "model": "kilo/kilo-auto/free",
       "hidden": true,
       "description": "Fallback: Convert documents when primary rate-limited",
       "mode": "subagent",
@@ -442,7 +442,7 @@
     },
 
     "document-reviewer": {
-      "model": "google/gemma-4-31b-it",
+      "model": "kilo/stepfun/step-3.7-flash:free",
       "hidden": true,
       "description": "Review and revise office documents - find issues and fix them directly",
       "mode": "subagent",
@@ -450,7 +450,7 @@
       "name": "document-reviewer"
     },
     "document-reviewer-free": {
-      "model": "google/gemma-4-26b-a4b-it",
+      "model": "kilo/kilo-auto/free",
       "hidden": true,
       "description": "Fallback: Review documents when primary rate-limited",
       "mode": "subagent",
@@ -468,7 +468,7 @@
     },
 
     "document-analyst": {
-      "model": "google/gemma-4-31b-it",
+      "model": "kilo/stepfun/step-3.7-flash:free",
       "hidden": true,
       "description": "Assess document relevance, quality, and fit for purpose",
       "mode": "subagent",
@@ -476,7 +476,7 @@
       "name": "document-analyst"
     },
     "document-analyst-free": {
-      "model": "google/gemma-4-26b-a4b-it",
+      "model": "kilo/kilo-auto/free",
       "hidden": true,
       "description": "Fallback: Assess document relevance when primary rate-limited",
       "mode": "subagent",

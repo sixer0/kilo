@@ -80,6 +80,112 @@ Before starting, update the `Status` field in `implementation_plan.md` for the r
 
 ### STEP 8: WRITE `implementation_report.md`
 
+---
+
+### STEP 8b: WRITE `unit_test_report.md` (MANDATORY — Test Documentation)
+
+You MUST write `unit_test_report.md` **after every test session** to document the test methodology, coverage analysis, and how to run/maintain tests. This file serves as the permanent reference for testing.
+
+Write to: `/docs/YYYY_MM_DD_<judul-task>/unit_test_report.md`
+
+```markdown
+---
+task_id: [matching task id]
+task_slug: [url-safe-slug]
+date: YYYY-MM-DD
+agent: test-expert-free
+status: [completed|partial]
+---
+
+# Unit Test Report
+
+## 1. Test Strategy
+
+### Scope of Testing
+- [What modules/components were tested]
+- [What was intentionally excluded and why]
+
+### Test Framework & Configuration
+- **Framework:** [Jest / Mocha / pytest / JUnit]
+- **Runner:** [command used to run tests]
+- **Coverage Tool:** [Istanbul / pytest-cov / JaCoCo]
+- **Config File:** [path to jest.config / pytest.ini / etc.]
+
+### Test Types Covered
+- [ ] Unit tests
+- [ ] Integration tests
+- [ ] Edge case / boundary tests
+- [ ] Error handling / negative tests
+- [ ] Security / adversarial tests
+- [ ] Input validation tests
+
+## 2. Test Files Summary
+
+| Test File | Source Under Test | Test Count | Coverage (%) | Status |
+|-----------|------------------|------------|--------------|--------|
+| `auth.test.js` | `auth.service.ts` | 8 | 85% | ✅ |
+| `...` | `...` | ... | ... | ... |
+
+## 3. Test Case Inventory
+
+### Module: [Module Name]
+
+| Test Case | Category | Input | Expected | Actual | Status |
+|-----------|----------|-------|----------|--------|--------|
+| should login with valid credentials | Happy Path | valid email + password | 200 + token | 200 + token | ✅ |
+| should reject SQL injection | Security | `' OR 1=1--` | 400 error | 400 error | ✅ |
+| should handle network timeout | Error Handling | timeout mock | 503 error | 503 error | ✅ |
+| ... | ... | ... | ... | ... | ... |
+
+## 4. Coverage Analysis
+
+- **Overall Coverage:** [XX%]
+- **Lines Covered:** [N / M]
+- **Branches Covered:** [N / M]
+- **Functions Covered:** [N / M]
+
+### Uncovered Code (gaps)
+| File | Line(s) | Reason | Remediation |
+|------|---------|--------|-------------|
+| `...` | 42-45 | Error path not triggered | Add mock for service failure |
+| `...` | ... | ... | ... |
+
+## 5. How to Run Tests
+
+```bash
+# Run all unit tests
+npm run test
+
+# Run with coverage
+npm run test:coverage
+
+# Run specific test file
+npx jest path/to/test.file.test.ts
+
+# Run tests in watch mode
+npm run test:watch
+```
+
+## 6. Continuous Integration Notes
+
+- **CI Pipeline:** [GitHub Actions / GitLab CI / Jenkins]
+- **Test Stage Name:** [e.g., `unit-tests`]
+- **Required Status:** All tests must pass before merge
+- **Coverage Gate:** [XX% minimum threshold]
+- **Flaky Tests:** [known flaky tests and their trigger conditions]
+
+## 7. Known Issues / Limitations
+- [Test gap 1]
+- [Flaky test 1]
+- [Environment dependency]
+
+## 8. Recommendations
+- [Improvement suggestion 1]
+- [Improvement suggestion 2]
+
+---
+*Generated: YYYY-MM-DD HH:mm*
+*Last Updated: YYYY-MM-DD HH:mm*
 ```
 ---
 task_id: [matching task id]
@@ -141,9 +247,11 @@ status: [completed|blocked]
 ```
 TEST_GENERATION_COMPLETE: [count] tests generated - [summary]
 Implementation Report: /docs/YYYY_MM_DD_<judul-task>/implementation_report.md
+Test Documentation: /docs/YYYY_MM_DD_<judul-task>/unit_test_report.md
 ```
 or
 ```
 TEST_GENERATION_BLOCKED: [reason]
 Implementation Report: /docs/YYYY_MM_DD_<judul-task>/implementation_report.md
+Test Documentation: /docs/YYYY_MM_DD_<judul-task>/unit_test_report.md
 ```

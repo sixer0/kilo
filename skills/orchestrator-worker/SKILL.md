@@ -62,16 +62,84 @@ orchestration_plan:
 - **Domain:** Split by expertise area (e.g., frontend vs backend, research vs coding)
 - **Phase:** Split by workflow stage (e.g., research → design → implement → test)
 - **Concern:** Split by architectural layer (e.g., data layer, business logic, UI)
+- **Frontend-Backend (API Contract First):** When the work spans both frontend and backend, define the API contract (endpoints, request/response types, error schemas) as a shared prerequisite BEFORE splitting into frontend and backend subtasks. This prevents integration failures caused by mismatched assumptions.
 
 **Rules:**
 - Each subtask must be independently verifiable
 - Dependencies must form a DAG (no circular deps)
 - Keep subtasks granular enough that a single worker can complete them
 - Max 7 subtasks per orchestration (beyond that, nest or batch)
+- **API Contract First (mandatory for frontend+backend tasks):** When decomposition involves both frontend and backend workers, an explicit API contract definition step MUST precede both. The contract is a single source of truth that both sides depend on. Without it, frontend and backend will drift and integration will fail.
 
 ---
 
-### Phase 1: Worker Assignment
+### Phase 0a: API Contract & Cross-Layer Dependency Management
+
+When the task involves both frontend and backend work, the orchestrator MUST manage the API contract as a first-class concern before any implementation begins.
+
+**Why this matters:**
+- Frontend assumes a specific API shape (endpoints, method, request body, response fields, status codes, error format)
+- Backend implements those API shapes
+- If they are built independently without a shared contract, integration produces mismatches, rework, and delays
+
+**API Contract First workflow:**
+
+```yaml
+orchestration_plan:
+  api_contract:
+    status: required / skip (if no frontend-backend split)
+    definition_method: openapi / graphql-schema / types-interface / markdown-spec
+    artifacts:
+      - path: docs/api/contract.yaml
+        format: OpenAPI 3.x
+      - path: packages/shared/src/types/api.ts
+        format: TypeScript types (shared package)
+    shared_types:
+      - request_dtos
+      - response_dtos
+      - error_schemas
+      - enums_and_constants
+    prerequisite_for:
+      - frontend-implementation
+      - backend-implementation
+  subtasks:
+    - id: 0
+      name: Define API Contract
+      description: "Design and document the API contract that both frontend and backend will implement against"
+      specialist: data-analyst (architecture) or senior engineer
+      dependencies: none
+      acceptance_criteria:
+        - All endpoints, methods, and paths are defined
+        - Request and response schemas are fully typed
+        - Error responses are documented
+        - Authentication/authorization model is specified
+        - Contract is reviewed and approved by both frontend and backend stakeholders
+    - id: 1
+      name: Backend Implementation
+      description: "Implement backend APIs conforming to the contract"
+      specialist: coder-execution (backend)
+      dependencies: [0]
+      acceptance_criteria:
+        - All contract endpoints are implemented and pass contract tests
+    - id: 2
+      name: Frontend Implementation
+      description: "Implement frontend consuming the contract"
+      specialist: coder-execution (frontend)
+      dependencies: [0]
+      acceptance_criteria:
+        - All contract endpoints are consumed correctly
+        - UI renders data from every contract response type
+```
+
+**Contract validation at each phase boundary:**
+| Phase | Check |
+|-------|-------|
+| After contract definition | Contract is reviewed for completeness (no missing endpoints, types, error codes) |
+| Before frontend starts | Backend stub/mock is available OR contract is locked (no further changes) |
+| Before backend starts | Backend understands all frontend-consumed fields |
+| After backend completes | Contract conformance tests pass (backend returns what contract promises) |
+| After frontend completes | Integration test confirms frontend renders backend responses correctly |
+| Before synthesis | No drift between contract, backend implementation, and frontend implementation |
 
 For each subtask, determine the best execution strategy:
 
@@ -177,8 +245,9 @@ Combine all worker outputs into a coherent final deliverable:
 
 ---
 
-## Example
+## Examples
 
+### Example 1: Security Audit
 **User:** "Audit our API for security vulnerabilities and generate a report."
 
 **Decomposition:**
@@ -189,6 +258,48 @@ Combine all worker outputs into a coherent final deliverable:
 5. Generate report (writing)
 
 **Conflict example:** Worker 2 finds "no auth on /health" while Worker 3 finds "/health returns OK without input". Resolution: "/health is intentionally public — documented as known, not a bug."
+
+### Example 2: Frontend + Backend Feature (API Contract First)
+**User:** "Add a user profile page with settings management."
+
+**Decomposition (with API Contract First):**
+
+```yaml
+orchestration_plan:
+  goal: Build user profile page with settings management
+  decomposition_strategy: frontend-backend (API Contract First)
+  api_contract:
+    status: required
+    definition_method: openapi
+    prerequisite_for: [frontend, backend]
+  subtasks:
+    - id: 0
+      name: Define API Contract
+      description: "Define /api/profile (GET, PUT), /api/profile/settings (GET, PATCH), /api/profile/avatar (POST, DELETE) with full schemas"
+      specialist: data-analyst
+      dependencies: none
+      acceptance_criteria:
+        - All endpoints documented with request/response types
+        - Error schemas defined for 400, 401, 403, 404, 500
+        - Auth model specified (JWT Bearer token)
+    - id: 1
+      name: Backend — Implement Profile API
+      description: "Implement profile CRUD + settings + avatar endpoints conforming to contract"
+      specialist: coder-execution (backend)
+      dependencies: [0]
+    - id: 2
+      name: Frontend — Profile Page UI
+      description: "Build React profile page consuming the contract via generated API client"
+      specialist: coder-execution (frontend)
+      dependencies: [0]
+    - id: 3
+      name: Integration Test
+      description: "Verify frontend renders all profile data from backend, test error states"
+      specialist: test-expert
+      dependencies: [1, 2]
+```
+
+**Conflict scenario:** Worker 1 (backend) returns `avatar_url` as a string, but Worker 2 (frontend) expects a `{ url, updated_at }` object. Resolution: Contract is updated to use `{ url, updated_at }` since frontend needs both fields. Backend re-delegated to fix. Contract is the source of truth for resolution.
 
 ---
 
@@ -201,6 +312,10 @@ Combine all worker outputs into a coherent final deliverable:
 | Ignoring dependency order | Always respect the DAG; never start dependent work early |
 | Workers modifying shared state silently | Workers should report results; orchestrator manages shared state |
 | No conflict resolution step | Always include explicit conflict reconciliation |
+| **Frontend and backend built independently without shared contract** | **Define API contract first as a shared prerequisite (Phase 0a); both sides depend on it** |
+| **Frontend assumes API shape that backend never agreed to** | **Lock the contract before implementation begins; enforce conformance tests at integration** |
+| **Backend changes response fields without updating the contract** | **The contract is the single source of truth; any change must update the contract first, then both workers** |
+| **Skipping contract validation at phase boundaries** | **Validate contract conformance at every phase: after contract def, after backend impl, after frontend impl** |
 
 ---
 
@@ -208,6 +323,9 @@ Combine all worker outputs into a coherent final deliverable:
 
 ```
 [ ] Phase 0: Task decomposed into 3-7 subtasks with DAG dependencies
+[ ] Phase 0: Decomposition strategy chosen (domain / phase / concern / frontend-backend)
+[ ] Phase 0a: If frontend+backend split exists → API Contract First step defined as subtask 0
+[ ] Phase 0a: API contract validation gates specified at each phase boundary
 [ ] Phase 1: Each subtask assigned to appropriate worker
 [ ] Phase 2: Workers executed in dependency order
 [ ] Phase 2: Failures handled (retry/skip/abort)
@@ -216,6 +334,7 @@ Combine all worker outputs into a coherent final deliverable:
 [ ] Verify: All subtask outputs are included
 [ ] Verify: Conflicts are documented and resolved
 [ ] Verify: Gaps are reported transparently
+[ ] Verify: If frontend+backend, contract conformance is confirmed between all layers
 ```
 
 ---
@@ -228,3 +347,4 @@ After orchestration:
 3. Conflicts were identified and resolved
 4. Final deliverable synthesizes all worker outputs
 5. Decision log documents recovery and resolution choices
+6. **For frontend+backend tasks:** the API contract is enforced — backend returns what it promises, frontend consumes what backend delivers, and no drift exists between the two

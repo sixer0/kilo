@@ -178,6 +178,32 @@ Gunakan skill `orchestrator-worker` untuk mendelegasikan workflow multi-agent. C
 6. **PRESENT TO USER** via `human-in-loop-gate` — tunggu approval
 7. **After approval** — Re-read files, execute via `orchestrator-worker`
 
+### Checkpoint Feedback Loop Protocol
+
+When the task-architect produces an `initial project development` blueprint, the `structured_tasks.md` will contain explicit checkpoint feedback loops. The controller MUST honor these:
+
+**How it works:**
+1. During execution via `orchestrator-worker`, each phase produces outputs that are validated at checkpoints
+2. If a checkpoint (research review, environment check, DB design check, unit test, code review) finds issues:
+   - The controller MUST NOT block/abort the task
+   - The controller MUST route the issue back to the **appropriate agent** as specified in `structured_tasks.md`
+   - The re-delegation MUST include: (a) the specific issue found, (b) the artifact to re-work, and (c) the expected correction
+3. After fix, the controller re-runs the checkpoint validation before proceeding
+
+**Agent routing map (free-tier aware, from task-architect's Special Design Protocol):**
+
+| Checkpoint Type | Issue Origin | Route To |
+|----------------|-------------|----------|
+| Research Track 1-5 review | Content quality/gaps | `data-collector` + `data-analyst-free` pair |
+| Final Spec Analysis review | Spec inconsistency | Relevant track's `data-analyst-free` |
+| Implementation Plan review | Spec gap / estimation error | `data-analyst-free` / `pm-planner` |
+| Environment Readiness | Runtime missing / build fail | `docker-specialist-free` / `coder-execution-free` |
+| Database Design Check | Schema/migration/index issue | `database-specialist-free` |
+| Per-Phase Unit Test | Test failure | `coder-execution-free` |
+| Per-Phase Code Review | Code quality issue | `coder-execution-free` |
+
+**Critical rule:** Never BLOCK without routing. Every found issue must have a re-route path. "Send back to fix" always precedes "notify user".
+
 Lihat: `skills/orchestrator-worker/SKILL.md`
 
 ## User Approval Flow (CRITICAL)
@@ -235,6 +261,7 @@ If anything is missing or incorrect, please let me know and I will redo the anal
 | Sub-agent BLOCKED | Retry once, then escalate |
 | RATE_LIMITED | Switch to paid fallback |
 | User needs choice | Present options + recommendation |
+| **CHECKPOINT_FAILED** (research/env/db/test/review) | **Route ke agent sesuai checkpoint feedback loop di `structured_tasks.md` → fix → re-run checkpoint — jangan BLOCK tanpa re-route path** |
 
 ### Self-Healing Recovery (via skill)
 
@@ -245,10 +272,36 @@ Ketika sub-agent gagal, gunakan skill `self-healing-loop` untuk klasifikasi dan 
 | RATE_LIMITED | TRANSIENT | Retry dengan backoff (max 3) |
 | BLOCKED | LOGIC | Diagnosa → fix → retry |
 | PERMISSION | PERMISSION | Interrupt → notify user |
+| **CHECKPOINT_FAILED** | **LOGIC** | **Route ke agent per checkpoint feedback loop → fix → re-run checkpoint — jangan BLOCK tanpa re-route path** |
 
 Lihat: `skills/self-healing-loop/SKILL.md`
 
 ## Verification, Security Finding, and Test Failure Protocol
+
+### All Checkpoint Types (from task-architect blueprint)
+
+For initial project development tasks, the `structured_tasks.md` defines checkpoints at multiple phases. When ANY checkpoint fails, use this unified protocol:
+
+| Checkpoint Source | Finding Reported By | Action |
+|------------------|-------------------|--------|
+| Research Track 1-5 review | `data-analyst-free` or `data-collector` | Route back to the same track's `data-collector` + `data-analyst-free` pair with specific gap detail |
+| Final Spec Analysis | `data-analyst-free` | Route back to relevant track agent(s) depending on issue domain |
+| Implementation Plan | `pm-planner` or `data-analyst-free` | Route back to `data-analyst-free` (spec gap) or `pm-planner` (estimation error) |
+| Environment Readiness | `explore` / `docker-specialist-free` | Route back to `docker-specialist-free` or `coder-execution-free` per the environment checklist |
+| Database Design Check | `database-specialist-free` | Route back to `database-specialist-free` with the specific failed check |
+| Per-Phase Unit Test | `test-expert-free` | Route back to `coder-execution-free` with test failure details |
+| Per-Phase Code Review | `verifier-free` / `senior-code-reviewer-free` | Route back to `coder-execution-free` with review findings |
+| Final Verification | `verifier-free` / `security-review-free` / `test-expert-free` | Use standard protocol below |
+
+**Unified feedback loop for all checkpoint types:**
+1. **Route** — Send the issue back to the appropriate agent (use free-tier variants where available)
+2. **Include context** — The re-delegation MUST contain: (a) the specific issue, (b) the artifact to re-work, (c) the expected correction
+3. **Fix** — Agent applies the fix
+4. **Re-check** — Re-run the same checkpoint validation on the fixed artifact
+5. **Loop or pass** — If still failing, repeat from step 1. If passing, proceed to next step.
+6. **Escalate** — If loop exceeds 3 iterations, invoke `human-in-loop-gate` for user decision
+
+### Final Verification Protocol (standard)
 
 Ketika `verifier-free`, `verifier`, `security-review-free`, `security-review`, `test-expert-free`, `senior-code-reviewer-free`, `senior-code-reviewer`, atau executor melaporkan findings di `implementation_report.md`, gunakan protocol berikut:
 

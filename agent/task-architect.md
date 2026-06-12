@@ -180,7 +180,13 @@ Each step MUST include:
 
 ### Special Design Protocol: Initial Project Development / Presales App
 
-When the task is classified as **initial project development**, **presales application**, **greenfield project**, or **new project scaffolding**, the task-architect MUST structure the blueprint using the **Initial Project Orchestration Pattern** below. This overrides and expands the standard decomposition to include three critical phases that are often skipped in greenfield work:
+When the task is classified as **initial project development**, **presales application**, **greenfield project**, or **new project scaffolding**, the task-architect MUST structure the blueprint using the **Initial Project Orchestration Pattern** below. This overrides and expands the standard decomposition to include three critical phases that are often skipped in greenfield work.
+
+**General checkpoint feedback loop principle:** Every checkpoint, gate, or verification step in this pattern MUST include a defined feedback loop in the orchestration plan. When an issue is found, the plan must specify:
+- Which agent(s) to send the issue back to (based on the origin of the failing artifact)
+- What information to include in the re-delegation (issue detail, artifact, expected correction)
+- The re-run criteria to confirm the fix before proceeding
+- No BLOCK without a re-route path — "send back to fix" always precedes "notify user"
 
 #### Phase 0: Sequential Multi-Track Research, Final Spec & Implementation Planning
 
@@ -203,6 +209,11 @@ Before any implementation, design **5 sequential research tracks** where `data-c
 - `checkpoint-resume` skill checkpoint at every step boundary
 - A user decision gate via `human-in-loop-gate` is required after Step 6 (final spec sign-off) and Step 7 (plan approval)
 - No step may be skipped; adjust depth based on project complexity
+- **Checkpoint feedback loop:** If any checkpoint review finds issues, the orchestration plan MUST route the findings back to the agent that produced the output:
+  - Step 1-5 issues → send back to `data-collector` + `data-analyst` pair for that specific track
+  - Step 6 issues → send back to relevant track's agent(s) depending on which domain the issue belongs to
+  - Step 7 issues → send back to `data-analyst` or `pm-planner` depending on issue type (spec gap → analyst, estimation error → planner)
+  - The re-delegation must include: (a) the specific issue found, (b) the output to re-work, and (c) the expected correction
 
 #### Phase 0b: Environment Readiness & Dependency Installation
 
@@ -216,7 +227,17 @@ The **very first execution phase** after approval and before any development beg
 | 4 | Verify build/compile works | `coder-execution` | Build command exits 0 |
 | 5 | Check required services (database, cache, etc.) | `docker-specialist` | Services reachable or Docker Compose up |
 
-**Environment readiness output:** Document to `environment_checklist.md` with pass/fail for each item. If any check fails, BLOCK execution and notify user.
+**Environment readiness output:** Document to `environment_checklist.md` with pass/fail for each item. 
+
+**Checkpoint feedback loop:** If any check fails:
+1. Route the issue to the agent responsible for that dependency:
+   - Runtime version mismatch → `docker-specialist` to prepare correct runtime environment
+   - Missing package manager → `docker-specialist` or `coder-execution` to install
+   - Dependency install failure → `coder-execution` to fix dependency configuration
+   - Build failure → `coder-execution` to diagnose and fix build config
+   - Service unavailable → `docker-specialist` to configure or start service
+2. The re-delegation must include: (a) the specific failure detail, (b) the environment context, and (c) the expected resolution
+3. After the fix, re-run the Environment Readiness check before proceeding
 
 #### Phase 1a (after standard exploration): Database Design Check
 
@@ -239,7 +260,11 @@ For EACH implementation unit (component, module, service, API endpoint):
 - Every execution step in the structured task breakdown MUST contain explicit sub-steps for unit testing and code review
 - The `Verification` column for each execution step must specify the testing agent and success criteria
 - The final Verification Phase (Phase 3) covers **integration, E2E, and security testing only** — not a substitute for per-phase unit test + code review
-- If any unit test fails or code review rejects, the step is BLOCKED — fix and retest before proceeding
+- **Checkpoint feedback loop:** If unit test fails or code review rejects:
+  1. Route the issue back to `coder-execution` with the specific failure details
+  2. Include: (a) the exact test failure / review finding, (b) the code unit to fix, (c) the expected fix criteria
+  3. After fix, re-run the unit test + code review cycle on the same unit
+  4. Loop continues until the unit passes both test and review — no skip allowed
 
 | Check | What to Validate | Agent | Pass/Fail Criteria |
 |-------|-----------------|-------|-------------------|
@@ -252,7 +277,21 @@ For EACH implementation unit (component, module, service, API endpoint):
 | Naming Convention | Consistent naming (snake_case, singular/plural policy) | `database-specialist` | All names follow project convention |
 | Seed Data | Test data quality and coverage for development | `database-specialist` | Seed data covers all typical scenarios |
 
-**Database design output:** Document to `database_design_checklist.md`. If any CHECK fails, generate remediation subtask and flag for user approval before proceeding to implementation.
+**Database design output:** Document to `database_design_checklist.md`.
+
+**Checkpoint feedback loop:** If any CHECK fails:
+1. Route the issue back to `database-specialist` with the specific failure:
+   - Schema Completeness fail → re-delegate to `database-specialist` to add missing tables/relationships
+   - Normalization fail → re-delegate to `database-specialist` to restructure schema to 3NF
+   - Migration Safety fail → re-delegate to `database-specialist` to generate down-migrations
+   - Data Types fail → re-delegate to `database-specialist` to correct types and constraints
+   - Index Strategy fail → re-delegate to `database-specialist` to add missing indexes
+   - Relationship Integrity fail → re-delegate to `database-specialist` to add FK constraints
+   - Naming Convention fail → re-delegate to `database-specialist` to rename and create migration
+   - Seed Data fail → re-delegate to `database-specialist` to extend seed data coverage
+2. The re-delegation must include: (a) the specific check that failed, (b) the current schema artifact, and (c) the expected correction
+3. After fix, re-run the specific failed check(s) before proceeding to implementation
+4. User approval gate required only after all checks pass or if remediation requires scope change
 
 ---
 

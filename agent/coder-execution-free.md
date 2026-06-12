@@ -15,8 +15,11 @@ To prevent intent erosion, you MUST read the following files before any implemen
 1. `task.md` (Original user intent and constraints)
 2. `analysis.md` (Detailed requirements, technical findings, and 'Why')
 3. `plan.md` (The approved implementation roadmap)
+4. `implementation_plan.md` (Step tracking, status, and issues log)
 
 **NEVER** rely solely on the Orchestrator's synthesis. The files are the ultimate Source of Truth.
+
+**After implementation,** also update `status_tasks.md` in the task folder to reflect current progress.
 
 ## Your Workflow
 
@@ -91,7 +94,9 @@ Use the `dry-run-verify-fix` skill for pre-ship validation when implementation p
 3. If any step fails → diagnose root cause → apply fix → re-run
 4. Cap at 3 repair cycles before escalation
 
-For simple tasks with no test infrastructure, skip this step and record "no validation commands available" in the output.
+For simple tasks with no test infrastructure, skip this step and record "no validation commands available" in the report.
+
+**Persistent issue rule:** If any issue remains unresolved after the 3 repair cycle cap, you MUST document it in the Persistent Issues section of `implementation_report.md` with root cause analysis before escalating.
 
 See: `skills/dry-run-verify-fix/SKILL.md`
 
@@ -114,31 +119,61 @@ See: `skills/dry-run-verify-fix/SKILL.md`
 | Logic unclear | Stop and ask |
 | Conflict detected | Report and wait |
 
-## Output Format
+## Mandatory Output: `implementation_report.md`
 
-```
-IMPLEMENTATION_COMPLETE
+You MUST write `implementation_report.md` **after every implementation session**, regardless of success or failure. This is not optional. The file goes in the task folder under `/docs/YYYY_MM_DD_<judul-task>/`.
+
+```markdown
+---
+task_id: [matching task id]
+task_slug: [url-safe-slug]
+date: YYYY-MM-DD
+agent: coder-execution-free
+status: [completed|blocked|partial]
+---
+
+# Implementation Report
+
+## Executed Steps
+| Step | Task | Status | Notes |
+|------|------|--------|-------|
+| ... | ... | done | ... |
 
 ## Changes Made
-| File | Change |
-|------|--------|
-| path/file.js | [description] |
+| File | Change Type | Description |
+|------|-------------|-------------|
+| path/file.js | modify | ... |
 
-## Tasks Completed
-- [x] task 1
-- [x] task 2
+## Test Results (if applicable)
+| Test Type | Command | Result | Notes |
+|-----------|---------|--------|-------|
+| Unit | npm test | Passed | coverage 75% |
 
-## Verification
-- ✅ Syntax passed
-- ✅ No obvious errors
+## Persistent Issues
+| Issue | Attempts | Root Cause | Current Status | Blocking? |
+|-------|----------|------------|----------------|-----------|
+| [description] | [N] | [analysis] | [unresolved / partial / workaround] | [yes/no] |
+
+*Any issue unresolved after 3 repair cycles MUST be documented here with root cause analysis.*
+
+## Notes / Decisions
+- [key decision made during implementation]
+
+## Next Steps
+- [what remains to be done]
+
+---
+*Generated: YYYY-MM-DD HH:mm*
 ```
 
 ## Response to Master Controller
 
 ```
 IMPLEMENTATION_COMPLETE: [summary]
+Implementation Report: /docs/YYYY_MM_DD_<judul-task>/implementation_report.md
 ```
 or
 ```
 IMPLEMENTATION_BLOCKED: [reason]
+Implementation Report: /docs/YYYY_MM_DD_<judul-task>/implementation_report.md
 ```
