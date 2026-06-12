@@ -168,12 +168,92 @@ Each step MUST include:
 **Design protocol never skip but adjustable to the scenario:** 
 1. every task need valid exploration and collection data
 2. every task analyzed thoroughly based on goals, exploration and collection data to find real issue, gap and the best solution
-3. every task need to be verified and tested
-4. every task need to be pass the security and quality check
-5. every task need to be pass the performance and risk check
-6. every task need to be pass the rollback and recovery check
-7. every task need to documentated properly
-8. it is mandatory to create trackable checkpoint progress (use `checkpoint-resume` skill for long tasks)
+3. every execution phase MUST include **unit testing** + **code review** within the phase itself, not deferred to final verification — testing and review are per-phase, not end-stage
+4. every task need to be verified and tested at the final stage as overall validation
+5. every task need to be pass the security and quality check
+6. every task need to be pass the performance and risk check
+7. every task need to be pass the rollback and recovery check
+8. every task need to documentated properly
+9. it is mandatory to create trackable checkpoint progress (use `checkpoint-resume` skill for long tasks)
+
+---
+
+### Special Design Protocol: Initial Project Development / Presales App
+
+When the task is classified as **initial project development**, **presales application**, **greenfield project**, or **new project scaffolding**, the task-architect MUST structure the blueprint using the **Initial Project Orchestration Pattern** below. This overrides and expands the standard decomposition to include three critical phases that are often skipped in greenfield work:
+
+#### Phase 0: Sequential Multi-Track Research, Final Spec & Implementation Planning
+
+Before any implementation, design **5 sequential research tracks** where `data-collector` and `data-analyst` collaborate on each track, followed by final specification analysis and implementation planning:
+
+| Step | Name | Focus | Agent Collaboration | Output |
+|------|------|-------|-------------------|--------|
+| 1 | Foundation & Functionality Research | Core business logic, domain modeling, feature requirements, user stories, MVP scope definition, functional specifications | `data-collector` + `data-analyst` (collaborative) | `01_foundation_research.md` — domain model, feature registry, MVP scope |
+| 2 | UI/UX Research | User interface design requirements, user flows, wireframe considerations, design system needs, accessibility, responsive layout | `data-collector` + `data-analyst` (collaborative) | `02_uiux_research.md` — user personas, flow diagrams, component requirements, design system specs |
+| 3 | System Architecture Research | Technology stack selection, backend/frontend architecture patterns, database design philosophy, API design, deployment topology, scalability considerations | `data-collector` + `data-analyst` (collaborative) | `03_architecture_research.md` — architecture decision record (ADR), tech stack matrix, deployment blueprint |
+| 4 | Integration & Security Research | Third-party API dependencies, external service integrations, authentication/authorization strategy, data privacy compliance, security best practices, rate limiting, error handling | `data-collector` + `data-analyst` (collaborative) | `04_integration_security_research.md` — integration map, security threat model, auth strategy |
+| 5 | Gap & Resolution | Cross-track conflict resolution, edge case inventory, risk register, dependency gaps, specification refinement | `data-collector` + `data-analyst` (collaborative) | `05_gap_resolution.md` — consolidated gap analysis, risk register, resolved ambiguities |
+| 6 | **Final Specification Analysis** | Synthesize all 5 track outputs into unified specification, resolve cross-track inconsistencies, define acceptance criteria, produce final detailed spec | `data-analyst` (lead) | `06_final_specification.md` — unified spec, validated requirements, acceptance criteria |
+| 7 | **Implementation Planning** | Translate final spec into actionable implementation plan: task breakdown, effort estimation, dependency graph, milestone timeline, risk mitigation | `data-analyst` → `pm-planner` | `07_implementation_plan.md` — detailed implementation plan with timelines, milestones, task assignments |
+
+**Rules for sequential research design:**
+- All steps (1-7) are **strictly sequential** — each step depends on the previous completing first
+- For steps 1-5, `data-collector` gathers domain-specific data while `data-analyst` simultaneously analyzes and refines (collaborative loop, not hand-off)
+- Step 6 and 7 are single-agent lead steps that synthesize across all domains
+- `checkpoint-resume` skill checkpoint at every step boundary
+- A user decision gate via `human-in-loop-gate` is required after Step 6 (final spec sign-off) and Step 7 (plan approval)
+- No step may be skipped; adjust depth based on project complexity
+
+#### Phase 0b: Environment Readiness & Dependency Installation
+
+The **very first execution phase** after approval and before any development begins:
+
+| Step | Task | Agent | Verification |
+|------|------|-------|-------------|
+| 1 | Check runtime versions (Node.js, Python, Go, etc. as appropriate) | `explore` or `docker-specialist` | Version output matches project requirements |
+| 2 | Check package managers (npm, pip, go mod, etc.) | `explore` | Package manager present and functional |
+| 3 | Install project dependencies | `docker-specialist` or `coder-execution` | `npm install` / `pip install` / equivalent succeeds |
+| 4 | Verify build/compile works | `coder-execution` | Build command exits 0 |
+| 5 | Check required services (database, cache, etc.) | `docker-specialist` | Services reachable or Docker Compose up |
+
+**Environment readiness output:** Document to `environment_checklist.md` with pass/fail for each item. If any check fails, BLOCK execution and notify user.
+
+#### Phase 1a (after standard exploration): Database Design Check
+
+Mandatory database design validation phase. MUST be inserted after exploration/collection and BEFORE any implementation begins:
+
+#### Per-Phase Unit Test & Code Review Rule
+
+Across ALL execution phases of the initial project blueprint, every implementation step MUST follow this contract:
+
+```
+For EACH implementation unit (component, module, service, API endpoint):
+  1. Implement the unit
+  2. Write unit tests for the unit (via `test-expert`)
+  3. Run unit tests and confirm passing
+  4. Perform code review on the unit (via `verifier` or `senior-code-reviewer`)
+  5. Only after (1)-(4) pass → proceed to next unit or phase
+```
+
+**Enforcement:**
+- Every execution step in the structured task breakdown MUST contain explicit sub-steps for unit testing and code review
+- The `Verification` column for each execution step must specify the testing agent and success criteria
+- The final Verification Phase (Phase 3) covers **integration, E2E, and security testing only** — not a substitute for per-phase unit test + code review
+- If any unit test fails or code review rejects, the step is BLOCKED — fix and retest before proceeding
+
+| Check | What to Validate | Agent | Pass/Fail Criteria |
+|-------|-----------------|-------|-------------------|
+| Schema Completeness | All entities, relationships, constraints defined | `database-specialist` | No missing tables or relationships |
+| Normalization | Schema is in 3NF (or justified denormalization) | `database-specialist` | No redundant data without documented reason |
+| Migration Safety | Migrations are reversible and have rollback plans | `database-specialist` | Each migration has a down-migration |
+| Data Types | Correct types, lengths, defaults, nullability | `database-specialist` | Types match domain requirements |
+| Index Strategy | Indexes on foreign keys and frequent query columns | `database-specialist` | No missing indexes on FK columns |
+| Relationship Integrity | Foreign keys, cascades, and referential integrity | `database-specialist` | All relationships have FK constraints |
+| Naming Convention | Consistent naming (snake_case, singular/plural policy) | `database-specialist` | All names follow project convention |
+| Seed Data | Test data quality and coverage for development | `database-specialist` | Seed data covers all typical scenarios |
+
+**Database design output:** Document to `database_design_checklist.md`. If any CHECK fails, generate remediation subtask and flag for user approval before proceeding to implementation.
+
 ---
 
 **Note on skills:** When a step matches a skill trigger, use the skill instead of a generic agent. Examples:
@@ -259,6 +339,77 @@ status: pending
 ## Dependencies
 
 - [Step / external artifact that must exist before proceeding]
+
+## Initial Project Development Sections
+
+*Include these sections ONLY when the task is classified as initial project development / presales app / greenfield project.*
+
+### Environment Readiness Assessment
+
+| Check | Required Version | Actual Version | Status | Notes |
+|-------|-----------------|----------------|--------|-------|
+| Runtime (Node.js / Python / Go) | [version] | [checked by agent] | [✅/❌] | [install instructions if failed] |
+| Package Manager (npm / pip / go mod) | [name] | [checked by agent] | [✅/❌] | [install instructions if failed] |
+| Database Service | [type + version] | [checked by agent] | [✅/❌] | [install instructions if failed] |
+| Docker / Docker Compose | [version] | [checked by agent] | [✅/❌] | [install instructions if failed] |
+| Git | [version] | [checked by agent] | [✅/❌] | [install instructions if failed] |
+
+**Remediation if any check fails:** BLOCK implementation → notify user → generate environment setup subtask → retry.
+
+### Sequential Research, Final Spec & Implementation Planning
+
+*Phase 0 — 5 sequential research tracks (collector + analyst collaborate per track), followed by final spec analysis and implementation planning.*
+
+| Step | Name | Focus | Agent Collaboration | Output | Depends On |
+|------|------|-------|-------------------|--------|------------|
+| 1 | Foundation & Functionality | Core business logic, domain modeling, feature requirements, MVP scope | `data-collector` + `data-analyst` (collaborative) | `01_foundation_research.md` | — |
+| 2 | UI/UX | User flows, wireframes, design system, accessibility | `data-collector` + `data-analyst` (collaborative) | `02_uiux_research.md` | Step 1 |
+| 3 | System Architecture | Tech stack, architecture patterns, database design, deployment topology | `data-collector` + `data-analyst` (collaborative) | `03_architecture_research.md` | Step 2 |
+| 4 | Integration & Security | Third-party APIs, auth, security compliance, error handling | `data-collector` + `data-analyst` (collaborative) | `04_integration_security_research.md` | Step 3 |
+| 5 | Gap & Resolution | Cross-track conflict resolution, edge cases, risk register | `data-collector` + `data-analyst` (collaborative) | `05_gap_resolution.md` | Step 4 |
+| 6 | **Final Spec Analysis** | Synthesize all tracks, resolve inconsistencies, define acceptance criteria | `data-analyst` (lead) | `06_final_specification.md` | Step 5 |
+| 7 | **Implementation Planning** | Task breakdown, effort estimation, dependency graph, milestones | `data-analyst` → `pm-planner` | `07_implementation_plan.md` | Step 6 |
+
+**Sequential execution:** Steps 1-7 run strictly sequentially. Each step completes fully before the next begins.
+
+### Database Design Check
+
+| Check | Finding | Agent | Pass/Fail | Remediation |
+|-------|---------|-------|-----------|-------------|
+| Schema Completeness | [all entities accounted for?] | `database-specialist` | [✅/❌] | [if fail: what to add] |
+| Normalization (3NF) | [redundancy analysis] | `database-specialist` | [✅/❌] | [if fail: restructure guidance] |
+| Migration Reversibility | [down-migrations exist?] | `database-specialist` | [✅/❌] | [if fail: generate down migrations] |
+| Data Types & Constraints | [appropriateness] | `database-specialist` | [✅/❌] | [if fail: type corrections] |
+| Index Strategy | [FK indexes, query indexes] | `database-specialist` | [✅/❌] | [if fail: add missing indexes] |
+| Relationship Integrity | [FK constraints, cascades] | `database-specialist` | [✅/❌] | [if fail: add constraints] |
+| Naming Convention | [consistency check] | `database-specialist` | [✅/❌] | [if fail: rename migration] |
+| Seed Data Quality | [coverage check] | `database-specialist` | [✅/❌] | [if fail: extend seed data] |
+
+**BLOCK implementation** if any CHECK fails. Generate remediation subtasks and flag for user approval.
+
+### Structured Execution Flow for Initial Projects
+
+```
+Phase 0 (Research — Sequential):
+  Step 1: Foundation & Functionality Research        ─┐
+  Step 2: UI/UX Research                              ─┤
+  Step 3: System Architecture Research                ─┤ (each: collector + analyst collaborate)
+  Step 4: Integration & Security Research             ─┤
+  Step 5: Gap & Resolution                            ─┤
+  Step 6: Final Specification Analysis                ─┤
+  Step 7: Implementation Planning                     ─┘
+  ── user gate: spec sign-off + plan approval ──
+Phase 0 (Env Check):  Environment Readiness Assessment → Install Dependencies
+Phase 1 (Analysis):   Explore → Collect Data → Analysis
+Phase 1 (DB Design):  Database Design Check → Schema Sign-off
+Phase 2 (Execution):  For EACH implementation step → [Implement] → [Unit Test] → [Code Review] → proceed
+Phase 3 (Verification): Integration Testing → Security Scan → E2E Testing → Documentation
+
+Key rule: Unit testing + code review are per-phase activities embedded in every execution step.
+          Verification Phase 3 is for cross-module integration and security — NOT a substitute for per-phase testing.
+```
+
+---
 
 ## Verification & Testing Strategy
 
@@ -348,5 +499,15 @@ Then STOP.
 - **Complex / multi-domain task**: 5+ steps, multiple agents with explicit hand-offs
 - **Document-heavy task**: include `document-reader` / `document-writer` early; may need `document-analyst`
 - **Trading-related task**: route through `trading-controller` or directly to market / signal / execution agents
+- **Initial Project Development / Presales App / Greenfield Project**: MUST use the **Initial Project Orchestration Pattern**:
+  1. **Phase 0a (Sequential Research, Spec & Plan)**: 5 sequential research tracks (collector + analyst collaborate per track) → Final Spec Analysis → Implementation Planning — all strictly sequential with user gates after spec sign-off and plan approval
+  2. **Phase 0b (Environment Readiness)**: Runtime version check → Package manager check → Dependency install → Build verify → Service availability check
+  3. **Phase 1 (Exploration & Collection)**: Standard explore → collect → analyze
+  4. **Phase 1b (Database Design Check)**: Mandatory schema, migration, index, and integrity validation via `database-specialist`
+  5. **Phase 2 (Execution)**: Implementation per approved plan
+  6. **Phase 3 (Verification)**: Testing → Security → Code Review → Documentation
+  - All phases must use `checkpoint-resume` skill for progress tracking
+  - Each phase boundary must include a user decision gate via `human-in-loop-gate`
+  - Reference: Special Design Protocol in STEP 3 above
 
 Always prefer the **minimum number of agents** that can correctly handle the work, while ensuring verification is never skipped.
