@@ -259,7 +259,8 @@ For EACH implementation unit (component, module, service, API endpoint):
 **Enforcement:**
 - Every execution step in the structured task breakdown MUST contain explicit sub-steps for unit testing and code review
 - The `Verification` column for each execution step must specify the testing agent and success criteria
-- The final Verification Phase (Phase 3) covers **integration, E2E, and security testing only** — not a substitute for per-phase unit test + code review
+- The final Verification Phase (Phase 3) covers **integration, E2E, and functional/UAT testing only** — not a substitute for per-phase unit test + code review
+- **Bulk historical data seeding is mandatory BEFORE Phase 3 functional testing** — tests against an empty database produce false-positive results (see Bulk Historical Data Seeding rule below)
 - **Checkpoint feedback loop:** If unit test fails or code review rejects:
   1. Route the issue back to `coder-execution` with the specific failure details
   2. Include: (a) the exact test failure / review finding, (b) the code unit to fix, (c) the expected fix criteria
@@ -292,6 +293,45 @@ For EACH implementation unit (component, module, service, API endpoint):
 2. The re-delegation must include: (a) the specific check that failed, (b) the current schema artifact, and (c) the expected correction
 3. After fix, re-run the specific failed check(s) before proceeding to implementation
 4. User approval gate required only after all checks pass or if remediation requires scope change
+
+#### Bulk Historical Data Seeding Rule (Mandatory before Functional/UAT Testing)
+
+Before any **functional testing** or **user acceptance testing (UAT)**, the database MUST be seeded with bulk historical data. Testing against an empty database produces false-positive results — queries return instantly, pagination has nothing to page, and real-world edge cases never surface.
+
+**Minimum seeding requirements:**
+
+| Entity / Table | Minimum Rows | Purpose |
+|----------------|-------------|---------|
+| Users / Accounts | 100+ | Test pagination, search, filtering at scale |
+| Core transaction/data entity | 300+ | Test query performance, sorting, bulk operations |
+| Related / child entities | 3-5× parent count | Test joins, aggregation, cascading display |
+| Edge case records | 20+ | Special characters, null fields, boundary values, deleted/archived records |
+| Time-series data (if applicable) | 6+ months | Test date range filtering, reports, retention logic |
+
+**Rules:**
+1. **Bulk seeding must be automated** — use a seed script, migration, or factory. Manual INSERT statements are not acceptable.
+2. **Seed data must be realistic** — use realistic names, emails, dates, and values. `test1@test.com` repeated 1,000 times does not test search/filter properly.
+3. **Include edge case records** — null foreign keys, extreme values, deleted/soft-deleted records, duplicate names — to ensure the frontend handles them gracefully.
+4. **Seeding must be repeatable** — the seed script must be idempotent (can run multiple times without duplication).
+5. **Document the seed script** — save in `scripts/seed.ts` or equivalent, add to `package.json` as `npm run seed`.
+
+**Placement in execution flow:**
+
+```
+Phase 2 (Execution):  [Implement] → [Unit Test] → [Code Review] → proceed
+                      ↓
+Phase 2b (Data Seed): Generate bulk historical data → Seed database
+                      ↓
+Phase 3 (Verification): Functional Testing → Integration Testing → UAT → Security Scan → Documentation
+                                                      ↑
+                                              (test against realistic data volumes)
+```
+
+**Agent assignment:**
+- Seed script creation → `coder-execution` or `database-specialist`
+- Seed data generation (realistic content) → `data-collector` (generate realistic sample data) + `coder-execution` (write the seed script)
+
+**Verification:** The seed script runs without errors, produces the expected row counts, and the application displays the seeded data correctly in the UI.
 
 ---
 
@@ -442,10 +482,14 @@ Phase 0 (Env Check):  Environment Readiness Assessment → Install Dependencies
 Phase 1 (Analysis):   Explore → Collect Data → Analysis
 Phase 1 (DB Design):  Database Design Check → Schema Sign-off
 Phase 2 (Execution):  For EACH implementation step → [Implement] → [Unit Test] → [Code Review] → proceed
-Phase 3 (Verification): Integration Testing → Security Scan → E2E Testing → Documentation
+Phase 2b (Data Seed): Generate bulk historical data → Seed database [MANDATORY before Phase 3]
+Phase 3 (Verification): Functional Testing → UAT → Integration Testing → Security Scan → Documentation
+                         ↑
+                   (test against realistic data volumes, not empty DB)
 
 Key rule: Unit testing + code review are per-phase activities embedded in every execution step.
-          Verification Phase 3 is for cross-module integration and security — NOT a substitute for per-phase testing.
+          Phase 2b (Data Seed) is mandatory before functional/UAT testing — empty-DB tests are meaningless.
+          Verification Phase 3 is for cross-module integration, functional, UAT, and security — NOT a substitute for per-phase testing.
 ```
 
 ---
@@ -454,8 +498,11 @@ Key rule: Unit testing + code review are per-phase activities embedded in every 
 
 - **Unit Testing**: [approach, agent, coverage goal]
 - **Integration Testing**: [approach, agent]
+- **Functional Testing**: [approach, agent — MUST run against pre-seeded bulk historical data]
+- **UAT (User Acceptance Testing)**: [approach — MUST run against realistic data volumes]
 - **Security Testing**: [agent, focus areas]
 - **Performance Testing**: [if applicable]
+- **Bulk Data Seeding**: [seed script path, row counts per entity, agent responsible]
 - **Acceptance Criteria**: [how user/controller confirms completion]
 
 ## Risk Assessment
@@ -544,7 +591,8 @@ Then STOP.
   3. **Phase 1 (Exploration & Collection)**: Standard explore → collect → analyze
   4. **Phase 1b (Database Design Check)**: Mandatory schema, migration, index, and integrity validation via `database-specialist`
   5. **Phase 2 (Execution)**: Implementation per approved plan
-  6. **Phase 3 (Verification)**: Testing → Security → Code Review → Documentation
+  6. **Phase 2b (Bulk Data Seeding)**: Generate and seed bulk historical data — mandatory before functional/UAT testing (min 100+ users, 300+ transactions, 6+ months of time-series data where applicable)
+  7. **Phase 3 (Verification)**: Functional Testing → UAT → Integration Testing → Security → Code Review → Documentation — all tests run against pre-seeded realistic data volumes
   - All phases must use `checkpoint-resume` skill for progress tracking
   - Each phase boundary must include a user decision gate via `human-in-loop-gate`
   - Reference: Special Design Protocol in STEP 3 above

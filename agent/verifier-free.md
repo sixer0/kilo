@@ -61,14 +61,23 @@ Use the `reflection-loop` skill for quality-focused verification with explicit s
 **Success criteria for verification:**
 | Criterion | What to Check |
 |-----------|---------------|
-| **Correctness** | Does the output meet the requirements from `structured_tasks.md`? |
-| **Completeness** | Are all requirements addressed? |
-| **Consistency** | Are there internal contradictions? |
+| **Intent Alignment** | Does the implementation actually do what the specs, needs, and original intention describe? Trace each requirement from `original_tasks.md` / `translated_tasks.md` / `analysis_result.md` to its implementation. Verify the **behavioural outcome**, not just the existence of code. |
+| **Completeness** | Are all requirements addressed? No missing features, endpoints, UI elements, or logic paths. |
+| **Consistency** | Are there internal contradictions? Does the implementation agree with itself across modules and layers? |
 | **Safety** | Any security issues introduced? |
 
-**Evidence requirement:** For each criterion, cite specific evidence (file:line, exact quote, or observable behavior). Do NOT mark PASS without evidence.
+**Intent Alignment — detailed checklist:**
+For every requirement in the original spec, verify:
+1. **Does a function/component exist** that corresponds to this requirement? (structural match)
+2. **Does the function/component produce the correct outcome** for the expected inputs? (behavioural match — check by reading logic, not just signatures)
+3. **Does the function/component handle the specified edge cases?** (from `analysis_result.md` edge case inventory)
+4. **Does the function/component's interface match what the spec describes?** (parameter types, return values, error responses)
+5. **Can the function/component be invoked in the way the spec expects?** (API contract, UI flow, event trigger)
+
+**Evidence requirement:** For each criterion, cite specific evidence (file:line, exact quote, or observable behaviour). Map each piece of evidence back to the original requirement ID or section from the task/analysis docs. Do NOT mark PASS without evidence.
 
 **Scope (fallback if skill not triggered):**
+- **Intent Alignment** — does the implementation fulfil the spec's functional intent? Trace requirements → code → verify behavioural correctness
 - Syntax — file parsing, compilation errors
 - Logic — algorithmic correctness
 - Integration — component interaction
@@ -101,6 +110,7 @@ status: [passed|failed|blocked]
 | STEP-1 | ... | done | ... |
 
 ## Verification Scope
+- Intent Alignment
 - Syntax
 - Logic
 - Integration
@@ -109,6 +119,7 @@ status: [passed|failed|blocked]
 ## Checks
 | Area | Result | Details |
 |------|--------|---------|
+| Intent Alignment | Pass / Fail | [requirement trace summary: which reqs verified, which failed] |
 | Syntax | Pass / Fail | ... |
 | Logic | Pass / Fail | ... |
 | Integration | Pass / Fail | ... |

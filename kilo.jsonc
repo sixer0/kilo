@@ -125,7 +125,7 @@
     },
 
     "verifier": {
-      "model": "kilo/stepfun/step-3.7-flash:free",
+      "model": "kilo/deepseek/deepseek-v4-flash:discounted",
       "hidden": true,
       "description": "Verification and testing agent",
       "mode": "subagent",

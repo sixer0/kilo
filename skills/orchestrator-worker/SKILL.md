@@ -70,6 +70,10 @@ orchestration_plan:
 - Keep subtasks granular enough that a single worker can complete them
 - Max 7 subtasks per orchestration (beyond that, nest or batch)
 - **API Contract First (mandatory for frontend+backend tasks):** When decomposition involves both frontend and backend workers, an explicit API contract definition step MUST precede both. The contract is a single source of truth that both sides depend on. Without it, frontend and backend will drift and integration will fail.
+- **No overlapping tasks for the same agent:** When two subtasks are assigned to the **same agent**, their scopes MUST be mutually exclusive — no overlapping files, modules, concerns, or responsibilities. If overlap is detected (e.g., both subtask A and B modify the same file or service), either:
+  - Merge them into a single subtask, OR
+  - Split the overlapping concern into its own subtask, OR
+  - Reroute one subtask to a different agent type
 
 ---
 
@@ -160,6 +164,14 @@ Record the assignment:
 | 1 | <skill/toolset> | <files or domains> | <artifact> |
 | 2 | <skill/toolset> | <files or domains> | <artifact> |
 ```
+
+**Overlap check (mandatory before execution):** After all assignments are recorded, scan for same-agent overlap:
+
+| Check | Pass Criteria |
+|-------|---------------|
+| Same agent assigned to multiple subtasks? | If yes, verify their scopes (Context column) are mutually exclusive — no overlapping files, modules, or concerns |
+| Overlap detected? | Merge the subtasks, split the overlap into a separate subtask, or reassign one to a different agent |
+| All overlaps resolved? | Proceed to execution
 
 ---
 
@@ -308,7 +320,7 @@ orchestration_plan:
 | Avoid | Instead |
 |-------|---------|
 | Creating too many subtasks (fragmentation) | Keep 3-7 subtasks; merge fine-grained work |
-| Overlapping subtask scopes | Ensure each subtask has clear, non-overlapping responsibility |
+| Overlapping subtask scopes when using the same agent | Verify scopes are mutually exclusive before execution; merge, split, or reroute if overlap found |
 | Ignoring dependency order | Always respect the DAG; never start dependent work early |
 | Workers modifying shared state silently | Workers should report results; orchestrator manages shared state |
 | No conflict resolution step | Always include explicit conflict reconciliation |
@@ -327,6 +339,7 @@ orchestration_plan:
 [ ] Phase 0a: If frontend+backend split exists → API Contract First step defined as subtask 0
 [ ] Phase 0a: API contract validation gates specified at each phase boundary
 [ ] Phase 1: Each subtask assigned to appropriate worker
+[ ] Phase 1: Same-agent overlap check performed — no two subtasks assigned to the same agent touch overlapping files/modules/concerns
 [ ] Phase 2: Workers executed in dependency order
 [ ] Phase 2: Failures handled (retry/skip/abort)
 [ ] Phase 3: Conflicts identified and resolved
