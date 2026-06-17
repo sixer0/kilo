@@ -4,8 +4,8 @@
   // ══════════════════════════════════════════════════════════════════════════════
   // MODEL CONFIGURATION
   // ══════════════════════════════════════════════════════════════════════════════
-  "model": "google/gemma-4-31b-it",
-  "small_model": "google/gemma-4-26b-a4b-it",
+  "model": "kilo/nex-agi/nex-n2-pro:free",
+  "small_model": "kilo/stepfun/step-3.7-flash:free",
 
   // ══════════════════════════════════════════════════════════════════════════════
   // PERMISSIONS
@@ -58,7 +58,7 @@
     // PRIMARY AGENTS - Orchestration & High-level Control
     // ════════════════════════════════════════════════════════════════════════════
     "master-controller": {
-      "model": "kilo/minimax/minimax-m2.7",
+      "model": "kilo/nex-agi/nex-n2-pro:free",
       "hidden": false,
       "description": "Master control agent for development workflow - highly obedient to rules",
       "mode": "primary",
@@ -67,7 +67,7 @@
       "name": "master-controller"
     },
     "master-controller-free": {
-      "model": "google/gemma-4-31b-it",
+      "model": "kilo/stepfun/step-3.7-flash:free",
       "hidden": false,
       "description": "Master control agent for development workflow (fallback)",
       "mode": "primary",
@@ -102,7 +102,7 @@
       "name": "senior-code-reviewer"
     },
     "senior-code-reviewer-free": {
-      "model": "google/gemma-4-31b-it",
+      "model": "kilo/kilo-auto/free",
       "hidden": true,
       "description": "Fallback: Code reviewer when primary rate-limited",
       "mode": "subagent",
@@ -110,14 +110,14 @@
     },
 
     "coder-execution": {
-      "model": "kilo/deepseek/deepseek-v4-flash:discounted",
+      "model": "kilo/xiaomi/mimo-v2.5-pro",
       "hidden": true,
       "description": "Code implementation agent with standards",
       "mode": "subagent",
       "name": "coder-execution"
     },
     "coder-execution-free": {
-      "model": "google/gemma-4-31b-it",
+      "model": "kilo/nex-agi/nex-n2-pro:free",
       "hidden": true,
       "description": "Fallback: Code implementation when primary rate-limited",
       "mode": "subagent",
@@ -155,14 +155,14 @@
     },
 
     "test-expert": {
-      "model": "kilo/deepseek/deepseek-v4-flash:discounted",
+      "model": "kilo/xiaomi/mimo-v2.5-pro",
       "hidden": true,
       "description": "Test generation and testing strategy expert",
       "mode": "subagent",
       "name": "test-expert"
     },
     "test-expert-free": {
-      "model": "kilo/kilo-auto/free",
+      "model": "kilo/nex-agi/nex-n2-pro:free",
       "hidden": true,
       "description": "Fallback: Test generation when primary rate-limited",
       "mode": "subagent",
@@ -207,7 +207,7 @@
     },
 
     "database-specialist": {
-      "model": "kilo/stepfun/step-3.7-flash:free",
+      "model": "kilo/nex-agi/nex-n2-pro:free",
       "hidden": true,
       "description": "Database inspection, schema analysis, query optimization",
       "mode": "subagent",
@@ -245,15 +245,6 @@
       "steps": 50
     },
 
-    "pm-translator": {
-      "model": "kilo/kilo-auto/free",
-      "hidden": true,
-      "description": "Translate PM/BA requests into structured tasks",
-      "mode": "subagent",
-      "color": "#EC4899",
-      "name": "pm-translator"
-    },
-
     "pm-analyst": {
       "model": "kilo/stepfun/step-3.7-flash:free",
       "hidden": true,
@@ -269,24 +260,6 @@
       "mode": "subagent",
       "color": "#EC4899",
       "name": "pm-analyst-free"
-    },
-
-    "pm-explorer": {
-      "model": "kilo/kilo-auto/free",
-      "hidden": true,
-      "description": "Explore project and document structure for PM/BA tasks",
-      "mode": "subagent",
-      "color": "#EC4899",
-      "name": "pm-explorer"
-    },
-
-    "pm-collector": {
-      "model": "kilo/kilo-auto/free",
-      "hidden": true,
-      "description": "Collect documents, data, and context for PM/BA tasks",
-      "mode": "subagent",
-      "color": "#EC4899",
-      "name": "pm-collector"
     },
 
     "pm-planner": {
@@ -324,7 +297,7 @@
     },
 
     "pm-writer": {
-      "model": "kilo/deepseek/deepseek-v4-flash:discounted",
+      "model": "kilo/nex-agi/nex-n2-pro:free",
       "hidden": true,
       "description": "Create documents, reports, and presentations for PM/BA tasks",
       "mode": "subagent",
@@ -352,7 +325,7 @@
       "name": "image-specialist"
     },
     "image-specialist-free": {
-      "model": "google/gemma-4-31b-it",
+      "model": "kilo/nex-agi/nex-n2-pro:free",
       "hidden": true,
       "description": "Fallback: Image operations when primary rate-limited",
       "mode": "subagent",
@@ -399,7 +372,7 @@
       "name": "document-reader"
     },
     "document-reader-free": {
-      "model": "google/gemma-4-31b-it",
+      "model": "kilo/nex-agi/nex-n2-pro:free",
       "hidden": true,
       "description": "Fallback: Read documents when primary rate-limited",
       "mode": "subagent",
@@ -408,7 +381,7 @@
     },
 
     "document-writer": {
-      "model": "kilo/deepseek/deepseek-v4-flash:discounted",
+      "model": "kilo/xiaomi/mimo-v2.5-pro",
       "hidden": true,
       "description": "Create and edit PDF, DOCX, XLSX, PPTX documents",
       "mode": "subagent",
@@ -488,7 +461,7 @@
     // UTILITY AGENTS - Free tier, no fallback needed
     // ════════════════════════════════════════════════════════════════════════════
     "request-translator": {
-      "model": "google/gemma-4-31b-it",
+      "model": "kilo/kilo-auto/free",
       "hidden": true,
       "description": "Translate user requests into structured tasks",
       "mode": "subagent",
@@ -496,7 +469,7 @@
     },
 
     "task-architect": {
-      "model": "google/gemma-4-31b-it",
+      "model": "kilo/stepfun/step-3.7-flash:free",
       "hidden": true,
       "description": "Chalange translated task, and create detailed task blueprint",
       "mode": "subagent",
@@ -535,7 +508,7 @@
       "model": "kilo/minimax/minimax-m2.7"
     },
     "code": {
-      "model": "kilo/stepfun/step-3.7-flash:free"
+      "model": "kilo/xiaomi/mimo-v2.5-pro"
     },
     "trading-controller": {
       "model": "google/gemma-4-31b-it"

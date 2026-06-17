@@ -125,6 +125,40 @@ const auth = (req, res, next) => { ... }
 *Last Updated: YYYY-MM-DD HH:mm*
 ```
 
+## Browser Automation (agent-browser Skill)
+
+When collecting data from web applications requires browser interaction, load the `agent-browser` skill:
+
+```
+skill: agent-browser
+```
+
+**Workflow for web data collection:**
+1. Open target URL: `agent-browser open <url>`
+2. Wait for load: `agent-browser wait --load networkidle`
+3. Get snapshot: `agent-browser snapshot -c`
+4. Extract data using refs or selectors
+5. Capture screenshots if needed
+6. Close: `agent-browser close`
+
+**Extract dynamic content:**
+```bash
+agent-browser get text @eX           # Get text content
+agent-browser get value @eX         # Get input value
+agent-browser get attr @eX "href"    # Get attribute
+agent-browser get html @eX           # Get innerHTML
+```
+
+**Batch operations for efficiency:**
+```bash
+agent-browser batch \
+  "open <url>" \
+  "wait --load networkidle" \
+  "snapshot -c" \
+  "get text @e5" \
+  "close"
+```
+
 ## Rules
 
 1. **Collect ONLY** — no analysis or conclusions

@@ -154,13 +154,214 @@ For each subtask, determine the best execution strategy:
 | **Research** | Web search + analysis | "Search for latest API docs and summarize" |
 | **Coding** | File read/write + verify | "Implement the module and run tests" |
 
+---
+
+### Phase 0b: Context Awareness & Task Splitting (MANDATORY for Heavy Tasks)
+
+**This phase prevents hallucination and context compaction when tasks exceed ~150k estimated tokens.**
+
+**0b.1 Estimate Context Usage:**
+
+Before executing any subtask, estimate its context footprint:
+
+```yaml
+context_estimation:
+  subtask_id: 1
+  estimated_tokens: 180000  # rough estimate based on:
+                             # - input files size
+                             # - expected output size
+                             # - complexity
+  
+  # Token thresholds
+  THRESHOLD_WARNING: 100000   # Start monitoring
+  THRESHOLD_SPLIT: 150000    # MUST split if exceeded
+  THRESHOLD_CRITICAL: 200000 # Split immediately
+```
+
+**How to estimate:**
+| Factor | Estimation Method |
+|--------|-----------------|
+| Input files | Count lines × avg 4 chars/line × 1.3 (token overhead) |
+| Code complexity | Loop through large files = multiply estimate |
+| Expected output | Based on typical output size for similar tasks |
+| History context | If running in existing session, add 20-50k baseline |
+
+**0b.2 Determine Split Strategy:**
+
+```yaml
+if estimated_tokens <= 150000:
+  strategy: "proceed_normal"  # Single agent execution
+elif estimated_tokens <= 300000:
+  strategy: "split_by_file"   # Split by files/modules
+else:
+  strategy: "split_by_phase"  # Split by execution phase
+```
+
+**Split strategies:**
+
+| Strategy | When to Use | How |
+|----------|-------------|-----|
+| `split_by_file` | Multiple independent files | Assign each file to a separate subtask |
+| `split_by_feature` | Large feature with sub-features | Break into per-feature subtasks |
+| `split_by_phase` | Sequential workflow | Break into phase-1, phase-2, etc. |
+| `checkpoint_split` | Long-running with state | Use checkpoint-resume pattern |
+
+**0b.3 Execute Split:**
+
+```yaml
+split_plan:
+  original_task: "Implement full user authentication system"
+  estimated_tokens: 350000
+  split_strategy: "by_concern"
+  
+  subtasks:
+    - id: 1a
+      name: "Auth - JWT & Token Logic"
+      scope: ["src/auth/jwt.ts", "src/auth/token.service.ts"]
+      estimated_tokens: 85000
+      dependencies: []
+      
+    - id: 1b
+      name: "Auth - Password Hashing"
+      scope: ["src/auth/password.service.ts", "src/auth/argon2.ts"]
+      estimated_tokens: 45000
+      dependencies: []
+      
+    - id: 1c
+      name: "Auth - Login Endpoint"
+      scope: ["src/auth/login.controller.ts", "src/auth/login.service.ts"]
+      estimated_tokens: 65000
+      dependencies: [1a, 1b]
+      
+    - id: 1d
+      name: "Auth - Register Endpoint"
+      scope: ["src/auth/register.controller.ts", "src/auth/register.service.ts"]
+      estimated_tokens: 70000
+      dependencies: [1a, 1b]
+      
+    - id: 1e
+      name: "Auth - Integration & Tests"
+      scope: ["src/auth/__tests__/", "src/auth/integration.test.ts"]
+      estimated_tokens: 80000
+      dependencies: [1c, 1d]
+```
+
+**0b.4 Continuity & Integrity Protocol:**
+
+When tasks are split, maintain continuity with checkpoints:
+
+```yaml
+continuity_protocol:
+  checkpoint_frequency: "after_each_subtask"
+  
+  artifacts:
+    - path: "/docs/YYYY_MM_DD_task/checkpoints/subtask_1a_summary.md"
+      content:
+        - completed_work: "Summary of what 1a did"
+        - decisions_made: "Key decisions during execution"
+        - state_for_next: "What 1b needs to know"
+        
+    - path: "/docs/YYYY_MM_DD_task/checkpoints/subtask_1b_summary.md"
+      content:
+        - completed_work: "Summary of what 1b did"
+        - decisions_made: "Key decisions during execution"
+        - state_for_next: "What 1c needs to know"
+  
+  integrity_checks:
+    - type: "file_count"
+      expected: 5
+      verified: true
+      
+    - type: "import_chain"
+      verified: "All imports resolve correctly"
+      
+    - type: "api_contract"
+      verified: "1c and 1d use consistent interfaces"
+```
+
+**0b.5 Verify Integrity Between Splits:**
+
+Before continuing to next split, verify continuity:
+
+```markdown
+### Integrity Check: Subtask 1a → 1b
+
+**1a Output Summary:**
+- Created `src/auth/jwt.ts` with `generateToken()` and `verifyToken()`
+- Created `src/auth/token.service.ts` with `TokenService` class
+
+**1b Expected Context:**
+- Uses `jwt.ts` for token generation
+- Password hashing uses bcrypt (NOT argon2 per decision)
+
+**Integrity Verification:**
+| Check | Result |
+|-------|--------|
+| File `jwt.ts` exists | ✅ |
+| Export `generateToken()` exists | ✅ |
+| Import in `password.service.ts` correct | ✅ |
+| No circular dependencies | ✅ |
+
+**Continuity Note for 1c:**
+1b decided to use bcrypt (not argon2) due to [reason]. Token service interface:
+```typescript
+interface TokenService {
+  generateToken(payload: object): string;
+  verifyToken(token: string): object;
+}
+```
+```
+
+**0b.6 Checkpoint Template:**
+
+```markdown
+---
+checkpoint_id: SUBTASK_1A
+timestamp: YYYY-MM-DD HH:mm
+next_subtask: 1B
+status: COMPLETE
+---
+
+## Completed Work
+
+- [List of files created/modified]
+- [Key functions implemented]
+
+## Decisions Made
+
+- [Decision 1]: [Rationale]
+- [Decision 2]: [Rationale]
+
+## State for Next Task (1B)
+
+### What 1B needs to know
+1. [Context item 1]
+2. [Context item 2]
+
+### Interfaces/Contracts established
+```typescript
+// src/auth/jwt.ts
+export function generateToken(payload: object): string;
+export function verifyToken(token: string): object;
+```
+
+### Files to NOT modify
+- `src/auth/other-file.ts` — owned by another subtask
+
+---
+```
+
+---
+
+### Phase 0c: Worker Assignments & Overlap Check
+
 Record the assignment:
 
 ```markdown
 ### Worker Assignments
 
 | Subtask | Worker | Context | Expected Output |
-|---------|--------|---------|-----------------|
+|---------|--------|---------|----------------|
 | 1 | <skill/toolset> | <files or domains> | <artifact> |
 | 2 | <skill/toolset> | <files or domains> | <artifact> |
 ```
@@ -171,7 +372,7 @@ Record the assignment:
 |-------|---------------|
 | Same agent assigned to multiple subtasks? | If yes, verify their scopes (Context column) are mutually exclusive — no overlapping files, modules, or concerns |
 | Overlap detected? | Merge the subtasks, split the overlap into a separate subtask, or reassign one to a different agent |
-| All overlaps resolved? | Proceed to execution
+| All overlaps resolved? | Proceed to execution |
 
 ---
 
@@ -180,19 +381,45 @@ Record the assignment:
 Run subtasks respecting dependency order:
 
 1. Identify all subtasks with satisfied dependencies (ready set)
-2. Execute ready subtasks (sequentially or logically in parallel)
-3. Collect outputs and log completion
-4. Update dependency graph — mark completed subtasks as done
-5. Repeat until all subtasks complete or a blocker is hit
+2. **For split tasks: Read previous checkpoint before starting**
+3. Execute ready subtasks (sequentially or logically in parallel)
+4. Collect outputs and log completion
+5. **Write checkpoint artifact (for split tasks or tasks with dependents)**
+6. Update dependency graph — mark completed subtasks as done
+7. Repeat until all subtasks complete or a blocker is hit
 
 ```markdown
 **Worker: <subtask name>** [IN PROGRESS / COMPLETE / FAILED]
 **Assigned to:** <worker description>
+**Context from checkpoint:** <if split task - read state_for_next>
 **Result:**
 <artifact or summary>
 
 **Issues:**
 - <any problems encountered>
+```
+
+**Checkpoint Writing (MANDATORY for split tasks):**
+After completing a subtask that will have dependents:
+```markdown
+---
+checkpoint_id: SUBTASK_<ID>
+timestamp: YYYY-MM-DD HH:mm
+next_subtask: <dependent_id>
+status: COMPLETE
+---
+
+## Completed Work
+- [Files created/modified]
+- [Key implementations]
+
+## Decisions Made
+- [Decision 1]: [Rationale]
+
+## State for Next Task (<next_id>)
+- [What the next task needs to know]
+- [Interface contracts established]
+- [Files to NOT modify]
 ```
 
 **Failure handling:**
@@ -328,6 +555,10 @@ orchestration_plan:
 | **Frontend assumes API shape that backend never agreed to** | **Lock the contract before implementation begins; enforce conformance tests at integration** |
 | **Backend changes response fields without updating the contract** | **The contract is the single source of truth; any change must update the contract first, then both workers** |
 | **Skipping contract validation at phase boundaries** | **Validate contract conformance at every phase: after contract def, after backend impl, after frontend impl** |
+| **Ignoring context size — letting subtasks grow unbounded** | **Estimate tokens before execution; split at 150k threshold to prevent hallucination and context compaction** |
+| **No checkpoint between split tasks — losing state** | **Write checkpoint after each subtask; next task reads checkpoint before starting** |
+| **Assuming split tasks are independent without verifying continuity** | **Run integrity check: verify imports resolve, interfaces match, state transfers are consistent** |
+| **Not documenting decisions in split tasks** | **Each checkpoint includes `decisions_made` and `state_for_next` so context isn't lost** |
 
 ---
 
@@ -338,16 +569,24 @@ orchestration_plan:
 [ ] Phase 0: Decomposition strategy chosen (domain / phase / concern / frontend-backend)
 [ ] Phase 0a: If frontend+backend split exists → API Contract First step defined as subtask 0
 [ ] Phase 0a: API contract validation gates specified at each phase boundary
-[ ] Phase 1: Each subtask assigned to appropriate worker
-[ ] Phase 1: Same-agent overlap check performed — no two subtasks assigned to the same agent touch overlapping files/modules/concerns
+[ ] Phase 0b: CONTEXT ESTIMATION — Estimated tokens for each subtask
+[ ] Phase 0b: If any subtask exceeds 150k tokens → SPLIT REQUIRED
+[ ] Phase 0b: Split plan created with checkpoint continuity protocol
+[ ] Phase 0b: Each split has checkpoint file with state_for_next
+[ ] Phase 0c: Each subtask assigned to appropriate worker
+[ ] Phase 0c: Same-agent overlap check performed
 [ ] Phase 2: Workers executed in dependency order
 [ ] Phase 2: Failures handled (retry/skip/abort)
+[ ] Phase 2: After each subtask → write checkpoint artifact
+[ ] Phase 2: Before next subtask → verify integrity from checkpoint
 [ ] Phase 3: Conflicts identified and resolved
 [ ] Phase 4: Results synthesized into final deliverable
 [ ] Verify: All subtask outputs are included
 [ ] Verify: Conflicts are documented and resolved
 [ ] Verify: Gaps are reported transparently
-[ ] Verify: If frontend+backend, contract conformance is confirmed between all layers
+[ ] Verify: If frontend+backend, contract conformance is confirmed
+[ ] Verify: CONTEXT INTEGRITY — All checkpoints present and consistent
+[ ] Verify: No subtask exceeded token threshold (or was properly split)
 ```
 
 ---
@@ -360,4 +599,12 @@ After orchestration:
 3. Conflicts were identified and resolved
 4. Final deliverable synthesizes all worker outputs
 5. Decision log documents recovery and resolution choices
-6. **For frontend+backend tasks:** the API contract is enforced — backend returns what it promises, frontend consumes what backend delivers, and no drift exists between the two
+6. **For frontend+backend tasks:** the API contract is enforced
+7. **Context integrity verified:**
+   - All checkpoint files present for split tasks
+   - State transfers are consistent (no lost context)
+   - No subtask exceeded 150k tokens without splitting
+8. **Continuity verified:**
+   - Each split subtask has `state_for_next` in checkpoint
+   - Next subtask reads previous checkpoint before starting
+   - Integrity checks pass between splits

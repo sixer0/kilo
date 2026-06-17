@@ -68,21 +68,70 @@ Before starting, update the `Status` field in `implementation_plan.md` for the r
 - Add mocks for dependencies
 - Include adversarial input testing where applicable
 
-### STEP 6: RUN TESTS AND BUILD CHECKS
+### Phase 6: Browser-Based UAT Testing (agent-browser Skill)
+
+For end-to-end testing of web applications, load the `agent-browser` skill:
+
+```
+skill: agent-browser
+```
+
+**UAT test workflow:**
+```bash
+# Login flow test
+agent-browser batch \
+  "open <app-url>" \
+  "wait --load networkidle" \
+  "find role button click --name 'Login'" \
+  "fill #username 'testuser'" \
+  "fill #password 'testpass'" \
+  "click #submit" \
+  "wait --url '**/dashboard'" \
+  "screenshot dashboard-logged-in.png" \
+  "close"
+```
+
+**Multi-step user flows:**
+```bash
+# Complete purchase flow
+agent-browser batch \
+  "open <shop-url>" \
+  "wait --load networkidle" \
+  "click @e5" \
+  "wait --load networkidle" \
+  "click @e12" \
+  "fill @e15 '1'" \
+  "screenshot cart.png" \
+  "close"
+```
+
+**Visual regression testing:**
+```bash
+# Capture baseline
+agent-browser open <url>
+agent-browser screenshot --annotate baseline.png
+
+# Later, compare
+agent-browser open <url>
+agent-browser screenshot
+agent-browser diff screenshot --baseline baseline.png
+```
+
+### STEP 7: RUN TESTS AND BUILD CHECKS
 - Run unit tests
 - Run build/lint/typecheck if present
 - Record results (pass/fail, command used, output summary, coverage)
 
-### STEP 7: UPDATE TRACKING IN `implementation_plan.md`
+### STEP 8: UPDATE TRACKING IN `implementation_plan.md`
 1. Set `Status` to `done` if verification passed, or `blocked` if not
 2. Add a concise note in `Notes / Issues`
 3. If a decision or blocker occurred, append an entry to `Issues & Decisions Log`
 
-### STEP 8: WRITE `implementation_report.md`
+### STEP 9: WRITE `implementation_report.md`
 
 ---
 
-### STEP 8b: WRITE `unit_test_report.md` (MANDATORY — Test Documentation)
+### STEP 9b: WRITE `unit_test_report.md` (MANDATORY — Test Documentation)
 
 You MUST write `unit_test_report.md` **after every test session** to document the test methodology, coverage analysis, and how to run/maintain tests. This file serves as the permanent reference for testing.
 
@@ -242,7 +291,7 @@ status: [completed|blocked]
 *Last Updated: YYYY-MM-DD HH:mm*
 ```
 
-### STEP 9: REPORT TO MASTER CONTROLLER
+### STEP 10: REPORT TO MASTER CONTROLLER
 
 ```
 TEST_GENERATION_COMPLETE: [count] tests generated - [summary]

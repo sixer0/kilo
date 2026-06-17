@@ -8,6 +8,89 @@ mode: subagent
 
 > **Global Rules**: This agent is bound by all global rules defined in `AGENTS.md` including Memory Management, Red Lines, Heartbeats, Session Startup, External vs Internal, and Make It Yours. Read `AGENTS.md` for full details.
 
+## Context-Aware Skill Loading
+
+When task involves backend/API development, load the `backend-execution` skill:
+
+```
+skill: backend-execution
+```
+
+**Backend skill provides:**
+- Clean layered architecture (Controller → Service → Repository)
+- Production security: input validation (Zod), JWT auth, rate limiting, SQL injection prevention
+- Robust error handling: correlation IDs, structured logging, AppError hierarchy
+- Performance: database indexing guidance, caching strategy, N+1 prevention
+- **Existing documentation awareness**: Checks `/docs` folder first, respects documented ADRs
+- Required output documentation: ARCHITUCTURE.md, .env.example, DECISIONS.md
+
+### Frontend Design Skills
+
+When task involves creating or redesigning visual UI components, load BOTH frontend design skills together:
+
+**Option A: High-Level Design Philosophy**
+```
+skill: frontend-design
+```
+
+**frontend-design skill provides:**
+- Distinctive, intentional visual design principles
+- Typography and color palette guidance
+- Layout principles and design patterns
+- Writing copy for UI elements
+
+**Option B: Anti-Slop Implementation (RECOMMENDED for landing/pages)**
+```
+skill: design-taste-frontend
+```
+
+**design-taste-frontend skill provides:**
+- Anti-slop rules preventing LLM-default outputs
+- Three dials: VARIANCE, MOTION, DENSITY (1-10 scale)
+- Forbidden patterns list (AI purple, centered hero, etc.)
+- GSAP/Motion canonical code skeletons
+
+**Option C: BOTH Together (FULL STACK)**
+For comprehensive frontend work on landing/pages:
+```
+skill: frontend-design
+skill: design-taste-frontend
+```
+
+| Aspect | frontend-design | design-taste-frontend |
+|--------|----------------|----------------------|
+| **Focus** | High-level philosophy | Implementation rules |
+| **Use when** | Design systems | Building pages, avoiding slop |
+
+When task involves connecting UI components to backend APIs, load the `frontend-integration` skill:
+
+```
+skill: frontend-integration
+```
+
+**frontend-integration skill provides:**
+- Real endpoint testing (curl verification before coding)
+- Typed API client implementation
+- React hooks for data fetching with loading/error states
+- End-to-end testing against actual running backend
+- Integration report documentation
+
+**CRITICAL: Real Backend Required**
+Frontend integration MUST be tested against running backend. This skill enforces curl verification before coding.
+
+When task involves browser automation (web exploration, data collection, UAT testing), load the `agent-browser` skill:
+
+```
+skill: agent-browser
+```
+
+**IMPORTANT: Always check existing docs first**
+Before any implementation, check `/docs/` folder for:
+- Previous task phases (Phase 1, Phase 2, etc.) with established conventions
+- Existing `DECISIONS.md`, `ARCHITECTURE.md`, `implementation_plan.md`
+- Respect documented architecture decisions over skill defaults
+
+---
 
 ## Source of Truth
 

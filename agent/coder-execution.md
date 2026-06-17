@@ -9,6 +9,156 @@ mode: subagent
 > **Global Rules**: This agent is bound by all global rules defined in `AGENTS.md` including Memory Management, Red Lines, Heartbeats, Session Startup, External vs Internal, and Make It Yours. Read `AGENTS.md` for full details.
 
 
+## Context-Aware Skill Loading
+
+### Technology Selection Rules (MANDATORY)
+
+**For existing projects, existing stack is the law:**
+
+```
+1. CHECK existing code first
+   → Read existing files in the project
+   → Identify current tech stack (framework, ORM, database, patterns)
+   → Do NOT introduce new technologies without explicit user approval
+
+2. If a tech gap exists:
+   → STOP and present options to user
+   → NEVER assume or silently introduce new tech
+   → Example: "The project uses Prisma, not TypeORM. Want me to introduce a new ORM?"
+
+3. Technology change requires user approval:
+   → Framework switch (Express → Fastify)
+   → ORM change (Prisma → TypeORM)
+   → Database switch (PostgreSQL → MongoDB)
+   → New dependencies that affect architecture
+```
+
+---
+
+When task involves backend/API development, load the `backend-execution` skill:
+
+```
+skill: backend-execution
+```
+
+**Backend skill provides:**
+- Clean layered architecture (Controller → Service → Repository)
+- Production security: input validation (Zod), JWT auth, rate limiting, SQL injection prevention
+- Performance: database indexing guidance, caching strategy, N+1 prevention
+- Reference guides: technologies, API design, security, authentication, performance, architecture, testing, code quality, DevOps, debugging
+- **Existing documentation awareness**: Checks `/docs` folder first, respects documented ADRs
+
+**IMPORTANT: Error logging is already defined in coder-execution agent (STEP 3). The backend-execution skill focuses on architecture patterns and reference guides.**
+
+**When to load backend-execution skill:**
+- Implementing REST APIs or GraphQL resolvers
+- Creating backend services (auth, users, orders, etc.)
+- Database operations with ORM/Prisma
+- Backend microservices
+
+---
+
+### Frontend Design (visual UI)
+
+When task involves creating or redesigning visual UI components, load BOTH frontend design skills together:
+
+**Option A: High-Level Design Philosophy**
+```
+skill: frontend-design
+```
+
+**frontend-design skill provides:**
+- Distinctive, intentional visual design principles
+- Typography and color palette guidance
+- Layout principles and design patterns
+- Writing copy for UI elements
+- Self-critique and restraint guidance
+
+**When to load frontend-design alone:**
+- Creating design systems or component libraries
+- High-level aesthetic direction decisions
+- Brand identity work
+
+---
+
+**Option B: Anti-Slop Implementation (RECOMMENDED for landing/pages)**
+```
+skill: design-taste-frontend
+```
+
+**design-taste-frontend skill provides:**
+- Anti-slop rules preventing LLM-default outputs
+- Three dials: VARIANCE, MOTION, DENSITY (1-10 scale)
+- Forbidden patterns list (AI purple, centered hero, etc.)
+- Specific implementation rules for landing/portfolio/editorial
+- GSAP/Motion canonical code skeletons
+
+**When to load design-taste-frontend:**
+- Building landing pages or marketing sites
+- Portfolio pages
+- Avoiding "templated AI" look
+- When the user says "premium", "not generic", "Awwwards-level"
+
+---
+
+**Option C: BOTH Together (FULL STACK)**
+For comprehensive frontend work on landing/pages:
+```
+skill: frontend-design
+skill: design-taste-frontend
+```
+
+| Aspect | frontend-design | design-taste-frontend |
+|--------|----------------|----------------------|
+| **Focus** | High-level philosophy | Implementation rules |
+| **Use when** | Design systems, decisions | Building pages, avoiding slop |
+| **Output** | Tokens, palette, type scale | Production code |
+
+**When to load NEITHER frontend skill:**
+- Dashboards, data tables, admin UI (use frontend-integration only)
+- Backend-only tasks
+- Simple static pages without design requirements
+
+---
+
+### Frontend Integration (frontend + backend)
+
+When task involves connecting UI components to backend APIs, load the `frontend-integration` skill:
+
+```
+skill: frontend-integration
+```
+
+**Frontend-integration skill provides:**
+- Real endpoint testing (curl verification before coding)
+- Typed API client implementation
+- React hooks for data fetching with loading/error states
+- End-to-end testing against actual running backend
+- Integration report documentation
+
+**CRITICAL: Real Backend Required**
+Frontend integration MUST be tested against running backend. This skill enforces:
+- Test endpoints with curl first
+- Document actual response structures
+- Run integration tests
+- Never assume endpoints work without verification
+
+**When to load frontend-integration skill:**
+- Implementing API calls in React/Vue/Angular components
+- Creating data fetching hooks
+- Adding form submission to backend
+- Building UI that displays backend data
+- Testing frontend-backend integration
+
+**When NOT to load either frontend skill (use default coder-execution patterns):**
+- Backend-only implementation
+- Simple scripts or utility functions
+- Configuration-only tasks
+- Database migrations
+- DevOps/infrastructure code
+
+---
+
 ## Source of Truth
 
 Read these files before any implementation:

@@ -113,6 +113,36 @@ EXPLORE_COMPLETE: [summary] - [key files/folders found]
 Output: /docs/YYYY_MM_DD_<judul-task>/explore_result.md
 ```
 
+## Browser Automation (agent-browser Skill)
+
+When task requires web application exploration, load the `agent-browser` skill:
+
+```
+skill: agent-browser
+```
+
+**Workflow for web exploration:**
+1. Install if needed: `npm install -g agent-browser && agent-browser install`
+2. Open target URL: `agent-browser open <url>`
+3. Get accessibility snapshot: `agent-browser snapshot -i`
+4. Analyze structure from refs
+5. Interact if needed (clicks, fills)
+6. Capture screenshots: `agent-browser screenshot --annotate`
+7. Close session: `agent-browser close`
+
+**Use refs from snapshot for deterministic interaction:**
+```bash
+agent-browser snapshot
+# Elements shown with refs: @e1, @e2, etc.
+agent-browser click @e3  # Click by ref
+agent-browser fill @e4 "text"  # Fill by ref
+```
+
+**Annotated screenshots for visual mapping:**
+```bash
+agent-browser screenshot --annotate ./exploration.png
+```
+
 ## Rules
 
 1. **Structure ONLY** — no code logic analysis

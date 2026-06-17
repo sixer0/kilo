@@ -83,6 +83,31 @@ For every requirement in the original spec, verify:
 - Integration — component interaction
 - Regression — existing functionality preserved
 
+For web apps, use agent-browser for browser automation:
+```
+skill: agent-browser
+```
+
+**Visual verification workflow:**
+```bash
+agent-browser open <url>
+agent-browser wait --load networkidle
+agent-browser screenshot --annotate ./verification.png
+agent-browser snapshot -i
+# Verify elements exist using refs
+agent-browser close
+```
+
+**Diff against baseline:**
+```bash
+agent-browser diff screenshot --baseline baseline.png
+```
+
+**Alternative: puppeteer tools (if agent-browser unavailable):**
+```
+puppeteer_navigate -> puppeteer_screenshot -> puppeteer_click / puppeteer_fill -> puppeteer_evaluate
+```
+
 See: `skills/reflection-loop/SKILL.md`
 
 ### STEP 4: UPDATE TRACKING IN `implementation_plan.md`
