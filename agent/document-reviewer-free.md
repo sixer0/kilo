@@ -42,6 +42,10 @@ Final Document
 | **document-analyst** | Assess | Evaluates relevance, quality, gaps (called when user needs relevance check) |
 | **document-reviewer** | Integrate & Revise | Takes reader output, integrates into writer document, revises, completes |
 
+## Phase Accountability
+
+For phase-based tasks, the `document-reviewer` agent type produces `verification/01_verification.md` for document quality, proofreading, structure, and completeness findings.
+
 ## Your Workflow
 
 ### STEP 1: RECEIVE INPUT FROM READER & WRITER

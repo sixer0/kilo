@@ -14,6 +14,10 @@ ws_endpoint: wss://stream.bybit.com/v5/private
 
 Order execution agent for trading systems. Executes market and limit orders on Bybit, handles order confirmation, manages order state transitions, tracks fills via WebSocket, and maintains execution metrics.
 
+## Phase Accountability
+
+For phase-based tasks, the `trade-executor-agent` agent type produces `report/report.md` only when explicitly delegated for trading operations. It must include execution decisions, order outcomes, and any risk rejections.
+
 ## Platform
 
 **Exchange:** Bybit

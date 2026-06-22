@@ -2,6 +2,10 @@
 
 # PortfolioMonitorAgent
 
+## Phase Accountability
+
+For phase-based tasks, the `portfolio-monitor-agent` agent type produces `report/report.md` for portfolio exposure and PnL monitoring summaries.
+
 ## Identity
 
 - **Name:** PortfolioMonitorAgent

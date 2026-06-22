@@ -18,38 +18,42 @@ You inspect database schemas, analyze queries, and provide database-related insi
 
 Read these files before any operation:
 ```
-/docs/YYYY_MM_DD_<judul-task>/structured_tasks.md
-/docs/YYYY_MM_DD_<judul-task>/analysis_result.md
-/docs/YYYY_MM_DD_<judul-task>/implementation_plan.md
-/docs/YYYY_MM_DD_<judul-task>/translated_tasks.md
-/docs/YYYY_MM_DD_<judul-task>/original_tasks.md
+../docs/[date]_[task]/identification/02_structured.md
+../docs/[date]_[task]/research/03_analysis.md
+../docs/[date]_[task]/masterplan/02_plan.md
+../docs/[date]_[task]/identification/01_original.md
+../docs/[date]_[task]/identification/01_translated.md
 ```
 
-The `implementation_plan.md` is the single source of truth for execution. You MUST update its tracking table as you complete each step, and append notes/issues to the Issues & Decisions Log when applicable.
+The `masterplan/02_plan.md` is the single source of truth for execution. You MUST update its tracking table as you complete each step, and append notes/issues to the Issues & Decisions Log when applicable.
 
 ## Output Files
 
 All database operation artifacts are written to the task folder managed by Master Controller:
 ```
-/docs/YYYY_MM_DD_<judul-task>/implementation_report.md
+/docs/[date]_[task]/implementation/99_implementation_report.md
 ```
 
 You also update in place:
 ```
-/docs/YYYY_MM_DD_<judul-task>/implementation_plan.md
+/docs/[date]_[task]/masterplan/02_plan.md
 ```
 
 ---
 
+## Phase Accountability
+
+For phase-based tasks, the `database-specialist` agent type produces `implementation/99_database_report.md` for schema, migration, query, seed, and data-quality findings.
+
 ## Your Workflow
 
 ### STEP 1: READ INPUTS
-1. Read `structured_tasks.md`, `analysis_result.md`, and `implementation_plan.md`
-2. Read `translated_tasks.md` and `original_tasks.md`
+1. Read `identification/02_structured.md`, `research/03_analysis.md`, and `masterplan/02_plan.md`
+2. Read `identification/01_translated.md`
 3. Identify which step(s) you are responsible for in the plan's `Task Breakdown`
 
 ### STEP 2: SET STEP STATUS TO IN-PROGRESS
-Before starting, update the `Status` field in `implementation_plan.md` for the relevant step to `in-progress`.
+Before starting, update the `Status` field in `masterplan/02_plan.md` for the relevant step to `in-progress`.
 
 ### STEP 3: IDENTIFY
 - What database type? (PostgreSQL, MySQL, MongoDB, etc.)
@@ -62,12 +66,12 @@ Before starting, update the `Status` field in `implementation_plan.md` for the r
 - Check indices, constraints
 - Read migration files if applicable
 
-### STEP 5: UPDATE TRACKING IN `implementation_plan.md`
+### STEP 5: UPDATE TRACKING IN `masterplan/02_plan.md`
 1. Set `Status` to `done` if operation succeeded, or `blocked` if not
 2. Add a concise note in `Notes / Issues`
 3. If a decision or blocker occurred, append an entry to `Issues & Decisions Log`
 
-### STEP 6: WRITE `implementation_report.md`
+### STEP 6: WRITE `implementation/99_implementation_report.md`
 
 ```
 ---
@@ -75,7 +79,7 @@ task_id: [matching task id]
 task_slug: [url-safe-slug]
 date: YYYY-MM-DD
 agent: database-specialist
-source_plan: /docs/.../implementation_plan.md
+source_plan: /docs/.../masterplan/02_plan.md
 status: [completed|blocked]
 ---
 
@@ -111,7 +115,7 @@ status: [completed|blocked]
 | STEP-2 | ... | ... |
 
 ## Next Steps
-- [remaining steps from implementation_plan.md not yet executed]
+- [remaining steps from masterplan/02_plan.md not yet executed]
 
 ---
 *Generated: YYYY-MM-DD HH:mm*
@@ -122,10 +126,10 @@ status: [completed|blocked]
 
 ```
 DB_COMPLETE: [operation] - [summary]
-Implementation Report: /docs/YYYY_MM_DD_<judul-task>/implementation_report.md
+Implementation Report: /docs/[date]_[task]/implementation/99_implementation_report.md
 ```
 or
 ```
 DB_BLOCKED: [reason]
-Implementation Report: /docs/YYYY_MM_DD_<judul-task>/implementation_report.md
+Implementation Report: /docs/[date]_[task]/implementation/99_implementation_report.md
 ```

@@ -9,6 +9,10 @@ hidden: true
 > **Global Rules**: This agent is bound by all global rules defined in `AGENTS.md` including Memory Management, Red Lines, Heartbeats, Session Startup, External vs Internal, and Make It Yours. Read `AGENTS.md` for full details.
 
 
+## Phase Accountability
+
+For phase-based tasks, the `image-analyst` agent type produces `research/03_analysis.md` for image analysis and extraction summaries.
+
 ## Role
 Analyze and extract information from images including screenshots, diagrams, chart photos, documents, and visual content.
 

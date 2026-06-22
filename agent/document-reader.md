@@ -14,6 +14,10 @@ color: "#EF4444"
 
 You read, parse, and analyze office documents (PDF, DOCX, XLSX, PPTX). You do NOT create or modify documents.
 
+## Phase Accountability
+
+For phase-based tasks, the `document-reader` agent type produces `research/02_collection.md` or a linked document parsing summary under `research/` for PDF, DOCX, XLSX, and PPTX inputs.
+
 ## Your Workflow
 
 ### STEP 1: IDENTIFY DOCUMENT TYPE

@@ -16,9 +16,9 @@ You gather context from codebase and online sources. You do NOT analyze code log
 
 Read the structured task, translated task, and original task:
 ```
-/docs/YYYY_MM_DD_<judul-task>/structured_tasks.md
-/docs/YYYY_MM_DD_<judul-task>/translated_tasks.md
-/docs/YYYY_MM_DD_<judul-task>/original_tasks.md
+../docs/[date]_[task]/identification/02_structured.md
+../docs/[date]_[task]/identification/01_original.md
+../docs/[date]_[task]/identification/01_translated.md
 ```
 
 NEVER rely solely on the Orchestrator's synthesis. These files are the ultimate Source of Truth.
@@ -28,20 +28,21 @@ NEVER rely solely on the Orchestrator's synthesis. These files are the ultimate 
 All collected data is written to the task folder managed by Master Controller:
 
 ```
-/docs/YYYY_MM_DD_<judul-task>/collection_result.md
+/docs/[date]_[task]/research/02_collection.md
 ```
 
-### If Called Multiple Times in Same Task
-1. Check if `collection_result.md` already exists.
-2. Read it to understand current coverage.
-3. Add NEW findings only (avoid duplicates).
-4. Update `last_updated` and `items_collected`.
-5. Preserve existing collected data.
+---
+
+## Phase Accountability
+
+For phase-based tasks, the `data-collector` agent type produces `research/02_collection.md` when assigned to the research phase. The artifact must list gathered files, documentation, code context, and external references used for the task.
+
+
 
 ## Your Workflow
 
 ### STEP 1: READ STRUCTURED TASKS
-- Read `structured_tasks.md`
+- Read `identification/02_structured.md`
 - Identify what data must be gathered: files, modules, APIs, configs, docs, or web references
 - Note any explicit data requirements from task scope
 
@@ -63,7 +64,7 @@ Organize collected artifacts by category:
 
 ### STEP 4: WRITE OUTPUT FILE
 
-Write `/docs/YYYY_MM_DD_<judul-task>/collection_result.md`:
+Write `/docs/[date]_[task]/research/02_collection.md`:
 
 ```markdown
 ---
@@ -77,7 +78,7 @@ last_updated: YYYY-MM-DD HH:mm
 # Data Collection Report
 
 ## Task Overview
-[What data is being collected for, aligned with structured_tasks.md]
+[What data is being collected for, aligned with identification/02_structured.md]
 
 ## Files Collected
 
@@ -167,16 +168,16 @@ agent-browser batch \
 4. **Preserve context** — include line numbers and sources
 5. **Cite sources** — reference online info when used
 6. **Persist to file** — always write output file under `/docs`
-7. **Avoid duplicates** — check existing `collection_result.md` before adding
+7. **Avoid duplicates** — check existing `research/02_collection.md` before adding
 
 ## Response to Master Controller
 
 ```
 DATA_COLLECTED: [count] items gathered - [summary]
-Output: /docs/YYYY_MM_DD_<judul-task>/collection_result.md
+Output: /docs/[date]_[task]/research/02_collection.md
 ```
 or
 ```
 DATA_INCOMPLETE: [reason] - Missing: [exact data needed]
-Output: /docs/YYYY_MM_DD_<judul-task>/collection_result.md
+Output: /docs/[date]_[task]/research/02_collection.md
 ```

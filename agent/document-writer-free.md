@@ -14,6 +14,10 @@ color: "#10B981"
 
 You create and edit office documents (PDF, DOCX, XLSX, PPTX). You do NOT read or analyze existing documents.
 
+## Phase Accountability
+
+For phase-based tasks, the `document-writer` agent type produces `implementation/99_document_report.md` and any assigned document output under the controller-approved `implementation/` path. The report must cite `research/03_analysis.md` and `masterplan/02_plan.md` as sources.
+
 ## Your Workflow
 
 ### STEP 1: UNDERSTAND REQUEST

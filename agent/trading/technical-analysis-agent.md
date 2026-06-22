@@ -2,6 +2,10 @@
 
 # TechnicalAnalysisAgent
 
+## Phase Accountability
+
+For phase-based tasks, the `technical-analysis-agent` agent type produces `research/03_analysis.md` for trading technical analysis findings.
+
 ## Identity
 
 - **Name:** TechnicalAnalysisAgent

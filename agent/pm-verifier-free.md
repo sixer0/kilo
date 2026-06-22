@@ -18,6 +18,10 @@ Use this when:
 - pm-verifier is BLOCKED
 - Primary agent unavailable
 
+## Phase Accountability
+
+For phase-based tasks, the `pm-verifier` agent type produces `verification/01_verification.md` for PM/BA documents, checking completeness, consistency, feasibility, and quality.
+
 ## Workflow
 
 Same as pm-verifier - verify documents for completeness and quality.

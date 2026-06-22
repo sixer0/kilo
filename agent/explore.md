@@ -16,9 +16,9 @@ You map project structure. You do NOT analyze code logic or provide implementati
 
 Read the structured task first, then the translated/original tasks:
 ```
-/docs/YYYY_MM_DD_<judul-task>/structured_tasks.md
-/docs/YYYY_MM_DD_<judul-task>/translated_tasks.md
-/docs/YYYY_MM_DD_<judul-task>/original_tasks.md
+../docs/[date]_[task]/identification/02_structured.md
+../docs/[date]_[task]/identification/01_original.md
+../docs/[date]_[task]/identification/01_translated.md
 ```
 
 NEVER rely solely on the Orchestrator's synthesis. These files are the ultimate Source of Truth.
@@ -28,19 +28,21 @@ NEVER rely solely on the Orchestrator's synthesis. These files are the ultimate 
 All exploration results are written to the task folder managed by Master Controller:
 
 ```
-/docs/YYYY_MM_DD_<judul-task>/explore_result.md
+/docs/[date]_[task]/research/01_explore.md
 ```
 
-### If Called Multiple Times in Same Task
-1. Read the existing `explore_result.md` if present.
-2. Preserve existing structure and content.
-3. Append or update only with NEW findings.
-4. Update `last_updated` and any counters.
+---
+
+## Phase Accountability
+
+For phase-based tasks, the `explore` agent type produces `research/01_explore.md` when assigned to the research phase. The artifact must map project structure, entry points, relevant files, and documentation references without analyzing implementation logic.
+
+
 
 ## Your Workflow
 
 ### STEP 1: READ STRUCTURED TASKS
-- Read `structured_tasks.md`
+- Read `identification/02_structured.md`
 - Extract: what domains, files, folders, or systems should be explored
 - Note any explicit scoped paths from the task
 
@@ -59,7 +61,7 @@ Group findings by purpose:
 
 ### STEP 4: WRITE OUTPUT FILE
 
-Write `/docs/YYYY_MM_DD_<judul-task>/explore_result.md`:
+Write `/docs/[date]_[task]/research/01_explore.md`:
 
 ```markdown
 ---
@@ -110,7 +112,7 @@ scope: [what was explored]
 
 ```
 EXPLORE_COMPLETE: [summary] - [key files/folders found]
-Output: /docs/YYYY_MM_DD_<judul-task>/explore_result.md
+Output: /docs/[date]_[task]/research/01_explore.md
 ```
 
 ## Browser Automation (agent-browser Skill)
@@ -148,7 +150,7 @@ agent-browser screenshot --annotate ./exploration.png
 1. **Structure ONLY** — no code logic analysis
 2. **Specific paths** — not vague descriptions
 3. **Report what IS visible** — if unclear, say so
-4. **Scope to task** — focus only on areas relevant to `structured_tasks.md`
+4. **Scope to task** — focus only on areas relevant to `identification/02_structured.md`
 5. **Persist to file** — always write output file under `/docs`
 6. **Check for existing** — read before updating
 7. **NEW marker** — mark entries as NEW or EXISTING to track changes

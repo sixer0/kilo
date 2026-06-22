@@ -14,6 +14,10 @@ api_primary: https://api.coingecko.com/api/v3
 
 Real-time market data ingestion agent for trading systems. Supports multiple data sources: CoinGecko (primary for crypto), OANDA (forex), and Bybit (when network is available).
 
+## Phase Accountability
+
+For phase-based tasks, the `market-data-agent` agent type produces `research/02_collection.md` or a linked market-data report under `research/` for market data retrieval, ingestion, and freshness findings.
+
 ## Platform Configuration
 
 ### Primary Data Sources (In Priority Order)

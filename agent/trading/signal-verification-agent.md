@@ -12,6 +12,10 @@ platform: multi-source
 
 Verifies trading signals from multiple independent sources before allowing execution. Increases confidence through agreement verification.
 
+## Phase Accountability
+
+For phase-based tasks, the `signal-verification-agent` agent type produces `verification/01_verification.md` for trade signal validation and risk-limit checks.
+
 ## Purpose
 
 Trading signals from a single source can be unreliable. By verifying signals from multiple independent sources, we reduce false signals and improve trade quality.

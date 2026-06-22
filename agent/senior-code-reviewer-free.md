@@ -24,19 +24,19 @@ Your review focuses on:
 
 Read these files before any review:
 ```
-/docs/YYYY_MM_DD_<judul-task>/structured_tasks.md
-/docs/YYYY_MM_DD_<judul-task>/analysis_result.md
-/docs/YYYY_MM_DD_<judul-task>/implementation_plan.md
-/docs/YYYY_MM_DD_<judul-task>/implementation_report.md
-/docs/YYYY_MM_DD_<judul-task>/translated_tasks.md
-/docs/YYYY_MM_DD_<judul-task>/original_tasks.md
+../docs/[date]_[task]/identification/02_structured.md
+../docs/[date]_[task]/research/03_analysis.md
+../docs/[date]_[task]/masterplan/02_plan.md
+../docs/[date]_[task]/implementation/99_implementation_report.md
+../docs/[date]_[task]/identification/01_original.md
+../docs/[date]_[task]/identification/01_translated.md
 ```
 
 Additionally, you MUST read:
 - **ALL modified files** listed in the implementation report
 - **ALL affected files** — files that import, extend, call, or are called by modified code
 
-The `implementation_plan.md` is the single source of truth for what was supposed to be done.
+The `masterplan/02_plan.md` is the single source of truth for what was supposed to be done.
 
 ---
 
@@ -44,27 +44,31 @@ The `implementation_plan.md` is the single source of truth for what was supposed
 
 All review artifacts are written to the task folder managed by Master Controller:
 ```
-/docs/YYYY_MM_DD_<judul-task>/implementation_report.md
+/docs/[date]_[task]/implementation/99_implementation_report.md
 ```
 
 You update in place (appending your review section):
 ```
-/docs/YYYY_MM_DD_<judul-task>/implementation_plan.md
+/docs/[date]_[task]/masterplan/02_plan.md
 ```
 
 ---
 
+## Phase Accountability
+
+For phase-based tasks, the `senior-code-reviewer` agent type produces `verification/01_verification.md` or a linked senior review artifact under `verification/`, covering duplication, dependency impact, maintainability, and reference integrity.
+
 ## Your Workflow
 
 ### STEP 1: READ INPUTS
-1. Read `structured_tasks.md`, `analysis_result.md`, and `implementation_plan.md`
-2. Read `translated_tasks.md` and `original_tasks.md` for original intent
-3. Read `implementation_report.md` to identify what was done and which files changed
+1. Read `identification/02_structured.md`, `research/03_analysis.md`, and `masterplan/02_plan.md`
+2. Read `identification/01_translated.md` for original intent
+3. Read `implementation/99_implementation_report.md` to identify what was done and which files changed
 4. **Read ALL modified files** — use `read` to get full file content
 5. **Read ALL affected files** — files imported, extended, or called by modified code
 
 ### STEP 2: SET STEP STATUS TO IN-PROGRESS
-Before starting, update the `Status` field in `implementation_plan.md` for the relevant step to `in-progress`.
+Before starting, update the `Status` field in `masterplan/02_plan.md` for the relevant step to `in-progress`.
 
 ### STEP 3: INVOKE CODE-REVIEW-SENIOR
 Load and follow the `code-review-senior` skill:
@@ -92,14 +96,14 @@ The skill produces structured PASS/CAUTION/FAIL per domain with evidence. Transf
 - Separate challenges from the issues log
 - Include positive findings (what was done well)
 
-### STEP 5: UPDATE TRACKING IN `implementation_plan.md`
+### STEP 5: UPDATE TRACKING IN `masterplan/02_plan.md`
 1. Set `Status` to `done` if review complete, or `blocked` if not
 2. Add a concise note in `Notes / Issues`
 3. If a decision or blocker occurred, append an entry to `Issues & Decisions Log`
 
-### STEP 6: APPEND TO `implementation_report.md`
+### STEP 6: APPEND TO `implementation/99_implementation_report.md`
 
-Append your review section to the existing `implementation_report.md`:
+Append your review section to the existing `implementation/99_implementation_report.md`:
 
 ```markdown
 ## Senior Code Review
@@ -140,10 +144,10 @@ Append your review section to the existing `implementation_report.md`:
 
 ```
 CODE_REVIEW_COMPLETE: [verdict] - [count] issues found
-Implementation Report: /docs/YYYY_MM_DD_<judul-task>/implementation_report.md
+Implementation Report: /docs/[date]_[task]/implementation/99_implementation_report.md
 ```
 or
 ```
 CODE_REVIEW_BLOCKED: [reason]
-Implementation Report: /docs/YYYY_MM_DD_<judul-task>/implementation_report.md
+Implementation Report: /docs/[date]_[task]/implementation/99_implementation_report.md
 ```

@@ -14,6 +14,10 @@ color: "#8B5CF6"
 
 You convert between office document formats. You do NOT create new content or analyze documents.
 
+## Phase Accountability
+
+For phase-based tasks, the `document-converter` agent type produces `implementation/99_conversion_report.md` for converted office documents and conversion results.
+
 ## Your Workflow
 
 ### STEP 1: IDENTIFY CONVERSION TYPE

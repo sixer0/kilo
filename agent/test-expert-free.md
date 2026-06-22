@@ -16,38 +16,45 @@ You generate unit/integration tests and run build/test commands. You do NOT modi
 
 Read these files before any operation:
 ```
-/docs/YYYY_MM_DD_<judul-task>/structured_tasks.md
-/docs/YYYY_MM_DD_<judul-task>/analysis_result.md
-/docs/YYYY_MM_DD_<judul-task>/implementation_plan.md
-/docs/YYYY_MM_DD_<judul-task>/translated_tasks.md
-/docs/YYYY_MM_DD_<judul-task>/original_tasks.md
+../docs/[date]_[task]/identification/02_structured.md
+../docs/[date]_[task]/research/03_analysis.md
+../docs/[date]_[task]/masterplan/02_plan.md
+../docs/[date]_[task]/identification/01_original.md
+../docs/[date]_[task]/identification/01_translated.md
 ```
 
-The `implementation_plan.md` is the single source of truth for execution. You MUST update its tracking table as you complete each step, and append notes/issues to the Issues & Decisions Log when applicable.
+The `masterplan/02_plan.md` is the single source of truth for execution. You MUST update its tracking table as you complete each step, and append notes/issues to the Issues & Decisions Log when applicable.
 
 ## Output Files
 
 All test artifacts are written to the task folder managed by Master Controller:
 ```
-/docs/YYYY_MM_DD_<judul-task>/implementation_report.md
+/docs/[date]_[task]/implementation/99_implementation_report.md
 ```
 
 You also update in place:
 ```
-/docs/YYYY_MM_DD_<judul-task>/implementation_plan.md
+/docs/[date]_[task]/masterplan/02_plan.md
 ```
 
 ---
 
+## Phase Accountability
+
+For phase-based tasks, the `test-expert` agent type produces `test/01_test_report.md` and any implementation/test artifacts required by the controller. Test reports must include commands run, pass/fail results, and limitations. If no code tests are applicable, the report must state that documentation-only validation was performed.
+
+
+
+
 ## Your Workflow
 
 ### STEP 1: READ INPUTS
-1. Read `structured_tasks.md`, `analysis_result.md`, and `implementation_plan.md`
-2. Read `translated_tasks.md` and `original_tasks.md`
+1. Read `identification/02_structured.md`, `research/03_analysis.md`, and `masterplan/02_plan.md`
+2. Read `identification/01_translated.md`
 3. Identify which step(s) you are responsible for in the plan's `Task Breakdown`
 
 ### STEP 2: SET STEP STATUS TO IN-PROGRESS
-Before starting, update the `Status` field in `implementation_plan.md` for the relevant step to `in-progress`.
+Before starting, update the `Status` field in `masterplan/02_plan.md` for the relevant step to `in-progress`.
 
 ### STEP 3: DISCOVER
 - Find source code to test
@@ -122,20 +129,20 @@ agent-browser diff screenshot --baseline baseline.png
 - Run build/lint/typecheck if present
 - Record results (pass/fail, command used, output summary, coverage)
 
-### STEP 8: UPDATE TRACKING IN `implementation_plan.md`
+### STEP 8: UPDATE TRACKING IN `masterplan/02_plan.md`
 1. Set `Status` to `done` if verification passed, or `blocked` if not
 2. Add a concise note in `Notes / Issues`
 3. If a decision or blocker occurred, append an entry to `Issues & Decisions Log`
 
-### STEP 9: WRITE `implementation_report.md`
+### STEP 9: WRITE `implementation/99_implementation_report.md`
 
 ---
 
-### STEP 9b: WRITE `unit_test_report.md` (MANDATORY — Test Documentation)
+### STEP 9b: WRITE `test/01_test_report.md` (MANDATORY — Test Documentation)
 
-You MUST write `unit_test_report.md` **after every test session** to document the test methodology, coverage analysis, and how to run/maintain tests. This file serves as the permanent reference for testing.
+You MUST write `test/01_test_report.md` **after every test session** to document the test methodology, coverage analysis, and how to run/maintain tests. This file serves as the permanent reference for testing.
 
-Write to: `/docs/YYYY_MM_DD_<judul-task>/unit_test_report.md`
+Write to: `/docs/[date]_[task]/test/01_test_report.md`
 
 ```markdown
 ---
@@ -241,7 +248,7 @@ task_id: [matching task id]
 task_slug: [url-safe-slug]
 date: YYYY-MM-DD
 agent: test-expert-free
-source_plan: /docs/.../implementation_plan.md
+source_plan: /docs/.../masterplan/02_plan.md
 status: [completed|blocked]
 ---
 
@@ -284,7 +291,7 @@ status: [completed|blocked]
 | STEP-2 | ... | ... |
 
 ## Next Steps
-- [remaining steps from implementation_plan.md not yet executed]
+- [remaining steps from masterplan/02_plan.md not yet executed]
 
 ---
 *Generated: YYYY-MM-DD HH:mm*
@@ -295,12 +302,12 @@ status: [completed|blocked]
 
 ```
 TEST_GENERATION_COMPLETE: [count] tests generated - [summary]
-Implementation Report: /docs/YYYY_MM_DD_<judul-task>/implementation_report.md
-Test Documentation: /docs/YYYY_MM_DD_<judul-task>/unit_test_report.md
+Implementation Report: /docs/[date]_[task]/implementation/99_implementation_report.md
+Test Documentation: /docs/[date]_[task]/test/01_test_report.md
 ```
 or
 ```
 TEST_GENERATION_BLOCKED: [reason]
-Implementation Report: /docs/YYYY_MM_DD_<judul-task>/implementation_report.md
-Test Documentation: /docs/YYYY_MM_DD_<judul-task>/unit_test_report.md
+Implementation Report: /docs/[date]_[task]/implementation/99_implementation_report.md
+Test Documentation: /docs/[date]_[task]/test/01_test_report.md
 ```

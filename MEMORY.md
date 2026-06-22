@@ -1,5 +1,13 @@
 # Global Memory Index
 
+## Current Projects
+- **Project:** Library CLI (dkatalis-test)
+- **Path:** E:\Projects\dkatalis-test
+- **Stack:** Node.js + TypeScript + tsx (no build step)
+- **Phase:** Final report committed and private archive refreshed; local-only/no push
+- **Task folder:** `docs/2026_06_18_solve_problem_nodejs_typescript/`
+- **Key decision:** Waitlist fulfillment corrected 2026-06-18 — return transfers book to first waitlisted user (book stays borrowed), stores notification, shifts positions. NOT notification-only.
+
 ## Current Project (2026-06-12)
 - **Project:** Comprehensive E-commerce App
 - **Path:** E:\Projects\e-commerse
@@ -7,6 +15,27 @@
 - **Phase:** Phase 2 COMPLETE | Phase 3 PENDING
 
 ## Recent Activities
+
+### Library CLI Final Report and Private Archive Refresh (2026-06-19)
+- Final report committed locally as `a5f0472437b14e389eba795c09ddd5047f924ca7`; archive report committed through `afac34d`.
+- Private tar.gz/ZIP archives regenerated and verified: final report present, `start.sh` mode preserved, stale/prohibited/generated entries absent, no remotes/no push.
+- Lesson: archived reports should avoid exact archive byte sizes because report content becomes part of the archive and can cause size self-reference drift.
+
+### Kilo Phase Accountability Workflow (2026-06-19)
+- Added centralized `Documentation Accountability Contract` to `AGENTS.md`.
+- Added phase accountability inserts to required agent files.
+- Created `docs/2026_06_19_phase_accountability_workflow/` with all required phase artifacts.
+- Lesson: verify `/output` carefully because a pre-existing directory may exist; confirm no task artifacts or session-modified files are under it.
+
+### Task Architect Scale Category Enhancement (2026-06-21)
+- Enhanced `agent/task-architect.md` so task-architect classifies work by scale category and designs Source → Spec → Impact research before implementation planning.
+- Added scale-category matrix, research depth rules, structured template sections, and routing guidance for New Project, Enhancement, Refactor, Migration, Research, Debug, and Administration tasks.
+- Lesson: scale category should drive research posture, specification rigor, agent mapping, and verification strategy rather than being treated as a passive label.
+
+### Analyst Spec Artifact Assignment (2026-06-21)
+- Updated task architecture and analyst planning rules so `data-analyst` creates the canonical `masterplan/01_specs.md` when assigned to the spec phase.
+- Updated `AGENTS.md`, `agent/data-analyst.md`, `agent/pm-planner.md`, and `agent/task-architect.md` so the masterplan flow is: research/analysis → `masterplan/01_specs.md` → `masterplan/02_plan.md`.
+- Lesson: `pm-planner` should consume the canonical spec artifact instead of planning implementation from analysis alone when formal specs are required.
 
 ### E-commerce App Development (2026-06-12)
 - **Phase 0 (Foundation):** Monorepo, NestJS backend skeleton, Next.js frontend, Prisma + SQLite, design system primitives, CI/CD — COMPLETE (`f2e17b9`)
@@ -54,3 +83,11 @@
 9. React-native-style interactions (handler-driven) avoid DOM conflicts in Next.js / server-rendered projects.
 10. Role‑aware navigation improves user experience by hiding/showing routes based on account type.
 11. Global memory updates (MEMORY.md) help track progress and lessons across sessions and devices.
+
+### Task Architect Scale Category Enhancement (2026-06-21)
+1. Scale category should drive research posture, specification rigor, agent mapping, and verification strategy rather than being treated as a passive label.
+2. Source → Spec → Impact research should be designed before implementation planning so evidence, acceptance criteria, and blast radius are explicit.
+
+### Analyst Spec Artifact Assignment (2026-06-21)
+1. `data-analyst` should create `masterplan/01_specs.md` when assigned to the spec phase.
+2. `pm-planner` should consume `masterplan/01_specs.md` before creating `masterplan/02_plan.md`, rather than planning from analysis alone.

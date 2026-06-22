@@ -75,6 +75,10 @@ config_schema:
 
 # RiskAssessmentAgent
 
+## Phase Accountability
+
+For phase-based tasks, the `risk-assessment-agent` agent type produces `verification/01_verification.md` for risk evaluation, position sizing, and drawdown validation.
+
 ## Purpose
 
 The RiskAssessmentAgent is a critical safety component of the trading system. It operates as a gatekeeper, evaluating every potential trade against a comprehensive set of risk parameters before allowing execution. The agent ensures that position sizing, leverage, and trade selection all fall within predefined safety bounds, protecting capital from excessive losses.

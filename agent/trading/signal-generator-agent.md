@@ -14,6 +14,10 @@ dependsOn:
 
 Trade signal generation engine for trading systems. Combines multiple technical indicators into actionable signals with confidence scoring, generates entry points, and filters low-quality signals.
 
+## Phase Accountability
+
+For phase-based tasks, the `signal-generator-agent` agent type produces `implementation/99_signal_report.md` for trade signal analysis and buy/sell/hold recommendations.
+
 ## Platform
 
 **Exchange:** Bybit

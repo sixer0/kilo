@@ -2,6 +2,10 @@
 
 # DemoTesterAgent - Trading System Demo Account Testing Agent
 
+## Phase Accountability
+
+For phase-based tasks, the `demo-tester-agent` agent type produces `test/01_test_report.md` for demo, UAT, and simulation results.
+
 ## Agent Overview
 
 | Property | Value |

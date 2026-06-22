@@ -87,18 +87,23 @@ skill: agent-browser
 **IMPORTANT: Always check existing docs first**
 Before any implementation, check `/docs/` folder for:
 - Previous task phases (Phase 1, Phase 2, etc.) with established conventions
-- Existing `DECISIONS.md`, `ARCHITECTURE.md`, `implementation_plan.md`
+- Existing `DECISIONS.md`, `ARCHITECTURE.md`, `masterplan/02_plan.md`
 - Respect documented architecture decisions over skill defaults
 
 ---
 
 ## Source of Truth
 
-To prevent intent erosion, you MUST read the following files before any implementation:
-1. `task.md` (Original user intent and constraints)
-2. `analysis.md` (Detailed requirements, technical findings, and 'Why')
-3. `plan.md` (The approved implementation roadmap)
-4. `implementation_plan.md` (Step tracking, status, and issues log)
+Read these files before any implementation:
+```
+../docs/[date]_[task]/identification/02_structured.md
+../docs/[date]_[task]/research/03_analysis.md
+../docs/[date]_[task]/masterplan/02_plan.md
+../docs/[date]_[task]/identification/01_original.md
+../docs/[date]_[task]/identification/01_translated.md
+```
+
+The `masterplan/02_plan.md` is the single source of truth for execution. You MUST update its tracking table as you complete each step, and append notes/issues to the Issues & Decisions Log when applicable.
 
 **NEVER** rely solely on the Orchestrator's synthesis. The files are the ultimate Source of Truth.
 
@@ -180,7 +185,7 @@ Use the `dry-run-verify-fix` skill for pre-ship validation when implementation p
 
 For simple tasks with no test infrastructure, skip this step and record "no validation commands available" in the report.
 
-**Persistent issue rule:** If any issue remains unresolved after the 3 repair cycle cap, you MUST document it in the Persistent Issues section of `implementation_report.md` with root cause analysis before escalating.
+**Persistent issue rule:** If any issue remains unresolved after the 3 repair cycle cap, you MUST document it in the Persistent Issues section of `implementation/99_implementation_report.md` with root cause analysis before escalating.
 
 See: `skills/dry-run-verify-fix/SKILL.md`
 
@@ -397,9 +402,9 @@ When reviewing frontend code, ask: *"If the API is down or returns an error, wil
 | Logic unclear | Stop and ask |
 | Conflict detected | Report and wait |
 
-## Mandatory Output: `implementation_report.md`
+## Mandatory Output: `implementation/99_implementation_report.md`
 
-You MUST write `implementation_report.md` **after every implementation session**, regardless of success or failure. This is not optional. The file goes in the task folder under `/docs/YYYY_MM_DD_<judul-task>/`.
+You MUST write `implementation/99_implementation_report.md` **after every implementation session**, regardless of success or failure. This is not optional. The file goes in the task folder under `/docs/[date]_[task]/`.
 
 ```markdown
 ---
@@ -448,10 +453,17 @@ status: [completed|blocked|partial]
 
 ```
 IMPLEMENTATION_COMPLETE: [summary]
-Implementation Report: /docs/YYYY_MM_DD_<judul-task>/implementation_report.md
+Implementation Report: /docs/[date]_[task]/implementation/99_implementation_report.md
 ```
 or
 ```
 IMPLEMENTATION_BLOCKED: [reason]
-Implementation Report: /docs/YYYY_MM_DD_<judul-task>/implementation_report.md
+Implementation Report: /docs/[date]_[task]/implementation/99_implementation_report.md
 ```
+
+---
+
+## Phase Accountability
+
+For phase-based tasks, the `coder-execution` agent type produces numbered implementation artifacts under `implementation/`, such as `implementation/01_changes.md` and `implementation/02_agent_rule_inserts.md`, plus test artifacts and `implementation/99_implementation_report.md`. Implementation work must be additive unless a small insertion point is clearly needed, and must preserve existing docs and agent files.
+

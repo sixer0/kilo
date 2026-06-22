@@ -12,6 +12,10 @@ platform: multi (SMTP, SendGrid, Mailgun)
 
 Notification system for trading agent. Sends email notifications to user for trade events, risk warnings, and periodic summaries.
 
+## Phase Accountability
+
+For phase-based tasks, the `notification-agent` agent type produces `report/report.md` for notification, alert, and daily summary content or delivery plans.
+
 ## Overview
 
 The NotificationAgent handles all communication with the user via email. It receives events from other agents and sends appropriate notifications based on user preferences.

@@ -1,0 +1,70 @@
+checkpoint:
+  version: 1
+  timestamp: '2026-06-19T10:00:47+07:00'
+  task_id: phase-accountability-documentation-workflow
+goal:
+  original: Implement the approved phase-based accountability/documentation workflow in the Kilo workspace.
+  current: Add a concise AGENTS.md contract, additive per-agent accountability inserts, and self-documenting phase artifacts under docs/2026_06_19_phase_accountability_workflow.
+status:
+  overall_progress: 20
+  phases_completed:
+    - phase: identification
+      status: completed
+      artifacts:
+        - path: docs/2026_06_19_phase_accountability_workflow/structured_tasks.md
+          description: Existing structured task file read and preserved.
+    - phase: research
+      status: completed
+      artifacts:
+        - path: AGENTS.md
+          description: Required source file read before editing.
+        - path: SOUL.md
+          description: Required identity file read.
+        - path: MEMORY.md
+          description: Required memory index read.
+        - path: docs/2026_06_12_map-skills-to-agents/mapping_matrix.md
+          description: Skill-agent mapping reference read.
+        - path: docs/2026_06_12_audit-skill-registration/final_report.md
+          description: Prior audit report reference read.
+        - path: agent/*.md
+          description: Required and relevant agent files inspected.
+    - phase: masterplan
+      status: in_progress
+      artifacts: []
+      decisions:
+        - decision: Use additive inserts only and preserve all existing sections.
+          rationale: User explicitly required no deletion/rename and additive changes.
+        - decision: Use snake_case filenames and docs path only.
+          rationale: User explicitly required no output artifacts and snake_case names.
+context:
+  input_files:
+    - C:\Users\sixer\.config\kilo\AGENTS.md
+    - C:\Users\sixer\.config\kilo\SOUL.md
+    - C:\Users\sixer\.config\kilo\MEMORY.md
+    - C:\Users\sixer\.config\kilo\docs\2026_06_19_phase_accountability_workflow\structured_tasks.md
+    - C:\Users\sixer\.config\kilo\docs\2026_06_12_map-skills-to-agents\mapping_matrix.md
+    - C:\Users\sixer\.config\kilo\docs\2026_06_12_audit-skill-registration\final_report.md
+    - C:\Users\sixer\.config\kilo\agent\master-controller.md
+    - C:\Users\sixer\.config\kilo\agent\master-controller-free.md
+    - C:\Users\sixer\.config\kilo\agent\request-translator.md
+    - C:\Users\sixer\.config\kilo\agent\task-architect.md
+    - C:\Users\sixer\.config\kilo\agent\explore.md
+    - C:\Users\sixer\.config\kilo\agent\data-collector.md
+    - C:\Users\sixer\.config\kilo\agent\data-analyst-free.md
+    - C:\Users\sixer\.config\kilo\agent\pm-planner.md
+    - C:\Users\sixer\.config\kilo\agent\coder-execution-free.md
+    - C:\Users\sixer\.config\kilo\agent\test-expert-free.md
+    - C:\Users\sixer\.config\kilo\agent\verifier-free.md
+    - C:\Users\sixer\.config\kilo\agent\security-review-free.md
+  output_files: []
+  key_decisions:
+    - decision: Do not modify SOUL.md or MEMORY.md.
+      rationale: Task only requires AGENTS.md, agent instruction inserts, and docs artifacts.
+  known_issues: []
+next_action:
+  immediate: Create phase folders and write self-documenting artifacts under docs/2026_06_19_phase_accountability_workflow.
+  blocked_by: none
+metadata:
+  tool_calls_so_far: 11
+  tokens_used_estimate: 32000
+  skill_in_use: checkpoint-resume

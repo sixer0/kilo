@@ -84,7 +84,7 @@ MEMORY.md                # INDEX: Concise, structured, linking to refs & tasks.
 * **Daily Log:** `memory/YYYY-MM-DD.md` — Chronological log of daily activities. Acts as a **source for proactive reminders** to the user (since the user might forget).
 
 ### 🔍 Memory Screening (Mandatory)
-Before proceeding with any task, every agent MUST:
+Before proceeding with any task, `*_controller` agent must:
 1. **Read `MEMORY.md**`: Identify relevant project context, user preferences, or critical decisions.
 2. **Check Reference Index**: Look for references in `memory/refs/` matching the current task's scope.
 3. **Check Task Archives**: Search `memory/tasks/` for reports or compaction snapshots related to similar tasks.
@@ -106,6 +106,8 @@ During heartbeats or session startups:
 * Pending tasks.
 * Ideas that were raised but not executed.
 * Things the user deferred to "later" but haven't addressed.
+
+Reference only: `skills/context-engineering/SKILL.md`. Do not invoke this skill directly.
 
 ### ⚡ Memory Update Triggers
 * **Post-Task Reflection:** After resolving complex issues or non-trivial features, agents must identify "Lessons Learned" (patterns, edge cases, tool usage) and document them.
@@ -159,11 +161,12 @@ Think of it like a human reviewing their journal and updating their mental model
 Skills provide your tools. When you need one, check its `SKILL.md`. Keep local notes (camera names, SSH details, voice preferences) in `TOOLS.md`.
 **Never share tool credentials.** Always ask first.
 
-## Accountability & Documentation
-The agent does not bear responsibility for the final output. The user is entirely accountable for all work results. The agent's role is to assist the user as much as possible—providing options, explaining risks, and supplying comprehensive information so the user can make informed decisions.
+## Documentation
+
+Use the `Documentation Accountability Contract` below as the single source of truth for project documentation and phase workflow.
 
 ### 📁 Project Documentation (`/docs`)
-For every project, it is mandatory to create and maintain a `/docs` directory containing:
+For every project, create and maintain a `/docs` directory containing:
 * **Work history:** All completed and ongoing work.
 * **Task status:** Items that are completed, in progress, or pending.
 * **Critical notes:** Decisions made, issues encountered, and solutions applied.
@@ -173,57 +176,109 @@ All documentation must be written in **clear, accessible language**—avoid exce
 
 > **MANDATORY:** This documentation must be updated and verified before reporting final work results to the user.
 
-#### 📌 Documentation Naming Conventions
-To ensure documentation is easily indexed by AI Agents across different sessions, strictly follow these naming rules:
+## Documentation Accountability Contract
 
-* **Use entirely lowercase letters** (`snake_case`) for file names.
-* **Start with the category**, followed by a brief description. Examples:
-* `original_tasks.md`
-* `translated_tasks.md`
-* `structured_tasks.md`
-* `explore_result.md`
-* `collection_result.md`
-* `analysis_result.md`
-* `implementation_plan.md`
-* `implementation_report.md`
-* `unit_test_report.md`
-* `verification_report.md`
-* `security_report.md`
-* `commit_report.md`
-* `final_report.md`
-* `changelog.md`
-* `status_tasks.md`
-* `user_decisions.md`
-* `setup_guide.md`
+This contract defines the phase-based documentation workflow for Kilo agents. It is the authoritative documentation workflow and includes the naming, structure, artifact, gate, and agent-accountability rules.
 
+### Core Rules
 
-* **Organize into separate folders using the `YYYY_MM_DD_task_title` format** to neatly group all task-related documentation:
-* `/docs/2026_06_11_redesign_ui/`
-* `/docs/2026_06_11_redesign_ui/changelog.md`
-* `/docs/2026_06_11_redesign_ui/status_tasks.md`
-* **Use the `YYYYMMDD_HHIISS` timestamp format** for time-sensitive files or folders, ensuring automatic sorting and consistency with `snake_case`:
-* `changelog_20260611_121145.md`
-* `notes_20260611_133000.md`
-* **Avoid spaces, special characters, or ambiguous abbreviations**. Use underscores instead of hyphens for consistency (`project_overview.md` is correct; avoid `project-overview.md` or `p_overview.md`).
-* **Prioritize `README.md` as the index** within every documentation folder. It should contain a table of contents and links to other files within that folder.
+1. The controller type is the first and last user-facing actor.
+2. The controller must delegate to `request-translator` before any other sub-agent.
+3. All task artifacts must be written under `/docs`, never `/output`.
+4. The canonical task path is `docs/[date]_[task]/[phase]/[num]_slug`.
+5. Filenames must use snake_case and avoid spaces, special characters, and ambiguous abbreviations.
+6. Existing docs and agent files must be preserved. Changes are additive unless a small insertion point is clearly needed.
+7. Each phase must produce at least one artifact or a documented blocker.
+8. The controller opens and closes gates; it must not mark a phase complete until required artifacts exist and are readable.
 
-Documentation structure example:
+### Phase Structure
 
-```text
-/docs
-  README.md
-  2026_06_11_redesign_ui/
-    README.md
-    changelog.md
-    status_tasks.md
-  2026_06_12_api_integration/
-    README.md
-    changelog.md
-    status_tasks.md
+| Phase | Folder | Required Example Artifacts | Responsible Agents |
+|---|---|---|---|
+| 1. identification | `identification/` | `01_translated.md`, `02_structured.md` | `request-translator`, `task-architect` |
+| 2. research | `research/` | `01_explore.md`, `02_collection.md`, `03_analysis.md` | `explore`, `data-collector`, `data-analyst` |
+| 3. masterplan | `masterplan/` | `01_specs.md`, `02_plan.md` | `data-analyst`, `pm-planner`, `task-architect` |
+| 4. initialization | `initialization/` | `01_env_check.md` | controller, executor agents |
+| 5. implementation | `implementation/` | numbered change, test, and implementation report artifacts | `coder-execution`, executor agents |
+| 6. gateway_check | `gateway_check/` | `01_gate_report.md` | controller |
+| 7. test | `test/` | `01_test_report.md` | `test-expert` |
+| 8. verification | `verification/` | `01_verification.md`, `02_security.md` | `verifier`, `security-review` |
+| 9. report | `report/` | `report.md` | controller |
+| 10. decisions | `decisions/` | `decisions.md` | controller |
 
-```
-Do not scatter one task's progress across many top-level folders.
+### Required Task-Level Artifacts
 
-**Notes on Task Continuation:**
-* The `YYYY_MM_DD_task_title` folder represents the **task itself**, not the start date. If a task continues into the following days, keep using the original folder.
-* Inside the task folder, create files with the current date to log daily progress (e.g., `changelog_2026_06_12.md`), or update the existing files accordingly.
+Every task folder should include:
+
+- `README.md` as the task index.
+- `status_tasks.md` as the live progress tracker.
+- Phase artifacts under the phase folders above.
+- `report/report.md` as the controller synthesis.
+- `decisions/decisions.md` when decisions affect scope, risk, or workflow.
+- `report/report.md` when the task is complete.
+
+### Per-Agent Accountability
+
+Use agent type rather than specific agent variant in accountability mappings. A type may have multiple variants, and all variants of the same type share the same responsibility. For PM planning, document the available variants in the PM planner agent file; controllers choose the available variant for the `pm-planner` type at runtime.
+
+| Agent type | Accountability |
+|---|---|
+| `controller` | Owns folder creation, gate checks, delegation prompts, status updates, final synthesis, and user-facing reporting. |
+| `domain-controller` | Coordinates domain-specific workflows such as PM/BA, documentation, or trading while preserving the centralized documentation contract. |
+| `request-translator` | Produces `identification/01_translated.md` and preserves the original request. |
+| `task-architect` | Produces `identification/02_structured.md` and may contribute to `masterplan/01_specs.md` and `masterplan/02_plan.md`. |
+| `explore` | Produces `research/01_explore.md`. |
+| `data-collector` | Produces `research/02_collection.md`. |
+| `data-analyst` | Produces `research/03_analysis.md` and, when assigned to the spec phase, `masterplan/01_specs.md`. |
+| `pm-controller` | Coordinates PM/BA workflow, approvals, PM delegation, and PM reporting. |
+| `pm-analyst` | Produces PM/BA analysis, requirements, feasibility, and risk findings. |
+| `pm-planner` | Produces `masterplan/02_plan.md` or an implementation-plan artifact. |
+| `pm-writer` | Produces PM reports, documents, presentations, and formatted deliverables. |
+| `pm-verifier` | Verifies PM/BA documents for completeness, consistency, feasibility, and quality. |
+| `coder-execution` | Produces implementation change artifacts, test artifacts, and an implementation report artifact under `implementation/`. |
+| `test-expert` | Produces `test/01_test_report.md` and test strategy artifacts. |
+| `verifier` | Produces `verification/01_verification.md` and verification findings. |
+| `senior-code-reviewer` | Produces senior code review findings for duplication, dependency impact, maintainability, and reference integrity. |
+| `security-review` | Produces `verification/02_security.md` with PASS/CAUTION/FAIL. |
+| `git-specialist` | Produces git status, diff, branch, merge, release, and commit-related reports; never commits unless explicitly asked. |
+| `docker-specialist` | Produces container, runtime, Docker Compose, deployment readiness, and container operation reports. |
+| `database-specialist` | Produces schema, migration, query, seed, and data-quality reports. |
+| `document-controller` | Coordinates document lifecycle, document delegation, and document verification. |
+| `document-reader` | Produces parsed summaries for office documents such as PDF, DOCX, XLSX, and PPTX. |
+| `document-writer` | Produces written office documents and formatted report content. |
+| `document-converter` | Produces converted office documents and conversion reports. |
+| `document-reviewer` | Produces document quality, proofreading, and structure review findings. |
+| `document-analyst` | Produces document structure, content, and quality analysis findings. |
+| `image-specialist` | Produces image creation, editing, enhancement, and manipulation outputs. |
+| `image-analyst` | Produces image analysis and extraction summaries. |
+| `market-data-agent` | Produces market data retrieval, ingestion, and freshness reports. |
+| `market-adapter-agent` | Produces unified market data adapter integration reports. |
+| `signal-generator-agent` | Produces trade signal analysis and buy/sell/hold recommendations. |
+| `signal-verification-agent` | Produces trade signal validation and risk-limit checks. |
+| `trade-executor-agent` | Produces order execution plans or results only when explicitly delegated for trading operations. |
+| `risk-assessment-agent` | Produces risk evaluation, position sizing, and drawdown validation reports. |
+| `portfolio-monitor-agent` | Produces portfolio exposure and PnL monitoring summaries. |
+| `notification-agent` | Produces notification, alert, and daily summary content or delivery plans. |
+| `demo-tester-agent` | Produces demo, UAT, and simulation results. |
+| `technical-analysis-agent` | Produces trading technical analysis findings. |
+
+### Context Management
+
+When token usage exceeds **70%** (~160K tokens), stop and present a context-limit report to the user. Do not invoke `context-engineering` directly. If compaction is needed, pause for explicit user approval or write/delegate the required `/docs` artifacts.
+
+**Trigger phrases:**
+- "context is too long for the token limit"
+- "compact the conversation history"
+- "manage long-running agent context"
+
+Reference material covers:
+- Context audit (token estimation, composition analysis)
+- Compaction strategies (summarize / prune / restructure / fork / memory file)
+- Post-compaction integrity verification
+- Maintenance cadence for long-running tasks
+
+**Note:** Always document progress to `/docs/[date]_[task]/` before compaction so the task can be resumed afterward. **NEVER** continue a task when context is full without progress documentation.
+
+### Gates and Verification
+
+Before moving between phases, the controller must verify that required artifacts exist, are non-empty, are snake_case, and are under `/docs`. Before final reporting, the controller must verify: no existing files were deleted or renamed, no prohibited `/output` artifacts exist, no emojis were added, required phase folders exist, and agent accountability inserts are present when the task modifies agent instructions.

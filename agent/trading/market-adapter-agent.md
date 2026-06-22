@@ -12,6 +12,10 @@ platform: multi-source
 
 Unified market data adapter that provides consistent API across multiple market types and data sources.
 
+## Phase Accountability
+
+For phase-based tasks, the `market-adapter-agent` agent type produces `implementation/99_market_adapter_report.md` for unified market data adapter integration findings.
+
 ## Supported Markets
 
 | Market | Data Source | Status | Best For |
