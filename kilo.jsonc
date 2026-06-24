@@ -102,14 +102,22 @@
       "description": "Senior code review agent - challenges executor code for duplication, maintainability, dependency impact, and reference integrity",
       "mode": "subagent",
       "name": "senior-code-reviewer",
-      "color": "#8B5CF6"
+      "color": "#8B5CF6",
+      "options": {
+        "temperature": 0.1,
+        "top_p": 0.9
+      }
     },
     "senior-code-reviewer-free": {
       "model": "kilo/kilo-auto/free",
       "hidden": true,
       "description": "Fallback: Code reviewer when primary rate-limited",
       "mode": "subagent",
-      "name": "senior-code-reviewer-free"
+      "name": "senior-code-reviewer-free",
+      "options": {
+        "temperature": 0.1,
+        "top_p": 0.9
+      }
     },
 
     "coder-execution": {
@@ -117,14 +125,22 @@
       "hidden": true,
       "description": "Code implementation agent with standards",
       "mode": "subagent",
-      "name": "coder-execution"
+      "name": "coder-execution",
+      "options": {
+        "temperature": 0.1,
+        "top_p": 0.9
+      }
     },
     "coder-execution-free": {
       "model": "kilo/nvidia/nemotron-3-ultra-550b-a55b:free",
       "hidden": true,
       "description": "Code implementation agent with standards",
       "mode": "subagent",
-      "name": "coder-execution-free"
+      "name": "coder-execution-free",
+      "options": {
+        "temperature": 0.1,
+        "top_p": 0.9
+      }
     },
 
     "verifier": {
@@ -132,14 +148,22 @@
       "hidden": true,
       "description": "Verification and testing agent",
       "mode": "subagent",
-      "name": "verifier"
+      "name": "verifier",
+      "options": {
+        "temperature": 0.1,
+        "top_p": 0.9
+      }
     },
     "verifier-free": {
       "model": "kilo/kilo-auto/free",
       "hidden": true,
       "description": "Verification and testing agent",
       "mode": "subagent",
-      "name": "verifier-free"
+      "name": "verifier-free",
+      "options": {
+        "temperature": 0.1,
+        "top_p": 0.9
+      }
     },
 
     "security-review": {
@@ -147,14 +171,24 @@
       "hidden": true,
       "description": "Security vulnerability scanner",
       "mode": "subagent",
-      "name": "security-review"
+      "name": "security-review",
+      "color": "#EF4444",
+      "options": {
+        "temperature": 0.1,
+        "top_p": 0.9
+      }
     },
     "security-review-free": {
       "model": "kilo/kilo-auto/free",
       "hidden": true,
       "description": "Security vulnerability scanner",
       "mode": "subagent",
-      "name": "security-review-free"
+      "name": "security-review-free",
+      "color": "#EF4444",
+      "options": {
+        "temperature": 0.1,
+        "top_p": 0.9
+      }
     },
 
     "test-expert": {
@@ -162,14 +196,24 @@
       "hidden": true,
       "description": "Test generation and testing strategy expert",
       "mode": "subagent",
-      "name": "test-expert"
+      "name": "test-expert",
+      "color": "#F59E0B",
+      "options": {
+        "temperature": 0.1,
+        "top_p": 0.9
+      }
     },
     "test-expert-free": {
       "model": "kilo/stepfun/step-3.7-flash:free",
       "hidden": true,
       "description": "Test generation and testing strategy expert",
       "mode": "subagent",
-      "name": "test-expert-free"
+      "name": "test-expert-free",
+      "color": "#F59E0B",
+      "options": {
+        "temperature": 0.1,
+        "top_p": 0.9
+      }
     },
 
     // ════════════════════════════════════════════════════════════════════════════
@@ -181,7 +225,11 @@
       "description": "Specialized git operations agent",
       "mode": "subagent",
       "color": "#F97316",
-      "name": "git-specialist"
+      "name": "git-specialist",
+      "options": {
+        "temperature": 0.1,
+        "top_p": 0.9
+      }
     },
     "git-specialist-free": {
       "model": "kilo/kilo-auto/free",
@@ -189,7 +237,11 @@
       "description": "Fallback: Git operations when primary rate-limited",
       "mode": "subagent",
       "color": "#F97316",
-      "name": "git-specialist-free"
+      "name": "git-specialist-free",
+      "options": {
+        "temperature": 0.1,
+        "top_p": 0.9
+      }
     },
 
     "docker-specialist": {
@@ -198,7 +250,11 @@
       "description": "Docker and container operations specialist",
       "mode": "subagent",
       "color": "#2496ED",
-      "name": "docker-specialist"
+      "name": "docker-specialist",
+      "options": {
+        "temperature": 0.1,
+        "top_p": 0.9
+      }
     },
     "docker-specialist-free": {
       "model": "kilo/kilo-auto/free",
@@ -206,7 +262,11 @@
       "description": "Fallback: Docker operations when primary rate-limited",
       "mode": "subagent",
       "color": "#2496ED",
-      "name": "docker-specialist-free"
+      "name": "docker-specialist-free",
+      "options": {
+        "temperature": 0.1,
+        "top_p": 0.9
+      }
     },
 
     "database-specialist": {
@@ -215,7 +275,11 @@
       "description": "Database inspection and query analysis specialist",
       "mode": "subagent",
       "color": "#336791",
-      "name": "database-specialist"
+      "name": "database-specialist",
+      "options": {
+        "temperature": 0.1,
+        "top_p": 0.9
+      }
     },
     "database-specialist-free": {
       "model": "kilo/kilo-auto/free",
@@ -223,7 +287,11 @@
       "description": "Fallback: Database operations when primary rate-limited",
       "mode": "subagent",
       "color": "#336791",
-      "name": "database-specialist-free"
+      "name": "database-specialist-free",
+      "options": {
+        "temperature": 0.1,
+        "top_p": 0.9
+      }
     },
 
     // ════════════════════════════════════════════════════════════════════════════
