@@ -221,6 +221,16 @@ Translate the refined intent into a step-by-step task map.
    - Impact research identifies blast radius, risks, rollback, and verification needs.
 4. Only after Source → Spec → Impact is defined, decompose execution, testing, review, and final verification.
 
+**Initial structured task scope rule:**
+- **Research-only tasks**: the structured task MAY include full execution steps if execution is purely analytical/deliverable-based and does not require implementation.
+- **All other tasks** (New Project, Enhancement, Refactor, Migration, Debug, Administration): the initial structured task MUST contain **only research, discovery, collection, analysis, and spec steps** — no implementation/execution steps. Implementation planning is added in a second architect pass after research confirms scope.
+
+**Post-research implementation planning step:** for non-research tasks, the last step in the initial structured task MUST be a re-delegation back to `task-architect` with instructions to:
+1. Re-read `identification/02_structured.md`
+2. Read `research/03_analysis.md`, `masterplan/01_specs.md`, and `masterplan/02_plan.md`
+3. Refine `identification/02_structured.md` by adding the implementation breakdown grounded in actual research findings
+4. Split any broad step into smaller, single-owner, single-verification delegation units
+
 **Task decomposition principles:**
 - Break into **3-7 subtasks** (too few = vague, too many = fragmented)
 - Each subtask must be **independently verifiable**
@@ -279,9 +289,9 @@ When the task is classified as **initial project development**, **presales appli
 - The re-run criteria to confirm the fix before proceeding
 - No BLOCK without a re-route path — "send back to fix" always precedes "notify user"
 
-#### Phase 0: Sequential Multi-Track Research, Final Spec & Implementation Planning
+#### Phase 0: Sequential Multi-Track Research, Final Spec
 
-Before any implementation, design **5 sequential research tracks** where `data-collector` and `data-analyst` collaborate on each track, followed by final specification analysis and implementation planning:
+Before any implementation, design **5 sequential research tracks** where `data-collector` and `data-analyst` collaborate on each track, followed by final specification analysis. Implementation planning is deliberately deferred to a post-research architect pass so it is grounded in confirmed findings rather than initial assumptions.
 
 | Step | Name | Focus | Agent Collaboration | Output |
 |------|------|-------|-------------------|--------|
@@ -291,21 +301,22 @@ Before any implementation, design **5 sequential research tracks** where `data-c
 | 4 | Integration & Security Research | Third-party API dependencies, external service integrations, authentication/authorization strategy, data privacy compliance, security best practices, rate limiting, error handling | `data-collector` + `data-analyst` (collaborative) | `04_integration_security_research.md` — integration map, security threat model, auth strategy |
 | 5 | Gap & Resolution | Cross-track conflict resolution, edge case inventory, risk register, dependency gaps, specification refinement | `data-collector` + `data-analyst` (collaborative) | `05_gap_resolution.md` — consolidated gap analysis, risk register, resolved ambiguities |
 | 6 | **Final Specification Analysis** | Synthesize all 5 track outputs into the canonical specification, resolve cross-track inconsistencies, define acceptance criteria, and produce final detailed spec | `data-analyst` (lead) | `masterplan/01_specs.md` — canonical spec, validated requirements, acceptance criteria; optional `06_final_specification.md` working synthesis |
-| 7 | **Implementation Planning** | Translate canonical spec into actionable implementation plan: task breakdown, effort estimation, dependency graph, milestone timeline, risk mitigation | `data-analyst` → `pm-planner` | `07_masterplan/02_plan.md` — detailed implementation plan with timelines, milestones, task assignments |
 
-**Spec artifact rule:** Step 6 MUST assign `data-analyst` to create the canonical `masterplan/01_specs.md` when the task requires a formal specification. `pm-planner` consumes `masterplan/01_specs.md` as an input for `masterplan/02_plan.md`; do not plan implementation from analysis alone when a spec artifact is required.
+**Spec artifact rule:** Step 6 MUST assign `data-analyst` to create the canonical `masterplan/01_specs.md` when the task requires a formal specification.
+
+**Implementation planning rule:** `masterplan/02_plan.md` is produced during the research phase by `data-analyst` or `pm-planner` if implementation is clearly required. The detailed step-by-step structured task breakdown that maps each unit to a specific agent, expected output, and verification criterion is created in the **post-research task-architect pass** by re-reading `masterplan/02_plan.md` and translating it into atomic delegation units inside `identification/02_structured.md`. Do not plan implementation from analysis alone when a spec artifact is required.
 
 **Rules for sequential research design:**
-- All steps (1-7) are **strictly sequential** — each step depends on the previous completing first
+- All steps (1-6) are **strictly sequential** — each step depends on the previous completing first
 - For steps 1-5, `data-collector` gathers domain-specific data while `data-analyst` simultaneously analyzes and refines (collaborative loop, not hand-off)
-- Step 6 and 7 are single-agent lead steps that synthesize across all domains
+- Step 6 is a single-agent lead step that synthesizes across all domains
 - `checkpoint-resume` skill checkpoint at every step boundary
-- A user decision gate via `human-in-loop-gate` is required after step 7 (plan approval)
+- A user decision gate via `human-in-loop-gate` is required after the post-research task-architect pass (implementation plan approval)
 - No step may be skipped; adjust depth based on project complexity
 - **Checkpoint feedback loop:** If any checkpoint review finds issues, the orchestration plan MUST route the findings back to the agent that produced the output:
   - Step 1-5 issues → send back to `data-collector` + `data-analyst` pair for that specific track
   - Step 6 issues → send back to relevant track's agent(s) depending on which domain the issue belongs to
-  - Step 7 issues → send back to `data-analyst` or `pm-planner` depending on issue type (spec gap → analyst, estimation error → planner)
+  - Post-research implementation breakdown issues → send back to `task-architect` with specific issues to fix in `identification/02_structured.md`
   - The re-delegation must include: (a) the specific issue found, (b) the output to re-work, and (c) the expected correction
 
 #### Phase 0b: Environment Readiness & Dependency Installation
@@ -520,12 +531,22 @@ status: pending
 - **Technical Constraints**: [specifications, standards, limitations]
 - **Acceptance Criteria**: [testable conditions for completion]
 
+### Scope & Delegation Refresh
+- **Post-research expansion triggers**: new requirements, hidden dependencies, additional deliverables, or risk elevation discovered during `research/`, `masterplan/01_specs.md`, or `masterplan/02_plan.md` creation
+- **Refresh process**: re-read `research/03_analysis.md`, `masterplan/01_specs.md`, and `masterplan/02_plan.md`; update `identification/02_structured.md` by refining existing steps or splitting any broad step into smaller delegation units
+- **Granularity rule**: each delegation unit must represent one expected output, one verification criterion, and one agent token
+- **Split triggers**: step produces multiple deliverables, spans multiple concern domains, references more than one major artifact, or is too large to track reliably
+
 ## Structured Task Breakdown
+
+For **research-only tasks**: include full execution steps as needed.
+For **all other tasks** (New Project, Enhancement, Refactor, Migration, Debug, Administration): include **only research, discovery, collection, analysis, and spec steps** in the initial breakdown. The last step MUST be a re-delegation back to `task-architect` for implementation planning after research confirms scope.
 
 | Step | Task Description | Agent_to_Invoke | Expected Output | Depends On | Verification | Phase |
 |------|------------------|-----------------|-----------------|------------|--------------|-------|
 | 1    | ...              | ...             | ...             | ...        | ...          | ...   |
 | 2    | ...              | ...             | ...             | ...        | ...          | ...   |
+| N    | **Post-Research Implementation Planning** — re-read `identification/02_structured.md`, `research/03_analysis.md`, `masterplan/01_specs.md`, and `masterplan/02_plan.md`; refine this structured task by adding the implementation breakdown grounded in actual research findings; split any broad step into smaller, single-owner, single-verification delegation units | `task-architect` | Updated `identification/02_structured.md` with implementation steps | Research steps complete | Implementation breakdown is traceable to specs/analysis/plan and each step is atomic | masterplan |
 
 ## Dependencies
 
@@ -547,9 +568,9 @@ status: pending
 
 **Remediation if any check fails:** BLOCK implementation → notify user → generate environment setup subtask → retry.
 
-### Sequential Research, Final Spec & Implementation Planning
+### Sequential Research, Final Spec
 
-*Phase 0 — 5 sequential research tracks (collector + analyst collaborate per track), followed by final spec analysis and implementation planning.*
+*Phase 0 — 5 sequential research tracks (collector + analyst collaborate per track), followed by final spec analysis. Implementation planning is intentionally deferred to a post-research architect pass so it is grounded in confirmed findings.*
 
 | Step | Name | Focus | Agent Collaboration | Output | Depends On |
 |------|------|-------|-------------------|--------|------------|
@@ -559,9 +580,10 @@ status: pending
 | 4 | Integration & Security | Third-party APIs, auth, security compliance, error handling | `data-collector` + `data-analyst` (collaborative) | `04_integration_security_research.md` | Step 3 |
 | 5 | Gap & Resolution | Cross-track conflict resolution, edge cases, risk register | `data-collector` + `data-analyst` (collaborative) | `05_gap_resolution.md` | Step 4 |
 | 6 | **Final Spec Analysis** | Synthesize all tracks, resolve inconsistencies, define acceptance criteria | `data-analyst` (lead) | `masterplan/01_specs.md` | Step 5 |
-| 7 | **Implementation Planning** | Task breakdown, effort estimation, dependency graph, milestones | `data-analyst` → `pm-planner` | `07_masterplan/02_plan.md` | Step 6 |
 
-**Sequential execution:** Steps 1-7 run strictly sequentially. Each step completes fully before the next begins.
+**Sequential execution:** Steps 1-6 run strictly sequentially. Each step completes fully before the next begins.
+
+**Post-research handoff:** After Step 6, `masterplan/02_plan.md` may be created by `data-analyst` or `pm-planner` if implementation is clearly required. The structured task breakdown mapping each unit to a specific agent, expected output, and verification criterion is then created in the **post-research task-architect pass** by re-reading `masterplan/02_plan.md` and translating it into atomic delegation units inside `identification/02_structured.md`.
 
 ### Database Design Check
 
@@ -588,19 +610,21 @@ Phase 0 (Research — Sequential):
   Step 4: Integration & Security Research             ─┤
   Step 5: Gap & Resolution                            ─┤
   Step 6: Final Specification Analysis → masterplan/01_specs.md
-  Step 7: Implementation Planning                     ─┘
-  ── user gate: spec sign-off + plan approval ──
+  ── user gate: spec sign-off ──
+  Step 7 (Post-Research): Implementation Planning — task-architect re-reads research/03_analysis.md, masterplan/01_specs.md, and masterplan/02_plan.md (if created during research by pm-planner), then refines identification/02_structured.md with the implementation breakdown
+  ── user gate: plan approval ──
 Phase 0 (Env Check):  Environment Readiness Assessment → Install Dependencies
 Phase 1 (DB Design):  Database Design Check → Schema Sign-off
 Phase 2 (Execution):  For EACH implementation step → [Implement] → [Unit Test] → [Code Review] → proceed
 Phase 2b (Data Seed): Generate bulk historical data → Seed database [MANDATORY before Phase 3]
 Phase 3 (Verification): Functional Testing → UAT → Integration Testing → Security Scan → Documentation
-                         ↑
-                   (test against realistic data volumes, not empty DB)
+                          ↑
+                    (test against realistic data volumes, not empty DB)
 
 Key rule: Unit testing + code review are per-phase activities embedded in every execution step.
           Phase 2b (Data Seed) is mandatory before functional/UAT testing — empty-DB tests are meaningless.
           Verification Phase 3 is for cross-module integration, functional, UAT, and security — NOT a substitute for per-phase testing.
+          Post-research task-architect pass is mandatory for non-research tasks; this is where implementation steps are grounded in actual research findings and split into atomic delegation units.
 ```
 
 ---
@@ -691,12 +715,13 @@ First classify or confirm the task's **Scale Category** from `identification/01_
 - **Document-heavy task**: include `document-reader` / `document-writer` early; may need `document-analyst`
 - **Trading-related task**: route through `trading-controller` or directly to market / signal / execution agents
 - **Initial Project Development / Presales App / Greenfield Project**: MUST use the **Initial Project Orchestration Pattern**:
-  1. **Phase 0a (Sequential Research, Spec & Plan)**: 5 sequential research tracks (collector + analyst collaborate per track) → `data-analyst` creates `masterplan/01_specs.md` → Final Spec Analysis → `pm-planner` creates `masterplan/02_plan.md` — all strictly sequential with user gates after spec sign-off and plan approval
-  2. **Phase 0b (Environment Readiness)**: Runtime version check → Package manager check → Dependency install → Build verify → Service availability check
-  4. **Phase 1 (Database Design Check)**: Mandatory schema, migration, index, and integrity validation via `database-specialist`
-  5. **Phase 2 (Execution)**: Implementation per approved plan
-  6. **Phase 2b (Bulk Data Seeding)**: Generate and seed bulk historical data — mandatory before functional/UAT testing (min 100+ users, 300+ transactions, 6+ months of time-series data where applicable)
-  7. **Phase 3 (Verification)**: Functional Testing → UAT → Integration Testing → Security → Code Review → Documentation — all tests run against pre-seeded realistic data volumes
+   1. **Phase 0a (Sequential Research & Spec)**: 5 sequential research tracks (collector + analyst collaborate per track) → `data-analyst` creates `masterplan/01_specs.md` — strictly sequential with user gate after spec sign-off
+   2. **Phase 0b (Implementation Planning)**: Post-research task-architect pass — re-read `research/03_analysis.md`, `masterplan/01_specs.md`, and `masterplan/02_plan.md` (if created by pm-planner during research); refine `identification/02_structured.md` with atomic implementation breakdown; user gate after plan approval
+   3. **Phase 0c (Environment Readiness)**: Runtime version check → Package manager check → Dependency install → Build verify → Service availability check
+   4. **Phase 1 (Database Design Check)**: Mandatory schema, migration, index, and integrity validation via `database-specialist`
+   5. **Phase 2 (Execution)**: Implementation per approved plan
+   6. **Phase 2b (Bulk Data Seeding)**: Generate and seed bulk historical data — mandatory before functional/UAT testing (min 100+ users, 300+ transactions, 6+ months of time-series data where applicable)
+   7. **Phase 3 (Verification)**: Functional Testing → UAT → Integration Testing → Security → Code Review → Documentation — all tests run against pre-seeded realistic data volumes
   - All phases must use `checkpoint-resume` skill for progress tracking
   - Each phase boundary must include a user decision gate via `human-in-loop-gate`
   - Reference: Special Design Protocol in STEP 3 above

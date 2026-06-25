@@ -206,27 +206,25 @@ For phase-based tasks, the `controller` agent type owns `README.md`, `status_tas
 
 ## Output Files Reference
 
-All task-related files are stored in `/docs`:
+All task-related files are stored under `/docs/[date]_[task]/` using the phase folders and artifact names mandated by the Documentation Accountability Contract in `AGENTS.md`:
 
-| Type | Path | Purpose |
-|------|------|---------|
-| Status | `docs/[date]_[task]/status_tasks.md` | Progress tracking, task status |
-| Delegation | `docs/[date]_[task]/delegation_progress_report.md` | Latest delegated work, accountability trail, blockers, docs written |
-| Report | `docs/[date]_[task]/report/report.md` | Final task completion report |
-| Decisions | `docs/[date]_[task]/decisions/decisions.md` | User decisions that differ from initial plan |
-| Task | `docs/[date]_[task]/..._tasks.md` or related files | Original request, scope, constraints, and documentation index |
-| Explore | `docs/[date]_[task]/research/01_explore.md` | Project structure mapping |
-| Collector | `docs/[date]_[task]/research/02_collection.md` | Gathered data, code, documents |
-| Analysis | `docs/[date]_[task]/research/03_analysis.md` | Analysis findings |
-| Plans | `docs/[date]_[task]/masterplan/02_plan.md` | Implementation plans |
-| Implementation | `docs/[date]_[task]/implementation/99_implementation_report.md` | Implementation results |
-| Verification | `docs/[date]_[task]/verification/01_verification.md` | verification report |
-| Security | `docs/[date]_[task]/verification/02_security.md` | security test report |
-| Commit | `docs/[date]_[task]/implementation/99_git_report.md` | commit report |
+| Phase | Required File(s) | Purpose |
+|-------|------------------|---------|
+| Task-level | `identification/01_translated.md`, `identification/02_structured.md` | Translated request, structured task blueprint |
+| Task-level | `research/01_explore.md`, `research/02_collection.md`, `research/03_analysis.md` | Exploration, gathered data, analysis findings |
+| Task-level | `masterplan/01_specs.md`, `masterplan/02_plan.md` | Canonical spec, implementation plan |
+| Task-level | `initialization/01_env_check.md` | Environment readiness check |
+| Task-level | `implementation/...` | Implementation change, test, and report artifacts |
+| Task-level | `gateway_check/01_gate_report.md` | Phase/approval gate report |
+| Task-level | `test/01_test_report.md` | Test strategy and results |
+| Task-level | `verification/01_verification.md`, `verification/02_security.md` | Verification and security findings |
+| Task-level | `README.md` | Task documentation index |
+| Task-level | `status_tasks.md` | Live progress tracker |
+| Task-level | `delegation_progress_report.md` | Accountability trail |
+| Task-level | `report/report.md` | Final task completion report |
+| Task-level | `decisions/decisions.md` | User decisions that differ from the initial plan |
 
-**Note:** File and folder formats follow the documentation standards in `AGENTS.md` under "Documentation File Naming".
-
-IMPORTANT: ALL output must be written to `/docs`. Do not use `/output` anymore.
+Files must use snake_case naming and live under `/docs`, never under `/output`.
 
 ## 📁 MANDATORY DOCUMENTATION LIFECYCLE
 
@@ -268,17 +266,17 @@ Task: [what needs to be done]
 Target: [files or scope]
 Command: [workflow name like /explore, /security]
 Expected: [what result format]
-Reference: [IMPORTANT: Explicitly instruct the agent to read task.md, analysis.md, and plan.md if applicable]
+Reference: [IMPORTANT: Explicitly instruct the agent to read identification/02_structured.md, research/03_analysis.md, and masterplan/02_plan.md if applicable]
 Documentation Contract: [require /docs artifacts, delegation_progress_report.md, and exact file list in final response]
 ")
 ```
 
 ### Quality Gate
 
-The Orchestrator MUST NOT blindly delegate. Before moving to implementation phase, perform a read-only delegation readiness check by reading `analysis.md` and `plan.md` docs. Do not invoke `reflection-loop` directly. If the docs are insufficient, re-delegate to the Analyst or Planner with specific, actionable feedback.
+The Orchestrator MUST NOT blindly delegate. Before moving to implementation phase, perform a read-only delegation readiness check by reading the phase artifacts produced during the identification, research, and masterplan phases: `identification/02_structured.md`, `research/03_analysis.md`, `masterplan/01_specs.md`, and `masterplan/02_plan.md`. Do not invoke `reflection-loop` directly. If the docs are insufficient, re-delegate to the Analyst or Planner with specific, actionable feedback.
 
 **Success criteria for reflection-loop:**
-1. **Intent Alignment**: Does it satisfy the original intent and constraints from `task.md`?
+1. **Intent Alignment**: Does it satisfy the original intent and constraints from `identification/02_structured.md`?
 2. **Documentation Standard**: Does it meet documentation standards (WHY, NUANCES, EDGE CASES)?
 3. **Actionability**: Is the implementation plan unambiguous, granular, and directly executable?
 
@@ -305,7 +303,11 @@ B. RESEARCH PHASE
    -  Delegate to `analyst` for analysis of gathered information
    -  Do in loop as the mentioned in `identification/02_structured.md`, until `masterplan/01_specs.md` and `masterplan/02_plan.md` is ready
    -  **If complex task** mentioned in `masterplan/02_plan.md` → `pm-planner` for detailed plan
-8. **If RESEARCH COMPLETE**: present findings and masterplan to user for approval
+8. **If RESEARCH COMPLETE**: Re-read `identification/02_structured.md`, then check whether the task is research-only or requires implementation. If not research-only:
+   - Re-delegate `task-architect` to refine `identification/02_structured.md` by reading `research/03_analysis.md`, `masterplan/01_specs.md`, and `masterplan/02_plan.md`, then adding the implementation breakdown grounded in actual research findings
+   - Split any broad step into smaller, single-owner, single-verification delegation units
+   - Present refreshed findings and implementation plan to user for approval before proceeding to implementation
+   - If research-only, present current findings to user for approval
 
 C. IMPLEMENTATION PHASE
 9. **After approval** — Re-read files, delegate execution to the selected sub-agent(s), and verify that each delegation produced `/docs` artifacts plus `delegation_progress_report.md`

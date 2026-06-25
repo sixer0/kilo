@@ -78,6 +78,9 @@ Decompose the work into steps that satisfy:
 - **Delegable**: maps to exactly one agent
 - **Verifiable**: has a clear pass/fail check
 - **Sized appropriately**: small enough to track, large enough to be meaningful
+- **Split long/ambiguous tasks**: if a step covers multiple concern domains, produces multiple deliverables, or references more than one major artifact, split it before delegation. Long, broad delegation envelopes cause context drift and increase hallucination risk.
+
+If the incoming analysis/spec/specs reveal scope expansion or additional dependencies beyond what `identification/02_structured.md` captured, re-balance the step breakdown and note the delta in the Issues & Decisions Log.
 
 For each step define:
 - Step ID (e.g., `STEP-1`)

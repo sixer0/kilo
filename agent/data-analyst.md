@@ -93,8 +93,7 @@ Synthesize structured tasks plus explore/collector outputs into actionable findi
 2. Correlate collected files and context with requirements.
 3. Identify patterns, risks, and constraints.
 4. Formulate concrete next steps and acceptance criteria.
-
-### STEP 5: WRITE `research/03_analysis.md`
+5. **Scope change detection:** if research reveals new requirements, hidden dependencies, or a broader blast radius than `identification/02_structured.md` captured, explicitly document the delta in `research/03_analysis.md` and either update `masterplan/01_specs.md` or require `task-architect` to refine the structured blueprint.
 
 ```markdown
 ---
